@@ -6,30 +6,30 @@ import com.fhdufhdu.mim.entity.Comment;
 import com.fhdufhdu.mim.entity.Posting;
 
 public interface PostingService {
-    /** GET boards/{boardId}/postings */
+    /** GET /boards/{boardId}/postings */
     List<Posting> getAllPostings(Long boardId);
 
-    /** GET boards/{boardId}/postings/{postingNumber} */
+    /** GET /boards/{boardId}/postings/{postingNumber} */
     Posting getPosting(Long boardId, Long postingNumber);
 
-    /**  */
-    void modifyPosting(String userId, Long boardId, Long postingNumber, Posting posting);
+    /** PUT /boards/{boardId}/postings/{postingNumber} */
+    void modifyPosting(Long boardId, Long postingNumber, Posting posting);
 
-    /**  */
-    void removePosting(String userId, Long boardId, Long postingNumber);
+    /** DELETE /boards/{boardId}/postings/{postingNumber} */
+    void removePosting(Long boardId, Long postingNumber);
 
-    /**  */
-    void addPosting(String userId, Posting posting);
+    /** POST /boards/{boardId}/postings */
+    void addPosting(Posting posting);
 
-    /**  */
+    /** GET /boards/{boardId}/postings/{postNumber}/comments */
     List<Comment> getAllComments(Long boardId, Long postingNumber);
 
-    /**  */
-    void modifyComment(String userId, Comment comment);
+    /** PUT /comments/{commentId} */
+    void modifyComment(Long commentId, Comment comment);
 
-    /**  */
-    void removeComment(String userId, Long commentId);
+    /** DELETE /comments/{commentId} */
+    void removeComment(Long commentId);
 
-    /**  */
-    void addComment(Comment comment);
+    /** PUT /boards/{boardId}/postings/{postingNumber}/comments */
+    void addComment(Long boardId, Long postingNumber, Comment comment);
 }

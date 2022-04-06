@@ -5,7 +5,7 @@ import java.util.List;
 import com.fhdufhdu.mim.entity.User;
 import com.fhdufhdu.mim.exception.DuplicateUserException;
 import com.fhdufhdu.mim.exception.MismatchPasswdException;
-import com.fhdufhdu.mim.exception.NoFoundUserException;
+import com.fhdufhdu.mim.exception.NotFoundUserException;
 import com.fhdufhdu.mim.repository.UserRepository;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findById(username).orElseThrow(NoFoundUserException::new);
+        User user = userRepository.findById(username).orElseThrow(NotFoundUserException::new);
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getId())
                 .password(user.getPw())
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User getUserInfo(String id) {
         return userRepository.findById(id)
                 .map(x -> x)
-                .orElseThrow(() -> new NoFoundUserException());
+                .orElseThrow(() -> new NotFoundUserException());
     }
 
     @Override

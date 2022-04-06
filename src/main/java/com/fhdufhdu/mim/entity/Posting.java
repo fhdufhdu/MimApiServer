@@ -47,4 +47,10 @@ public class Posting {
 
     @NotNull
     private Long postingNumber;
+
+    public void clone(Posting posting) {
+        title = posting.getTitle();
+        content = posting.getContent();
+        time = new Timestamp(System.currentTimeMillis());
+    }
 }
