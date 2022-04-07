@@ -2,28 +2,34 @@ package com.fhdufhdu.mim.service;
 
 import java.util.List;
 
-import com.fhdufhdu.mim.entity.Feature;
-import com.fhdufhdu.mim.entity.Genre;
-import com.fhdufhdu.mim.entity.Movie;
-import com.fhdufhdu.mim.entity.MovieRating;
-import com.fhdufhdu.mim.entity.worker.Actor;
-import com.fhdufhdu.mim.entity.worker.Director;
-import com.fhdufhdu.mim.entity.worker.Writer;
+import com.fhdufhdu.mim.dto.FeatureDto;
+import com.fhdufhdu.mim.dto.GenreDto;
+import com.fhdufhdu.mim.dto.MovieDto;
+import com.fhdufhdu.mim.dto.MovieRatingDto;
+import com.fhdufhdu.mim.dto.worker.WorkerDto;
 
 public interface SearchService {
-    Movie getMovieById(Long movieId);
+        /** GET /movies/{movieId} */
+        MovieDto getMovieById(Long movieId);
 
-    List<Movie> getMovieList(List<String> titles);
+        /** GET /movies?titles={title1, title2, title3} */
+        List<MovieDto> getMovieList(List<String> titles);
 
-    void removeMovie(String adminId, Long movieId);
+        /** DELETE /movies/{movieId} */
+        void removeMovie(Long movieId);
 
-    void changeMovieInfo(Movie movie, List<Director> directors, List<Actor> actors, List<Writer> writers,
-            List<Genre> genres, List<Feature> features, MovieRating rating);
+        /** PUT /movies/{movieId} */
+        void changeMovieInfo(Long movieId, MovieDto movie, List<WorkerDto> directors, List<WorkerDto> actors,
+                        List<WorkerDto> writers,
+                        List<GenreDto> genres, List<FeatureDto> features, MovieRatingDto rating);
 
-    void addMovie(Movie movie, List<Director> directors, List<Actor> actors, List<Writer> writers,
-            List<Genre> genres, List<Feature> features, MovieRating rating);
+        /** POST /movies */
+        void addMovie(MovieDto movie, List<WorkerDto> directors, List<WorkerDto> actors, List<WorkerDto> writers,
+                        List<GenreDto> genres, List<FeatureDto> features, MovieRatingDto rating);
 
-    List<Movie> searchByScean(String input);
+        /** GET /ai-server/scean?input={input} */
+        List<MovieDto> searchByScean(String input);
 
-    List<Movie> searchByLint(String input);
+        /** GET /ai-server/line?input={input} */
+        List<MovieDto> searchByLine(String input);
 }

@@ -2,34 +2,41 @@ package com.fhdufhdu.mim.service;
 
 import java.util.List;
 
-import com.fhdufhdu.mim.entity.Comment;
-import com.fhdufhdu.mim.entity.Posting;
+import com.fhdufhdu.mim.dto.CommentDto;
+import com.fhdufhdu.mim.dto.PostingDto;
 
 public interface PostingService {
-    /** GET /boards/{boardId}/postings */
-    List<Posting> getAllPostings(Long boardId);
 
-    /** GET /boards/{boardId}/postings/{postingNumber} */
-    Posting getPosting(Long boardId, Long postingNumber);
+    /** GET /postings?board-id={boardId} */
+    List<PostingDto> getAllPostings(Long boardId);
 
-    /** PUT /boards/{boardId}/postings/{postingNumber} */
-    void modifyPosting(Long boardId, Long postingNumber, Posting posting);
+    /** GET /postings?board-id={boardId}&posting-number={postingNumber} */
+    PostingDto getPostingByBoardAndPostingNum(Long boardId, Long postingNumber);
 
-    /** DELETE /boards/{boardId}/postings/{postingNumber} */
-    void removePosting(Long boardId, Long postingNumber);
+    /** GET /posting/{postingId} */
+    PostingDto getPostingById(Long id);
 
-    /** POST /boards/{boardId}/postings */
-    void addPosting(Posting posting);
+    /** PUT /postings/{postingId} */
+    void modifyPosting(Long id, PostingDto postingDto);
 
-    /** GET /boards/{boardId}/postings/{postNumber}/comments */
-    List<Comment> getAllComments(Long boardId, Long postingNumber);
+    /** DELETE /postings/{postingId} */
+    void removePosting(Long id);
+
+    /** POST /postings */
+    void addPosting(PostingDto postingDto);
+
+    /** GET /comments?board-id={boardId}&posting-number={postingNumber} */
+    List<CommentDto> getAllCommentsByBoardAndPostingNum(Long boardId, Long postingNumber);
+
+    /** GET /comments?posting-id={postingId} */
+    List<CommentDto> getAllCommentsByPostingId(Long id);
 
     /** PUT /comments/{commentId} */
-    void modifyComment(Long commentId, Comment comment);
+    void modifyComment(Long commentId, CommentDto commentDto);
 
     /** DELETE /comments/{commentId} */
     void removeComment(Long commentId);
 
-    /** PUT /boards/{boardId}/postings/{postingNumber}/comments */
-    void addComment(Long boardId, Long postingNumber, Comment comment);
+    /** POST /comments */
+    void addComment(CommentDto commentDto);
 }

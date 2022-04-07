@@ -14,7 +14,8 @@ public interface PostingRepository extends JpaRepository<Posting, Long> {
     List<Posting> findByBoardId(@Param("boardId") Long boardId);
 
     @Query(value = "select p from Posting p join p.postingId.movieBoard b where b.id = :boardId and p.postingNumber = :postingNumber", nativeQuery = false)
-    Optional<Posting> findByPostingId(@Param("boardId") Long boardId, @Param("postingNumber") Long postingNumber);
+    Optional<Posting> findByBoardIdAndPostingNumber(@Param("boardId") Long boardId,
+            @Param("postingNumber") Long postingNumber);
 
     @Query(value = "delete from posting p where p.board_id = :boardId and p.posting_number = :postingNumber", nativeQuery = true)
     void deleteById(@Param("boardId") Long boardId, @Param("postingNumber") Long postingNumber);

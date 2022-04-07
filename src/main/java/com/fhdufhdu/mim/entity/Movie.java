@@ -27,7 +27,7 @@ public class Movie {
     @NotNull
     private String title;
     private String engTitle;
-    private int year;
+    private Integer year;
     private String synopsis;
     private String runningTime;
 

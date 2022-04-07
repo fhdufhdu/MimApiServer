@@ -1,10 +1,12 @@
 package com.fhdufhdu.mim.controller;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fhdufhdu.mim.dto.UserDto;
 import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.entity.User;
 import com.fhdufhdu.mim.security.JwtTokenProvider;
@@ -40,17 +42,22 @@ public class UserController {
 
     @GetMapping("/sign-up")
     public String test2() {
-        User user = User.builder()
+        UserDto user = UserDto.builder()
                 .id("fhdufhdu")
-                .pw("fhdufhdu")
-                .role(Role.ADMIN).build();
+                .pw("fhdufhdu").role(Role.ADMIN.name()).build();
         userService.signUp(user);
         return "test";
     }
 
-    @GetMapping("/test")
-    public String test3() {
+    @PostMapping("/modify")
+    public String test3(@RequestBody UserDto userDto) {
+        userService.modifyUser(userDto);
         return "test";
+    }
+
+    @PostMapping("/users")
+    public List<UserDto> test4() {
+        return userService.getAllUsers();
     }
 
 }

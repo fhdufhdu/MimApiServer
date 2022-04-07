@@ -2,36 +2,42 @@ package com.fhdufhdu.mim.service;
 
 import java.util.List;
 
+import com.fhdufhdu.mim.dto.MovieBoardDto;
+import com.fhdufhdu.mim.dto.RequestBoardDto;
 import com.fhdufhdu.mim.entity.MovieBoard;
 import com.fhdufhdu.mim.entity.RequestBoard;
 import com.fhdufhdu.mim.repository.BoardRepository;
 import com.fhdufhdu.mim.repository.RequestBoardRepository;
+import com.fhdufhdu.mim.service.mapper.MapperService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 @Transactional
-public class BoardServiceImpl implements BoardService {
-    @Autowired
-    private BoardRepository boardRepository;
-    @Autowired
-    private RequestBoardRepository rBoardRepository;
+@RequiredArgsConstructor
+public class BoardServiceImpl extends MapperService implements BoardService {
+    private final BoardRepository boardRepository;
+    private final RequestBoardRepository rBoardRepository;
 
     @Override
-    public List<MovieBoard> getAllBoards() {
-        return boardRepository.findAll();
+    public List<MovieBoardDto> getAllBoards() {
+        List<MovieBoard> boards = boardRepository.findAll();
+        return convertToDests(boards, MovieBoardDto.class);
+
     }
 
     @Override
-    public List<MovieBoard> getBoardsByTitle(String title) {
-        return boardRepository.findByMovieTitle(title);
+    public List<MovieBoardDto> getBoardsByTitle(String title) {
+        List<MovieBoard> boards = boardRepository.findByMovieTitle(title);
+        return convertToDests(boards, MovieBoardDto.class);
     }
 
     @Override
-    public MovieBoard getBoardsByMovieId(Long id) {
-        return boardRepository.findByMovieId(id);
+    public MovieBoardDto getBoardsByMovieId(Long id) {
+        return convertToDest(boardRepository.findByMovieId(id), MovieBoardDto.class);
     }
 
     @Override
@@ -55,13 +61,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<RequestBoard> getAllRequests() {
-        return rBoardRepository.findAll();
+    public List<RequestBoardDto> getAllRequests() {
+        return convertToDests(rBoardRepository.findAll(), RequestBoardDto.class);
     }
 
     @Override
-    public MovieBoard getBoardById(Long id) {
-        return boardRepository.findById(id).orElseThrow(RuntimeException::new);
+    public MovieBoardDto getBoardById(Long id) {
+        return convertToDest(boardRepository.findById(id).orElseThrow(RuntimeException::new), MovieBoardDto.class);
     }
 
 }

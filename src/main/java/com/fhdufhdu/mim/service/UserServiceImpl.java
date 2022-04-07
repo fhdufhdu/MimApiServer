@@ -1,12 +1,15 @@
 package com.fhdufhdu.mim.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.fhdufhdu.mim.dto.UserDto;
 import com.fhdufhdu.mim.entity.User;
 import com.fhdufhdu.mim.exception.DuplicateUserException;
 import com.fhdufhdu.mim.exception.MismatchPasswdException;
 import com.fhdufhdu.mim.exception.NotFoundUserException;
 import com.fhdufhdu.mim.repository.UserRepository;
+import com.fhdufhdu.mim.service.mapper.MapperService;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,14 +23,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl extends MapperService implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void login(String id, String pw) {
-        User user = getUserInfo(id);
-        if (!passwordEncoder.matches(pw, user.getPw())) {
+        UserDto userDto = getUserInfo(id);
+        if (!passwordEncoder.matches(pw, userDto.getPw())) {
             throw new MismatchPasswdException();
         }
     }
@@ -43,12 +46,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void signUp(User user) {
+    public void signUp(UserDto user) {
         if (isDuplicated(user.getId())) {
             throw new DuplicateUserException();
         }
         user.setPw(passwordEncoder.encode(user.getPw()));
-        userRepository.save(user);
+        userRepository.save(convertToDest(user, User.class));
     }
 
     private boolean isDuplicated(String id) {
@@ -56,15 +59,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getUserInfo(String id) {
-        return userRepository.findById(id)
-                .map(x -> x)
-                .orElseThrow(() -> new NotFoundUserException());
+    public UserDto getUserInfo(String id) {
+        User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
+        UserDto userDto = convertToDest(user, UserDto.class);
+        userDto.setPw(null);
+        return userDto;
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        List<UserDto> userDtos = convertToDests(userRepository.findAll(), UserDto.class);
+        return userDtos.stream().map(userDto -> {
+            userDto.setPw(null);
+            return userDto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public void modifyUser(UserDto userDto) {
+        User original = userRepository.findById(userDto.getId()).orElseThrow(NotFoundUserException::new);
+        original.setPw(passwordEncoder.encode(userDto.getPw()));
+        original.setNickName(userDto.getNickName());
+        original.setProfilePath(userDto.getProfilePath());
+        userRepository.save(original);
     }
 
     @Override

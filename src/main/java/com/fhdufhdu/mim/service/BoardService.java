@@ -2,21 +2,21 @@ package com.fhdufhdu.mim.service;
 
 import java.util.List;
 
-import com.fhdufhdu.mim.entity.MovieBoard;
-import com.fhdufhdu.mim.entity.RequestBoard;
+import com.fhdufhdu.mim.dto.MovieBoardDto;
+import com.fhdufhdu.mim.dto.RequestBoardDto;
 
 public interface BoardService {
     /** GET /boards */
-    List<MovieBoard> getAllBoards();
+    List<MovieBoardDto> getAllBoards();
 
     /** GET /boards?title={title} */
-    List<MovieBoard> getBoardsByTitle(String title);
+    List<MovieBoardDto> getBoardsByTitle(String title);
 
     /** GET /boards?movie-id={id} */
-    MovieBoard getBoardsByMovieId(Long id);
+    MovieBoardDto getBoardsByMovieId(Long id);
 
     /** GET /boards/{id} */
-    MovieBoard getBoardById(Long id);
+    MovieBoardDto getBoardById(Long id);
 
     /** DELETE /boards/{id} */
     void shutDownBoard(Long id);
@@ -28,5 +28,5 @@ public interface BoardService {
     void cancelRequestBoard(Long requestId);
 
     /** GET /request-boards */
-    List<RequestBoard> getAllRequests();
+    List<RequestBoardDto> getAllRequests();
 }
