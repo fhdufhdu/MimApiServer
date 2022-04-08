@@ -34,4 +34,12 @@ public class Movie {
     @ManyToOne(fetch = FetchType.LAZY)
     private MovieRating movieRating;
     private String dirName;
+
+    public void setMovieRating(MovieRating movieRating) {
+        if (this.movieRating != null) {
+            this.movieRating.getMovies().remove(this);
+        }
+        this.movieRating = movieRating;
+        this.movieRating.getMovies().add(this);
+    }
 }

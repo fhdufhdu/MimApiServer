@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim.service.mapper;
+package com.fhdufhdu.mim.service.util;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

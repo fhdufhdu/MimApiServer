@@ -29,7 +29,7 @@ public interface PostingService {
     List<CommentDto> getAllCommentsByBoardAndPostingNum(Long boardId, Long postingNumber);
 
     /** GET /comments?posting-id={postingId} */
-    List<CommentDto> getAllCommentsByPostingId(Long id);
+    List<CommentDto> getAllCommentsByPostingId(Long postingId);
 
     /** PUT /comments/{commentId} */
     void modifyComment(Long commentId, CommentDto commentDto);

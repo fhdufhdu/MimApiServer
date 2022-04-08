@@ -4,12 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.fhdufhdu.mim.dto.GenreDto;
 import com.fhdufhdu.mim.entity.Genre;
 import com.fhdufhdu.mim.entity.Movie;
 import com.fhdufhdu.mim.entity.MovieGenre;
 
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
@@ -27,6 +30,8 @@ public class GenreRepoTest {
     MovieGenreRepository mGenreRepository;
     @Autowired
     GenreRepository genreRepository;
+
+    final ModelMapper modelMapper = new ModelMapper();
 
     @Test
     public void 장르추출테스트() {
@@ -76,6 +81,12 @@ public class GenreRepoTest {
         genreNames.add(genre3.getGenreName());
 
         List<Genre> genres = genreRepository.findByMovieId(movie1.getId());
+
+        List<GenreDto> genreDtos = genres.stream().map(x -> modelMapper.map(x, GenreDto.class))
+                .collect(Collectors.toList());
+
+        genres = genreDtos.stream().map(x -> modelMapper.map(x, Genre.class))
+                .collect(Collectors.toList());
 
         for (int i = 0; i < genres.size(); i++) {
             assertThat(genres.get(i).getGenreName()).isEqualTo(genreNames.get(i));

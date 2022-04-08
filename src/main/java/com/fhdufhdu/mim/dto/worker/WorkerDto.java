@@ -6,5 +6,4 @@ import lombok.Data;
 public class WorkerDto {
     private Long id;
     private String name;
-    private String dtype;
 }

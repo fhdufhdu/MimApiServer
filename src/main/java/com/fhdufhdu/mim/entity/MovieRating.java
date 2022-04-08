@@ -1,8 +1,13 @@
 package com.fhdufhdu.mim.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -24,4 +29,8 @@ public class MovieRating {
 
     @NotNull
     private String rating;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "movieRating", fetch = FetchType.LAZY)
+    private List<Movie> movies = new ArrayList<Movie>();
 }

@@ -1,5 +1,6 @@
-package com.fhdufhdu.mim.service.mapper;
+package com.fhdufhdu.mim.service.util;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class MapperService {
+public abstract class UtilService {
     @Autowired
     private ModelMapper modelMapper;
 
@@ -27,6 +28,10 @@ public abstract class MapperService {
 
     protected <T, G> T convertToDest(G source, Class<T> dest) {
         return modelMapper.map(source, dest);
+    }
+
+    protected Timestamp getNowTimestamp() {
+        return new Timestamp(System.currentTimeMillis());
     }
 
 }

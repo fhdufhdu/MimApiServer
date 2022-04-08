@@ -1,6 +1,5 @@
 package com.fhdufhdu.mim.service;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import com.fhdufhdu.mim.dto.CommentDto;
@@ -11,21 +10,24 @@ import com.fhdufhdu.mim.entity.Posting;
 import com.fhdufhdu.mim.entity.PostingId;
 import com.fhdufhdu.mim.entity.User;
 import com.fhdufhdu.mim.exception.NotFoundBoardException;
+import com.fhdufhdu.mim.exception.NotFoundCommentException;
 import com.fhdufhdu.mim.exception.NotFoundPostingException;
 import com.fhdufhdu.mim.exception.NotFoundUserException;
 import com.fhdufhdu.mim.repository.BoardRepository;
 import com.fhdufhdu.mim.repository.CommentRepository;
 import com.fhdufhdu.mim.repository.PostingRepository;
 import com.fhdufhdu.mim.repository.UserRepository;
-import com.fhdufhdu.mim.service.mapper.MapperService;
+import com.fhdufhdu.mim.service.util.UtilService;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PostingServiceImpl extends MapperService implements PostingService {
+@Transactional
+public class PostingServiceImpl extends UtilService implements PostingService {
     private final PostingRepository postingRepository;
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
@@ -55,7 +57,7 @@ public class PostingServiceImpl extends MapperService implements PostingService 
         Posting originalPosting = postingRepository.findById(id).orElseThrow(NotFoundPostingException::new);
         originalPosting.setTitle(postingDto.getTitle());
         originalPosting.setContent(postingDto.getContent());
-        originalPosting.setTime(new Timestamp(System.currentTimeMillis()));
+        originalPosting.setTime(getNowTimestamp());
         postingRepository.save(originalPosting);
     }
 
@@ -77,7 +79,7 @@ public class PostingServiceImpl extends MapperService implements PostingService 
                 .postingId(newPostingId)
                 .title(postingDto.getTitle())
                 .content(postingDto.getContent())
-                .time(new Timestamp(System.currentTimeMillis()))
+                .time(getNowTimestamp())
                 .user(user)
                 .build();
         postingRepository.save(newPosting);
@@ -90,24 +92,40 @@ public class PostingServiceImpl extends MapperService implements PostingService 
     }
 
     @Override
-    public List<CommentDto> getAllCommentsByPostingId(Long id) {
-
-        return null;
+    public List<CommentDto> getAllCommentsByPostingId(Long postingId) {
+        List<Comment> comments = commentRepository.findByPostingId(postingId);
+        return convertToDests(comments, CommentDto.class);
     }
 
     @Override
     public void modifyComment(Long commentId, CommentDto commentDto) {
-
+        Comment originalComment = commentRepository.findById(commentId).orElseThrow(NotFoundCommentException::new);
+        originalComment.setContent(commentDto.getContent());
+        originalComment.setTime(getNowTimestamp());
+        commentRepository.save(originalComment);
     }
 
     @Override
     public void removeComment(Long commentId) {
-
+        commentRepository.deleteById(commentId);
     }
 
     @Override
     public void addComment(CommentDto commentDto) {
+        Posting posting = postingRepository.findById(commentDto.getPostingId())
+                .orElseThrow(NotFoundPostingException::new);
+        User user = userRepository.findById(commentDto.getUserId()).orElseThrow(NotFoundUserException::new);
+        Comment parentComment = commentRepository.findById(commentDto.getCommentId()).get();
 
+        Comment newComment = Comment.builder()
+                .content(commentDto.getContent())
+                .time(getNowTimestamp())
+                .posting(posting)
+                .user(user)
+                .comment(parentComment)
+                .build();
+
+        commentRepository.save(newComment);
     }
 
 }

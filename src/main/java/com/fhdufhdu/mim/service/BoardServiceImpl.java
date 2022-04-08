@@ -8,7 +8,7 @@ import com.fhdufhdu.mim.entity.MovieBoard;
 import com.fhdufhdu.mim.entity.RequestBoard;
 import com.fhdufhdu.mim.repository.BoardRepository;
 import com.fhdufhdu.mim.repository.RequestBoardRepository;
-import com.fhdufhdu.mim.service.mapper.MapperService;
+import com.fhdufhdu.mim.service.util.UtilService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class BoardServiceImpl extends MapperService implements BoardService {
+public class BoardServiceImpl extends UtilService implements BoardService {
     private final BoardRepository boardRepository;
     private final RequestBoardRepository rBoardRepository;
 

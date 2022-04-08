@@ -9,7 +9,7 @@ import com.fhdufhdu.mim.exception.DuplicateUserException;
 import com.fhdufhdu.mim.exception.MismatchPasswdException;
 import com.fhdufhdu.mim.exception.NotFoundUserException;
 import com.fhdufhdu.mim.repository.UserRepository;
-import com.fhdufhdu.mim.service.mapper.MapperService;
+import com.fhdufhdu.mim.service.util.UtilService;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserServiceImpl extends MapperService implements UserDetailsService, UserService {
+public class UserServiceImpl extends UtilService implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
