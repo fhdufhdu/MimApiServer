@@ -14,10 +14,12 @@ import com.fhdufhdu.mim.entity.MovieFeature;
 import com.fhdufhdu.mim.entity.MovieGenre;
 import com.fhdufhdu.mim.entity.MovieRating;
 import com.fhdufhdu.mim.entity.MovieWorker;
+import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.entity.worker.Actor;
 import com.fhdufhdu.mim.entity.worker.Director;
 import com.fhdufhdu.mim.entity.worker.Writer;
 import com.fhdufhdu.mim.exception.NotFoundMovieException;
+import com.fhdufhdu.mim.exception.WrongPermissionException;
 import com.fhdufhdu.mim.repository.ActorRepository;
 import com.fhdufhdu.mim.repository.DirectorRepository;
 import com.fhdufhdu.mim.repository.FeatureRepository;
@@ -100,6 +102,9 @@ public class SearchServiceImpl extends UtilService implements SearchService {
 
     @Override
     public void removeMovie(Long movieId) {
+        if (!hasPermission(Role.ADMIN)) {
+            throw new WrongPermissionException();
+        }
         movieRepository.deleteById(movieId);
     }
 
@@ -107,6 +112,10 @@ public class SearchServiceImpl extends UtilService implements SearchService {
     public void changeMovieInfo(Long movieId, MovieDto movie, List<String> directors, List<String> actors,
             List<String> writers,
             List<String> genres, List<String> features, String rating) {
+
+        if (!hasPermission(Role.ADMIN)) {
+            throw new WrongPermissionException();
+        }
         Movie originalMovie = movieRepository.findById(movieId).orElseThrow(NotFoundMovieException::new);
         MovieRating movieRating = movieRatingRepository.findByRating(rating).get();
         originalMovie.setTitle(movie.getTitle());

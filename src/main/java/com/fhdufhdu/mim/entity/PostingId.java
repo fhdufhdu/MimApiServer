@@ -23,5 +23,5 @@ public class PostingId implements Serializable {
     private MovieBoard movieBoard;
 
     @NotNull
-    private Integer commentCnt;
+    private Long commentCnt;
 }

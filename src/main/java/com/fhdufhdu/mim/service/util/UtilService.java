@@ -2,23 +2,34 @@ package com.fhdufhdu.mim.service.util;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.fhdufhdu.mim.entity.Role;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public abstract class UtilService {
     @Autowired
     private ModelMapper modelMapper;
+    private Optional<Authentication> curAuthentication;
+
+    public UtilService() {
+        curAuthentication = Optional
+                .ofNullable((Authentication) SecurityContextHolder.getContext().getAuthentication());
+    }
 
     protected <T, G> List<T> convertToDests(List<G> sources, Class<T> dest) {
         List<T> dtos = sources.stream().map(dto -> modelMapper.map(dto, dest))
@@ -32,6 +43,19 @@ public abstract class UtilService {
 
     protected Timestamp getNowTimestamp() {
         return new Timestamp(System.currentTimeMillis());
+    }
+
+    protected String getUserId() {
+        return curAuthentication.map(auth -> ((User) auth.getPrincipal()).getUsername()).orElse(null);
+    }
+
+    protected boolean hasPermission(Role role) {
+        return curAuthentication.map(auth -> {
+            for (GrantedAuthority permission : ((User) auth.getPrincipal()).getAuthorities())
+                if (permission.getAuthority().equals(role.name()))
+                    return true;
+            return false;
+        }).orElse(false);
     }
 
 }

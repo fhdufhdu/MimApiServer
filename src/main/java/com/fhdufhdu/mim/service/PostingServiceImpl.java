@@ -9,6 +9,7 @@ import com.fhdufhdu.mim.entity.MovieBoard;
 import com.fhdufhdu.mim.entity.Posting;
 import com.fhdufhdu.mim.entity.PostingId;
 import com.fhdufhdu.mim.entity.User;
+import com.fhdufhdu.mim.exception.MismatchAuthorException;
 import com.fhdufhdu.mim.exception.NotFoundBoardException;
 import com.fhdufhdu.mim.exception.NotFoundCommentException;
 import com.fhdufhdu.mim.exception.NotFoundPostingException;
@@ -55,6 +56,10 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     @Override
     public void modifyPosting(Long id, PostingDto postingDto) {
         Posting originalPosting = postingRepository.findById(id).orElseThrow(NotFoundPostingException::new);
+
+        if (!originalPosting.getUser().getId().equals(getUserId()))
+            throw new MismatchAuthorException();
+
         originalPosting.setTitle(postingDto.getTitle());
         originalPosting.setContent(postingDto.getContent());
         originalPosting.setTime(getNowTimestamp());
@@ -63,6 +68,11 @@ public class PostingServiceImpl extends UtilService implements PostingService {
 
     @Override
     public void removePosting(Long id) {
+        Posting originalPosting = postingRepository.findById(id).orElseThrow(NotFoundPostingException::new);
+
+        if (!originalPosting.getUser().getId().equals(getUserId()))
+            throw new MismatchAuthorException();
+
         postingRepository.deleteById(id);
     }
 
@@ -70,11 +80,14 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     public void addPosting(PostingDto postingDto) {
         MovieBoard board = boardRepository.findById(postingDto.getMovieBoardId())
                 .orElseThrow(NotFoundBoardException::new);
+        board.setLastPostingNumber(board.getLastPostingNumber() + 1);
+
         PostingId newPostingId = PostingId.builder()
                 .movieBoard(board)
-                .commentCnt(0)
+                .commentCnt(board.getLastPostingNumber())
                 .build();
-        User user = userRepository.findById(postingDto.getUserId()).orElseThrow(NotFoundUserException::new);
+
+        User user = userRepository.findById(getUserId()).orElseThrow(NotFoundUserException::new);
         Posting newPosting = Posting.builder()
                 .postingId(newPostingId)
                 .title(postingDto.getTitle())
@@ -100,6 +113,8 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     @Override
     public void modifyComment(Long commentId, CommentDto commentDto) {
         Comment originalComment = commentRepository.findById(commentId).orElseThrow(NotFoundCommentException::new);
+        if (!originalComment.getUser().getId().equals(getUserId()))
+            throw new MismatchAuthorException();
         originalComment.setContent(commentDto.getContent());
         originalComment.setTime(getNowTimestamp());
         commentRepository.save(originalComment);
@@ -114,7 +129,7 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     public void addComment(CommentDto commentDto) {
         Posting posting = postingRepository.findById(commentDto.getPostingId())
                 .orElseThrow(NotFoundPostingException::new);
-        User user = userRepository.findById(commentDto.getUserId()).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findById(getUserId()).orElseThrow(NotFoundUserException::new);
         Comment parentComment = commentRepository.findById(commentDto.getCommentId()).get();
 
         Comment newComment = Comment.builder()

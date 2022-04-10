@@ -12,22 +12,22 @@ public interface SearchService {
         /** GET /movies/{movieId} */
         MovieDto getMovieById(Long movieId);
 
-        /** GET /director?movie-id={movieId} */
+        /** GET /directors?movie-id={movieId} */
         List<WorkerDto> getDirectorByMovieId(Long movieId);
 
-        /** GET /actor?movie-id={movieId} */
+        /** GET /actors?movie-id={movieId} */
         List<WorkerDto> getActorByMovieId(Long movieId);
 
-        /** GET /writer?movie-id={movieId} */
+        /** GET /writes?movie-id={movieId} */
         List<WorkerDto> getWriterByMovieId(Long movieId);
 
-        /** GET /genre?movie-id={movieId} */
+        /** GET /genres?movie-id={movieId} */
         List<GenreDto> getGenreByMovieId(Long movieId);
 
-        /** GET /feature?movie-id={movieId} */
+        /** GET /features?movie-id={movieId} */
         List<FeatureDto> getFeatureByMovieId(Long movieId);
 
-        /** GET /rating?movie-id={movieId} */
+        /** GET /ratings?movie-id={movieId} */
         MovieRatingDto getMovieRatingByMovieId(Long movieId);
 
         /** GET /movies?titles={title1, title2, title3} */
@@ -46,9 +46,9 @@ public interface SearchService {
                         List<String> writers,
                         List<String> genres, List<String> features, String rating);
 
-        /** GET /ai-server/scean?input={input} */
+        /** GET /scean?input={input} */
         List<MovieDto> searchByScean(String input);
 
-        /** GET /ai-server/line?input={input} */
+        /** GET /line?input={input} */
         List<MovieDto> searchByLine(String input);
 }

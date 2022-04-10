@@ -29,8 +29,8 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
 
     @Override
     public void login(String id, String pw) {
-        UserDto userDto = getUserInfo(id);
-        if (!passwordEncoder.matches(pw, userDto.getPw())) {
+        User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
+        if (!passwordEncoder.matches(pw, user.getPw())) {
             throw new MismatchPasswdException();
         }
     }
@@ -76,9 +76,10 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
     }
 
     @Override
-    public void modifyUser(UserDto userDto) {
-        User original = userRepository.findById(userDto.getId()).orElseThrow(NotFoundUserException::new);
-        original.setPw(passwordEncoder.encode(userDto.getPw()));
+    public void modifyUser(String id, UserDto userDto) {
+        User original = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
+        if(userDto.getPw() != null)
+            original.setPw(passwordEncoder.encode(userDto.getPw()));
         original.setNickName(userDto.getNickName());
         original.setProfilePath(userDto.getProfilePath());
         userRepository.save(original);

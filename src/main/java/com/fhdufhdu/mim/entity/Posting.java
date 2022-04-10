@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import com.fhdufhdu.mim.dto.PostingDto;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,9 +48,4 @@ public class Posting {
     @NotNull
     private Long postingNumber;
 
-    public void clone(PostingDto posting) {
-        title = posting.getTitle();
-        content = posting.getContent();
-        time = new Timestamp(System.currentTimeMillis());
-    }
 }

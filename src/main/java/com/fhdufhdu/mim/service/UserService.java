@@ -8,7 +8,7 @@ public interface UserService {
     /** POST /users/login */
     void login(String id, String pw);
 
-    /** POST /users */
+    /** POST /users/sign-up */
     void signUp(UserDto user);
 
     /** GET /users/{id} */
@@ -18,7 +18,7 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     /** PUT /users/{id} */
-    void modifyUser(UserDto userDto);
+    void modifyUser(String id, UserDto userDto);
 
     /** DELETE /users/{id} */
     void withdrawal(String id);

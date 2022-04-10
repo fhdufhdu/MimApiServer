@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 
 import com.fhdufhdu.mim.dto.UserDto;
 import com.fhdufhdu.mim.entity.Role;
@@ -49,9 +50,9 @@ public class UserController {
         return "test";
     }
 
-    @PostMapping("/modify")
-    public String test3(@RequestBody UserDto userDto) {
-        userService.modifyUser(userDto);
+    @PostMapping("/modify/{id}")
+    public String test3(@RequestBody UserDto userDto, @PathParam("id") String id) {
+        userService.modifyUser(id, userDto);
         return "test";
     }
 
