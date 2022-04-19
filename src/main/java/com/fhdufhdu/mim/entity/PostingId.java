@@ -20,7 +20,7 @@ public class PostingId implements Serializable {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
-    private MovieBoard movieBoard;
+    private Board movieBoard;
 
     @NotNull
     private Long commentCnt;

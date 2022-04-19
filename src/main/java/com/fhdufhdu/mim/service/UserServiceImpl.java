@@ -78,7 +78,7 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
     @Override
     public void modifyUser(String id, UserDto userDto) {
         User original = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
-        if(userDto.getPw() != null)
+        if (userDto.getPw() != null)
             original.setPw(passwordEncoder.encode(userDto.getPw()));
         original.setNickName(userDto.getNickName());
         original.setProfilePath(userDto.getProfilePath());
@@ -87,7 +87,9 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
 
     @Override
     public void withdrawal(String id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
+        user.setIsRemoved(true);
+        userRepository.save(user);
     }
 
 }

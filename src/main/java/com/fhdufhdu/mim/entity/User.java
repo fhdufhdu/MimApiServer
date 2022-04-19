@@ -1,5 +1,6 @@
 package com.fhdufhdu.mim.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -32,5 +33,9 @@ public class User {
     public User() {
         role = Role.USER;
     }
+
+    @NotNull
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isRemoved;
 
 }

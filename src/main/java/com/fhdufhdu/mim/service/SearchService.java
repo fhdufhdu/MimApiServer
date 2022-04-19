@@ -2,53 +2,48 @@ package com.fhdufhdu.mim.service;
 
 import java.util.List;
 
-import com.fhdufhdu.mim.dto.FeatureDto;
-import com.fhdufhdu.mim.dto.GenreDto;
 import com.fhdufhdu.mim.dto.MovieDto;
-import com.fhdufhdu.mim.dto.MovieRatingDto;
-import com.fhdufhdu.mim.dto.worker.WorkerDto;
+import com.fhdufhdu.mim.dto.MovieDtoV2;
+
+import org.springframework.data.domain.Page;
 
 public interface SearchService {
         /** GET /movies/{movieId} */
-        MovieDto getMovieById(Long movieId);
+        MovieDtoV2 getMovieById(Long movieId);
 
-        /** GET /directors?movie-id={movieId} */
-        List<WorkerDto> getDirectorByMovieId(Long movieId);
+        // /** GET /directors/movie/{movieId} */
+        // List<WorkerDto> getDirectorByMovieId(Long movieId);
 
-        /** GET /actors?movie-id={movieId} */
-        List<WorkerDto> getActorByMovieId(Long movieId);
+        // /** GET /actors/movie/{movieId} */
+        // List<WorkerDto> getActorByMovieId(Long movieId);
 
-        /** GET /writes?movie-id={movieId} */
-        List<WorkerDto> getWriterByMovieId(Long movieId);
+        // /** GET /writers/movie/{movieId} */
+        // List<WorkerDto> getWriterByMovieId(Long movieId);
 
-        /** GET /genres?movie-id={movieId} */
-        List<GenreDto> getGenreByMovieId(Long movieId);
+        // /** GET /genres/movie/{movieId} */
+        // List<GenreDto> getGenreByMovieId(Long movieId);
 
-        /** GET /features?movie-id={movieId} */
-        List<FeatureDto> getFeatureByMovieId(Long movieId);
+        // /** GET /features/movie/{movieId} */
+        // List<FeatureDto> getFeatureByMovieId(Long movieId);
 
-        /** GET /ratings?movie-id={movieId} */
-        MovieRatingDto getMovieRatingByMovieId(Long movieId);
+        // /** GET /ratings/movie/{movieId} */
+        // MovieRatingDto getMovieRatingByMovieId(Long movieId);
 
         /** GET /movies?titles={title1, title2, title3} */
-        List<MovieDto> getMovieList(List<String> titles);
+        Page<MovieDto> getMovieList(List<String> titles, int page);
 
         /** DELETE /movies/{movieId} */
         void removeMovie(Long movieId);
 
         /** PUT /movies/{movieId} */
-        void changeMovieInfo(Long movieId, MovieDto movie, List<String> directors, List<String> actors,
-                        List<String> writers,
-                        List<String> genres, List<String> features, String rating);
+        void changeMovieInfo(Long movieId, MovieDtoV2 movie);
 
         /** POST /movies */
-        void addMovie(MovieDto movie, List<String> directors, List<String> actors,
-                        List<String> writers,
-                        List<String> genres, List<String> features, String rating);
+        void addMovie(MovieDtoV2 movie);
 
         /** GET /scean?input={input} */
-        List<MovieDto> searchByScean(String input);
+        List<Object> searchByScean(String input);
 
         /** GET /line?input={input} */
-        List<MovieDto> searchByLine(String input);
+        List<Object> searchByLine(String input);
 }

@@ -1,22 +1,25 @@
 package com.fhdufhdu.mim.service;
 
-import java.util.List;
-
-import com.fhdufhdu.mim.dto.MovieBoardDto;
+import com.fhdufhdu.mim.dto.BoardDto;
 import com.fhdufhdu.mim.dto.RequestBoardDto;
 
+import org.springframework.data.domain.Page;
+
 public interface BoardService {
-    /** GET /boards */
-    List<MovieBoardDto> getAllBoards();
+    /**
+     * GET /boards?page={page}
+     * 영화 이름
+     */
+    Page<BoardDto> getAllBoards(int page);
 
-    /** GET /boards?title={title} */
-    List<MovieBoardDto> getBoardsByTitle(String title);
+    /** GET /boards/title/{title}?page={page} */
+    Page<BoardDto> getBoardsByTitle(String title, int page);
 
-    /** GET /boards?movie-id={id} */
-    MovieBoardDto getBoardsByMovieId(Long id);
+    /** GET /boards/movie/{movieId} */
+    BoardDto getBoardByMovieId(Long movieId);
 
     /** GET /boards/{id} */
-    MovieBoardDto getBoardById(Long id);
+    BoardDto getBoardById(Long id);
 
     /** DELETE /boards/{id} */
     void shutDownBoard(Long id);
@@ -27,6 +30,6 @@ public interface BoardService {
     /** DELETE /request-boards/{id} */
     void cancelRequestBoard(Long requestId);
 
-    /** GET /request-boards */
-    List<RequestBoardDto> getAllRequests();
+    /** GET /request-boards?page={page} */
+    Page<RequestBoardDto> getAllRequests(int page);
 }

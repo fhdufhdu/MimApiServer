@@ -1,19 +1,19 @@
 package com.fhdufhdu.mim.service;
 
-import java.util.List;
-
 import com.fhdufhdu.mim.dto.CommentDto;
 import com.fhdufhdu.mim.dto.PostingDto;
 
+import org.springframework.data.domain.Page;
+
 public interface PostingService {
 
-    /** GET /postings?board-id={boardId} */
-    List<PostingDto> getAllPostings(Long boardId);
+    /** GET /postings/board/{boardId}?page={page} */
+    Page<PostingDto> getAllPostings(Long boardId, int page);
 
-    /** GET /postings?board-id={boardId}&posting-number={postingNumber} */
+    /** GET /postings/board/{boardId}/posting-number/{postingNumber} */
     PostingDto getPostingByBoardAndPostingNum(Long boardId, Long postingNumber);
 
-    /** GET /posting/{postingId} */
+    /** GET /postings/{postingId} */
     PostingDto getPostingById(Long id);
 
     /** PUT /postings/{postingId} */
@@ -25,11 +25,14 @@ public interface PostingService {
     /** POST /postings */
     void addPosting(PostingDto postingDto);
 
-    /** GET /comments?board-id={boardId}&posting-number={postingNumber} */
-    List<CommentDto> getAllCommentsByBoardAndPostingNum(Long boardId, Long postingNumber);
+    /**
+     * GET
+     * /comments/board/{boardId}/posting-number/{postingNumber}?page={page}
+     */
+    Page<CommentDto> getAllCommentsByBoardAndPostingNum(Long boardId, Long postingNumber, int page);
 
-    /** GET /comments?posting-id={postingId} */
-    List<CommentDto> getAllCommentsByPostingId(Long postingId);
+    /** GET /comments/posting/{postingId}?page={page} */
+    Page<CommentDto> getAllCommentsByPostingId(Long postingId, int page);
 
     /** PUT /comments/{commentId} */
     void modifyComment(Long commentId, CommentDto commentDto);

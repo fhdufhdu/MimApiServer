@@ -17,7 +17,8 @@ public class CommentDto {
     private Long id;
     private Long postingId;
     private String userId;
-    private Long commentId;
+    private Long commentGroup;
+    private Integer depth;
     private String content;
     private Timestamp time;
 }

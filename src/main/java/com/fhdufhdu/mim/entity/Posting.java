@@ -2,6 +2,7 @@ package com.fhdufhdu.mim.entity;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -47,5 +48,9 @@ public class Posting {
 
     @NotNull
     private Long postingNumber;
+
+    @NotNull
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isRemoved;
 
 }

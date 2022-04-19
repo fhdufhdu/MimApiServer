@@ -1,5 +1,6 @@
 package com.fhdufhdu.mim.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,4 +33,8 @@ public class RequestBoard {
 
     @NotNull
     private Integer requestCnt;
+
+    @NotNull
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isConfirmed;
 }

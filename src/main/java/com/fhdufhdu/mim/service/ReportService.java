@@ -1,10 +1,10 @@
 package com.fhdufhdu.mim.service;
 
-import java.util.List;
-
 import com.fhdufhdu.mim.dto.CommentReportDto;
 import com.fhdufhdu.mim.dto.PostingReportDto;
 import com.fhdufhdu.mim.dto.ReportReasonDto;
+
+import org.springframework.data.domain.Page;
 
 public interface ReportService {
     /** POST /report-postings */
@@ -14,13 +14,13 @@ public interface ReportService {
     void reportComment(CommentReportDto commentReportDto);
 
     /** GET /report-reasons */
-    List<ReportReasonDto> getAllReportReasons();
+    Page<ReportReasonDto> getAllReportReasons(int page);
 
     /** GET /report-postings */
-    List<PostingReportDto> getAllPostingReports();
+    Page<PostingReportDto> getAllPostingReports(int page);
 
     /** GET /report-comments */
-    List<CommentReportDto> getAlCommentReports();
+    Page<CommentReportDto> getAllCommentReports(int page);
 
     /** PUT /report-postings/{id} */
     void confirmPostingReport(Long id);

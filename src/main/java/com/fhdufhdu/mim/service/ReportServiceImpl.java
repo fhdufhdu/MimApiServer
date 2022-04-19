@@ -1,7 +1,5 @@
 package com.fhdufhdu.mim.service;
 
-import java.util.List;
-
 import com.fhdufhdu.mim.dto.CommentReportDto;
 import com.fhdufhdu.mim.dto.PostingReportDto;
 import com.fhdufhdu.mim.dto.ReportReasonDto;
@@ -11,7 +9,9 @@ import com.fhdufhdu.mim.entity.Posting;
 import com.fhdufhdu.mim.entity.PostingReport;
 import com.fhdufhdu.mim.entity.ReportReason;
 import com.fhdufhdu.mim.exception.NotFoundCommentException;
+import com.fhdufhdu.mim.exception.NotFoundCommentReportException;
 import com.fhdufhdu.mim.exception.NotFoundPostingException;
+import com.fhdufhdu.mim.exception.NotFoundPostingReportException;
 import com.fhdufhdu.mim.exception.NotFoundReasonException;
 import com.fhdufhdu.mim.repository.CommentReportRepository;
 import com.fhdufhdu.mim.repository.CommentRepository;
@@ -20,6 +20,9 @@ import com.fhdufhdu.mim.repository.PostingRepository;
 import com.fhdufhdu.mim.repository.ReportReasonRepository;
 import com.fhdufhdu.mim.service.util.UtilService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class ReportServiceImpl extends UtilService implements ReportService {
+    private static final int PAGE_SIZE = 10;
     private final ReportReasonRepository reportReasonRepository;
     private final PostingReportRepository postingReportRepository;
     private final CommentReportRepository commentReportRepository;
@@ -65,32 +69,43 @@ public class ReportServiceImpl extends UtilService implements ReportService {
     }
 
     @Override
-    public List<ReportReasonDto> getAllReportReasons() {
-        List<ReportReason> reasons = reportReasonRepository.findAll();
+    public Page<ReportReasonDto> getAllReportReasons(int page) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "reason");
+        PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
+        Page<ReportReason> reasons = reportReasonRepository.findAll(pageRequest);
         return convertToDests(reasons, ReportReasonDto.class);
     }
 
     @Override
-    public List<PostingReportDto> getAllPostingReports() {
-        List<PostingReport> reports = postingReportRepository.findAll();
+    public Page<PostingReportDto> getAllPostingReports(int page) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "reportTimestamp");
+        PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
+        Page<PostingReport> reports = postingReportRepository.findAll(pageRequest);
         return convertToDests(reports, PostingReportDto.class);
     }
 
     @Override
-    public List<CommentReportDto> getAlCommentReports() {
-        List<CommentReport> reports = commentReportRepository.findAll();
+    public Page<CommentReportDto> getAllCommentReports(int page) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "reportTimestamp");
+        PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
+        Page<CommentReport> reports = commentReportRepository.findAll(pageRequest);
         return convertToDests(reports, CommentReportDto.class);
     }
 
     @Override
     public void confirmPostingReport(Long id) {
-        postingReportRepository.deleteById(id);
-
+        // postingReportRepository.deleteById(id);
+        PostingReport report = postingReportRepository.findById(id).orElseThrow(NotFoundPostingReportException::new);
+        report.setIsConfirmed(true);
+        postingReportRepository.save(report);
     }
 
     @Override
     public void confirmCommentReport(Long id) {
-        commentReportRepository.deleteById(id);
+        // commentReportRepository.deleteById(id);
+        CommentReport report = commentReportRepository.findById(id).orElseThrow(NotFoundCommentReportException::new);
+        report.setIsConfirmed(true);
+        commentReportRepository.save(report);
     }
 
 }

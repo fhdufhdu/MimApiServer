@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MovieBoardDto {
+public class BoardDto {
     private Long id;
     private Long movieId;
     private Long lastPostingNumber;

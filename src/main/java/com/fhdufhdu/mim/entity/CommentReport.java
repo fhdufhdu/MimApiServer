@@ -1,5 +1,8 @@
 package com.fhdufhdu.mim.entity;
 
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -34,4 +37,11 @@ public class CommentReport {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reason_id")
     private ReportReason reportReason;
+
+    @NotNull
+    private Timestamp reporTimestamp;
+
+    @NotNull
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isConfirmed;
 }

@@ -1,7 +1,5 @@
 package com.fhdufhdu.mim.entity;
 
-import java.sql.Timestamp;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,49 +20,27 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Builder
 @NamedEntityGraphs({
-                @NamedEntityGraph(name = "comment_user", attributeNodes = {
-                                @NamedAttributeNode("user")
+                @NamedEntityGraph(name = "board_movie", attributeNodes = {
+                                @NamedAttributeNode("movie")
                 })
 })
-public class Comment {
+public class Board {
         @Id
         @GeneratedValue
         private Long id;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @NotNull
-        @JoinColumn(name = "posting_id")
-        private Posting posting;
-
         @NotNull
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id")
-        private User user;
-
-        // @ManyToOne(fetch = FetchType.LAZY)
-        // @JoinColumn(name = "parent_id")
-        // private Comment parent;
-
-        // @Builder.Default
-        // @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
-        // private List<Comment> childs = new ArrayList<>();
+        @JoinColumn(name = "movie_id")
+        private Movie movie;
 
         @NotNull
-        private Long commentGroup;
-
-        @NotNull
-        private Integer depth;
-
-        @NotNull
-        private String content;
-
-        @NotNull
-        private Timestamp time;
+        private Long lastPostingNumber;
 
         @NotNull
         @Column(columnDefinition = "boolean default false")
