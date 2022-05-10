@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("Director")
+@DiscriminatorValue("director")
 @Builder
 public class Director extends Worker {
     private String name;

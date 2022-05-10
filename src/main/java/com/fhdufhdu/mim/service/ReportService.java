@@ -2,7 +2,6 @@ package com.fhdufhdu.mim.service;
 
 import com.fhdufhdu.mim.dto.CommentReportDto;
 import com.fhdufhdu.mim.dto.PostingReportDto;
-import com.fhdufhdu.mim.dto.ReportReasonDto;
 
 import org.springframework.data.domain.Page;
 
@@ -12,9 +11,6 @@ public interface ReportService {
 
     /** POST /report-comments */
     void reportComment(CommentReportDto commentReportDto);
-
-    /** GET /report-reasons */
-    Page<ReportReasonDto> getAllReportReasons(int page);
 
     /** GET /report-postings */
     Page<PostingReportDto> getAllPostingReports(int page);

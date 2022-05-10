@@ -1,77 +1,217 @@
 package com.fhdufhdu.mim.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.fhdufhdu.mim.dto.UserDto;
-import com.fhdufhdu.mim.entity.Role;
+import com.fhdufhdu.mim.entity.User;
+import com.fhdufhdu.mim.exception.DuplicateUserException;
+import com.fhdufhdu.mim.exception.MismatchPasswdException;
+import com.fhdufhdu.mim.exception.NotFoundUserException;
+import com.fhdufhdu.mim.repository.UserRepository;
+import com.fhdufhdu.mim.security.CustomDelegatingPasswordEncoder;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.extern.slf4j.Slf4j;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 @Slf4j
-@Transactional
 public class UserServiceTest {
-    @Autowired
-    UserService userService;
 
-    @BeforeEach
-    public void 테스트계정추가() {
-        UserDto admin = UserDto.builder().id("admin").pw("adminPw").role(Role.ADMIN.name()).build();
-        UserDto user = UserDto.builder().id("user").pw("userPw").role(Role.USER.name()).build();
+    @Mock
+    private UserRepository userRepository;
 
-        userService.signUp(admin);
-        userService.signUp(user);
-    }
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
-    @AfterEach
-    public void 유저삭제() {
-        userService.withdrawal("user");
-        userService.withdrawal("admin");
-        try {
-            userService.getUserInfo("user");
-            fail("삭제 실패");
-        } catch (Exception e) {
-            log.info("삭제 성공");
-        }
-    }
+    @InjectMocks
+    private UserServiceImpl userService;
 
     @Test
     public void 로그인() {
-        userService.login("user", "userPw");
+        // given
+        CustomDelegatingPasswordEncoder encoder = new CustomDelegatingPasswordEncoder();
+        final String id = "userId";
+        final String pw = "userPw";
+        given(userRepository.findById(anyString()))
+                .willReturn(Optional.of(User.builder().id(id).pw(encoder.encode(pw)).build()));
+        given(passwordEncoder.matches(anyString(), anyString()))
+                .willReturn(encoder.matches(pw, encoder.encode(pw)));
+
+        // when
+        userService.login(id, pw);
+
+        // then
     }
 
     @Test
-    public void 로그인실패() {
+    public void 로그인_실패() {
+        // given
+        CustomDelegatingPasswordEncoder encoder = new CustomDelegatingPasswordEncoder();
+        final String id = "userId";
+        final String pw = "userPw";
+        given(userRepository.findById(anyString()))
+                .willReturn(Optional.of(User.builder().id(id).pw(encoder.encode(pw)).build()));
+        given(passwordEncoder.matches(anyString(), anyString()))
+                .willReturn(encoder.matches("실패", encoder.encode(pw)));
+
+        // when
         try {
-            userService.login("user", "adminPw");
-            fail("로그인 실패해야 하지만 성공");
-        } catch (Exception e) {
-            log.error(e.getMessage());
+            userService.login(id, pw);
+            fail();
+        } catch (MismatchPasswdException e) {
+            log.info(e.getMessage());
+        }
+
+        // then
+    }
+
+    @Test
+    public void 회원가입() {
+        // given
+        CustomDelegatingPasswordEncoder encoder = new CustomDelegatingPasswordEncoder();
+        final String id = "userId";
+        final String pw = "userPw";
+        given(userRepository.save(any())).willReturn(null);
+        given(passwordEncoder.encode(pw)).willReturn(encoder.encode(pw));
+        given(userRepository.existsById(id)).willReturn(false);
+
+        // when
+        userService.signUp(UserDto.builder().id(id).pw(pw).build());
+    }
+
+    @Test
+    public void 회원가입_실패() {
+        // given
+        final String id = "userId";
+        final String pw = "userPw";
+        given(userRepository.existsById(id)).willReturn(true);
+
+        // when
+        try {
+            userService.signUp(UserDto.builder().id(id).pw(pw).build());
+            fail();
+        } catch (DuplicateUserException e) {
+            log.info(e.getMessage());
         }
     }
 
     @Test
-    public void 유저불러오기_수정() {
-        UserDto user = userService.getUserInfo("user");
-        user.setNickName("testNickName");
-        userService.modifyUser(user.getId(), user);
-        UserDto modifiedUser = userService.getUserInfo("user");
-        assertThat(modifiedUser.getNickName()).isEqualTo("testNickName");
+    public void 유저정보가져오기() {
+        // given
+        CustomDelegatingPasswordEncoder encoder = new CustomDelegatingPasswordEncoder();
+        final String id = "userId";
+        final String pw = "userPw";
+        final String nick = "test";
+        given(userRepository.findById(anyString()))
+                .willReturn(Optional.of(User.builder().id(id).pw(encoder.encode(pw)).nickName(nick).build()));
+
+        // when
+        UserDto userDto = userService.getUserInfo(id);
+
+        // then
+        assertThat(userDto.getId()).isEqualTo(id);
+        assertThat(userDto.getPw()).isNull();
+        assertThat(userDto.getNickName()).isEqualTo(nick);
     }
 
     @Test
-    public void 모든유저불러오기() {
-        List<UserDto> user = userService.getAllUsers();
-        assertThat(user.size()).isEqualTo(2);
+    public void 유저리스트가져오기() {
+        // given
+        CustomDelegatingPasswordEncoder encoder = new CustomDelegatingPasswordEncoder();
+        final User user1 = User.builder().id("user1").pw(encoder.encode("test")).build();
+        final User user2 = User.builder().id("user2").pw(encoder.encode("test")).build();
+        given(userRepository.findAll())
+                .willReturn(Arrays.asList(user1, user2));
+
+        // when
+        List<UserDto> users = userService.getAllUsers();
+
+        // then
+        users.forEach(user -> {
+            assertThat(user.getId()).containsAnyOf(user1.getId(), user2.getId());
+            assertThat(user.getPw()).isNull();
+        });
+    }
+
+    @Test
+    public void 유저_수정하기() {
+        // given
+        CustomDelegatingPasswordEncoder encoder = new CustomDelegatingPasswordEncoder();
+        final String id = "userId";
+        final String pw = "userPw";
+        final String modiPw = "modiPw";
+        final String modiNick = "modiNick";
+        final User savedUser = User.builder().id(id).pw(encoder.encode(pw)).build();
+        final UserDto paramUser = UserDto.builder().id(id).pw(modiPw).nickName(modiNick).build();
+        given(userRepository.findById(anyString()))
+                .willReturn(Optional.of(savedUser));
+        given(passwordEncoder.encode(anyString()))
+                .willReturn(encoder.encode(paramUser.getPw()));
+        given(userRepository.save(any()))
+                .willReturn(null);
+
+        // when
+        userService.modifyUser(id, paramUser);
+
+        // then
+        assertThat(encoder.matches(modiPw, savedUser.getPw())).isEqualTo(true);
+        assertThat(savedUser.getNickName()).isEqualTo(modiNick);
+    }
+
+    @Test
+    public void 유저_수정하기_아이디존재에러() {
+        // given
+        final String id = "userId";
+        final String modiPw = "modiPw";
+        final UserDto paramUser = UserDto.builder().id(null).pw(modiPw).build();
+        given(userRepository.findById(anyString()))
+                .willReturn(Optional.ofNullable(null));
+
+        // when
+        try {
+            userService.modifyUser(id, paramUser);
+            fail();
+        } catch (NotFoundUserException e) {
+            log.info(e.getMessage());
+        }
+
+        // then
+    }
+
+    @Test
+    public void 유저_탈퇴() {
+        // given
+        CustomDelegatingPasswordEncoder encoder = new CustomDelegatingPasswordEncoder();
+        final String id = "userId";
+        final String pw = "userPw";
+        final User savedUser = User.builder().id(id).pw(encoder.encode(pw)).build();
+        given(userRepository.findById(anyString()))
+                .willReturn(Optional.of(savedUser));
+        given(userRepository.save(any()))
+                .willReturn(null);
+
+        // when
+        userService.withdrawal(id);
+
+        // then
+    }
+
+    @Test
+    void 비밀번호생성() {
+        CustomDelegatingPasswordEncoder encoder = new CustomDelegatingPasswordEncoder();
+        System.out.println(encoder.encode("admin"));
     }
 }

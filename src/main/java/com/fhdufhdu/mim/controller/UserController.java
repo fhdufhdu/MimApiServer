@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fhdufhdu.mim.dto.UserDto;
 import com.fhdufhdu.mim.entity.Role;
-import com.fhdufhdu.mim.entity.User;
 import com.fhdufhdu.mim.security.JwtTokenProvider;
 import com.fhdufhdu.mim.service.UserService;
 
@@ -33,7 +32,7 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user, HttpServletRequest request,
+    public ResponseEntity<String> login(@RequestBody UserDto user, HttpServletRequest request,
             HttpServletResponse response) {
         userService.login(user.getId(), user.getPw());
 
@@ -49,7 +48,7 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody UserDto user) {
         userService.signUp(user);
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

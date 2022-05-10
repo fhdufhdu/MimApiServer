@@ -4,6 +4,7 @@ import com.fhdufhdu.mim.dto.BoardDto;
 import com.fhdufhdu.mim.dto.RequestBoardDto;
 import com.fhdufhdu.mim.service.BoardService;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

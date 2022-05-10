@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import com.fhdufhdu.mim.entity.Role;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,8 +22,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public abstract class UtilService {
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper = new ModelMapper();
     private Optional<Authentication> curAuthentication;
 
     public UtilService() {

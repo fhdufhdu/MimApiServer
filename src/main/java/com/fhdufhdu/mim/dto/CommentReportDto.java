@@ -14,5 +14,5 @@ import lombok.Setter;
 public class CommentReportDto {
     private Long id;
     private Long commentId;
-    private Long reportReasonId;
+    private String reportReason;
 }

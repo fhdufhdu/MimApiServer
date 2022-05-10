@@ -53,7 +53,7 @@ public class PostingController {
         postingService.addPosting(postingDto);
     }
 
-    @GetMapping("/comments/boart/{boardId}/posting-number/{postingNumber}")
+    @GetMapping("/comments/board/{boardId}/posting-number/{postingNumber}")
     public Page<CommentDto> getAllCommentsByBoardAndPostingNum(@PathVariable Long boardId,
             @PathVariable Long postingNumber, @RequestParam("page") int page) {
         return postingService.getAllCommentsByBoardAndPostingNum(boardId, postingNumber, page);
@@ -78,4 +78,5 @@ public class PostingController {
     public void addComment(@RequestBody CommentDto commentDto) {
         postingService.addComment(commentDto);
     }
+
 }

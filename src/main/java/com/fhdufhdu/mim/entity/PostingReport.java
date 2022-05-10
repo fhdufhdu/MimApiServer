@@ -34,9 +34,7 @@ public class PostingReport {
     private Posting posting;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reason_id")
-    private ReportReason reportReason;
+    private String reportReason;
 
     @NotNull
     private Timestamp reporTimestamp;

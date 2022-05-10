@@ -2,7 +2,6 @@ package com.fhdufhdu.mim.controller;
 
 import com.fhdufhdu.mim.dto.CommentReportDto;
 import com.fhdufhdu.mim.dto.PostingReportDto;
-import com.fhdufhdu.mim.dto.ReportReasonDto;
 import com.fhdufhdu.mim.service.ReportService;
 
 import org.springframework.data.domain.Page;
@@ -30,11 +29,6 @@ public class ReportController {
     @PostMapping("/report-comments")
     public void reportComment(@RequestBody CommentReportDto commentReportDto) {
         reportService.reportComment(commentReportDto);
-    }
-
-    @GetMapping("/report-reasons")
-    public Page<ReportReasonDto> getAllReportReasons(int page) {
-        return reportService.getAllReportReasons(page);
     }
 
     @GetMapping("/report-postings")

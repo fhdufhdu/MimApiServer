@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("Actor")
+@DiscriminatorValue("actor")
 @Builder
 public class Actor extends Worker {
     private String name;
