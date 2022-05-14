@@ -17,4 +17,5 @@ public class UserDto {
     private String nickName;
     private String profilePath;
     private String role;
+    private Boolean isRemoved;
 }

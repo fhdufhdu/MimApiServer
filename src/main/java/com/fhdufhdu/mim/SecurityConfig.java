@@ -1,12 +1,12 @@
 package com.fhdufhdu.mim;
 
+import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.security.CustomAccessDeniedHandler;
 import com.fhdufhdu.mim.security.CustomAuthenticationEntryPoint;
 import com.fhdufhdu.mim.security.JwtAuthenticationFilter;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private static final String ADMIN = Role.ADMIN.name();
+    private static final String USER = Role.USER.name();
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -41,8 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .authorizeRequests()
-                .antMatchers("/user/login", "/user/sign-up").permitAll()
-                .antMatchers(HttpMethod.GET).permitAll()
+                .antMatchers("/login", "/sign-up").permitAll()
+                .antMatchers("/users/{id}").hasAnyRole(USER, ADMIN)
+                .antMatchers("/users").hasAnyRole(ADMIN)
+
+                .antMatchers("/movies/**", "/scean", "line").permitAll()
                 .anyRequest().authenticated()
                 .and()
 

@@ -9,6 +9,7 @@ import com.fhdufhdu.mim.exception.DuplicateUserException;
 import com.fhdufhdu.mim.exception.MismatchPasswdException;
 import com.fhdufhdu.mim.exception.NotFoundUserException;
 import com.fhdufhdu.mim.repository.UserRepository;
+import com.fhdufhdu.mim.security.CustomUser;
 import com.fhdufhdu.mim.service.util.UtilService;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,17 +29,18 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void login(String id, String pw) {
+    public UserDto login(String id, String pw) {
         User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
         if (!passwordEncoder.matches(pw, user.getPw())) {
             throw new MismatchPasswdException();
         }
+        return convertToDest(user, UserDto.class);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findById(username).orElseThrow(NotFoundUserException::new);
-        return org.springframework.security.core.userdetails.User.builder()
+        return CustomUser.builder()
                 .username(user.getId())
                 .password(user.getPw())
                 .roles(user.getRole().name())

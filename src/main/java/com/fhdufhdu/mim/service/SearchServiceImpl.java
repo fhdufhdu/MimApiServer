@@ -111,7 +111,15 @@ public class SearchServiceImpl extends UtilService implements SearchService {
     public Page<MovieDto> getMovieList(List<String> titles, int page) {
         Sort sort = Sort.by(Sort.Direction.ASC, "title");
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
-        Page<Movie> movies = movieRepository.findByTitieList(titles, pageRequest);
+        Page<Movie> movies = movieRepository.findByTitleList(titles, pageRequest);
+        return convertToDests(movies, MovieDto.class);
+    }
+
+    @Override
+    public Page<MovieDto> getMovieList(String title, int page) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "title");
+        PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
+        Page<Movie> movies = movieRepository.findByTitle(title, pageRequest);
         return convertToDests(movies, MovieDto.class);
     }
 

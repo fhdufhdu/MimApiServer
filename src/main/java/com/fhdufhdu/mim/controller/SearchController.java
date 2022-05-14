@@ -30,9 +30,14 @@ public class SearchController {
         return searchService.getMovieById(id);
     }
 
-    @GetMapping("/movies")
+    @GetMapping("/movies/titles")
     public Page<MovieDto> getMovieList(@RequestParam("titles") List<String> titles, int page) {
         return searchService.getMovieList(titles, page);
+    }
+
+    @GetMapping("/movies")
+    public Page<MovieDto> getMovieList(@RequestParam("title") String title, int page) {
+        return searchService.getMovieList(title, page);
     }
 
     @DeleteMapping("/movies/{movieId}")
