@@ -26,4 +26,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     url: jdbc:mysql://fhdufhdu.iptime.org:3306/mim_test?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
 seckret_key: d4f'23p}793_+bg43'79'pd<./sabrg

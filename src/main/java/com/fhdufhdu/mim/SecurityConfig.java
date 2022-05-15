@@ -7,6 +7,7 @@ import com.fhdufhdu.mim.security.JwtAuthenticationFilter;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -44,11 +45,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .authorizeRequests()
+                .antMatchers("/swagger-ui/**",
+                        "/swagger-resources/**", "/v2/**")
+                .permitAll()
                 .antMatchers("/login", "/sign-up").permitAll()
                 .antMatchers("/users/{id}").hasAnyRole(USER, ADMIN)
                 .antMatchers("/users").hasAnyRole(ADMIN)
 
+                .antMatchers(HttpMethod.PUT, "/movies/{movieId}").hasRole(ADMIN)
+                .antMatchers(HttpMethod.POST, "/movies").hasRole(ADMIN)
                 .antMatchers("/movies/**", "/scean", "line").permitAll()
+
+                .antMatchers(HttpMethod.GET, "/boards/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
 

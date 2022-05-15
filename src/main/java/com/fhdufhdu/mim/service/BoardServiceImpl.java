@@ -26,9 +26,16 @@ public class BoardServiceImpl extends UtilService implements BoardService {
 
     @Override
     public Page<BoardDto> getAllBoards(int page) {
+        // 1대다 문제 발생함, 게시판 불러올때 영화도 불러오기
         PageRequest request = PageRequest.of(page, PAGE_SIZE);
         Page<Board> boards = boardRepository.findAll(request);
-        return convertToDests(boards, BoardDto.class);
+        Page<BoardDto> boardDtos = boards.map(x -> {
+            BoardDto dto = convertToDest(x, BoardDto.class);
+            dto.setMovieName(x.getMovie().getTitle());
+            dto.setMovieDir(x.getMovie().getDirName());
+            return dto;
+        });
+        return boardDtos;
 
     }
 

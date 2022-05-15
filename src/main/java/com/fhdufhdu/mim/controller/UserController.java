@@ -24,11 +24,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequiredArgsConstructor
+@Api(tags = { "로그인, 회원가입, 유저 관리 기능 API" })
 @Slf4j
 public class UserController {
     private final UserService userService;
@@ -36,6 +41,7 @@ public class UserController {
     private final UtilForController util;
 
     @PostMapping("/login")
+    @ApiOperation(value = "로그인")
     public ResponseEntity<String> login(@RequestBody UserDto user, HttpServletRequest request,
             HttpServletResponse response) {
         user = userService.login(user.getId(), user.getPw());
@@ -50,13 +56,16 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
+    @ApiOperation(value = "회원가입")
     public ResponseEntity<String> signUp(@RequestBody UserDto user) {
         userService.signUp(user);
         return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
 
     @GetMapping("/users/{id}")
-    public UserDto getUserInfo(@PathVariable String id, @AuthenticationPrincipal CustomUser user) {
+    @ApiOperation(value = "유저정보 가져오기", notes = "본인이거나 ADMIN 권한만 접근 가능")
+    @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
+    public UserDto getUserInfo(@PathVariable String id, @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         SecurityContextHolder.getContext().getAuthentication();
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
             throw new RuntimeException("test");

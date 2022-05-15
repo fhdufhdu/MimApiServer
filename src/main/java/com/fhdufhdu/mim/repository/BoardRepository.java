@@ -17,7 +17,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query(value = "select b from Board b where b.id = :id and b.isRemoved = false", nativeQuery = false)
     Optional<Board> findById(@Param("id") Long id);
 
-    @Query(value = "select b from Board b join b.movie m where m.title = :title and b.isRemoved = false", nativeQuery = false)
+    @Query(value = "select b from Board b join b.movie m where m.title like %:title% and b.isRemoved = false", nativeQuery = false)
     Page<Board> findByMovieTitle(@Param("title") String title, Pageable pageable);
 
     @Query(value = "select b from Board b join b.movie m where m.id = :movieId and b.isRemoved = false", nativeQuery = false)

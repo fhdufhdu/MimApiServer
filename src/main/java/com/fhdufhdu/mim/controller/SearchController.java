@@ -40,6 +40,7 @@ public class SearchController {
         return searchService.getMovieList(title, page);
     }
 
+    // 사용하지 않을 예정
     @DeleteMapping("/movies/{movieId}")
     public void removeMovie(@PathVariable Long movieId) {
         searchService.removeMovie(movieId);

@@ -12,12 +12,10 @@ import com.fhdufhdu.mim.entity.MovieFeature;
 import com.fhdufhdu.mim.entity.MovieGenre;
 import com.fhdufhdu.mim.entity.MovieRating;
 import com.fhdufhdu.mim.entity.MovieWorker;
-import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.entity.worker.Actor;
 import com.fhdufhdu.mim.entity.worker.Director;
 import com.fhdufhdu.mim.entity.worker.Writer;
 import com.fhdufhdu.mim.exception.NotFoundMovieException;
-import com.fhdufhdu.mim.exception.WrongPermissionException;
 import com.fhdufhdu.mim.repository.ActorRepository;
 import com.fhdufhdu.mim.repository.DirectorRepository;
 import com.fhdufhdu.mim.repository.FeatureRepository;
@@ -135,9 +133,9 @@ public class SearchServiceImpl extends UtilService implements SearchService {
     @Override
     public void changeMovieInfo(Long movieId, MovieDtoV2 movie) {
 
-        if (!hasPermission(Role.ADMIN)) {
-            throw new WrongPermissionException();
-        }
+        // if (!hasPermission(Role.ADMIN)) {
+        // throw new WrongPermissionException();
+        // }
         Movie originalMovie = movieRepository.findById(movieId).orElseThrow(NotFoundMovieException::new);
         MovieRating movieRating = movieRatingRepository.findByRating(movie.getRating()).get();
         originalMovie.setTitle(movie.getMovieDto().getTitle());
@@ -148,8 +146,12 @@ public class SearchServiceImpl extends UtilService implements SearchService {
         originalMovie.setDirName(movie.getMovieDto().getDirName());
         originalMovie.setMovieRating(movieRating);
 
+        movieWorkerRepository.deleteByMovieId(movieId);
+        movieGenreRepository.deleteByMovieId(movieId);
+        movieFeatureRepository.deleteByMovieId(movieId);
+
         for (String director : movie.getDirectors()) {
-            Director ds = directorRepository.findByName(director).get();
+            Director ds = directorRepository.findByName(director).orElse(null);
             if (ds == null) {
                 ds = Director.builder().name(director).build();
                 ds = directorRepository.save(ds);
@@ -159,40 +161,45 @@ public class SearchServiceImpl extends UtilService implements SearchService {
         }
 
         for (String actor : movie.getActors()) {
-            Actor ac = actorRepository.findByName(actor).get();
+
+            Actor ac = actorRepository.findByName(actor).orElse(null);
             if (ac == null) {
                 ac = Actor.builder().name(actor).build();
                 ac = actorRepository.save(ac);
+
             }
             MovieWorker movieWorker = MovieWorker.builder().movie(originalMovie).worker(ac).build();
             movieWorkerRepository.save(movieWorker);
         }
 
         for (String writer : movie.getWriters()) {
-            Writer wt = writerRepository.findByName(writer).get();
+            Writer wt = writerRepository.findByName(writer).orElse(null);
             if (wt == null) {
                 wt = Writer.builder().name(writer).build();
                 wt = writerRepository.save(wt);
+
             }
             MovieWorker movieWorker = MovieWorker.builder().movie(originalMovie).worker(wt).build();
             movieWorkerRepository.save(movieWorker);
         }
 
         for (String genre : movie.getGenres()) {
-            Genre gr = genreRepository.findByGenreName(genre).get();
+            Genre gr = genreRepository.findByGenreName(genre).orElse(null);
             if (gr == null) {
                 gr = Genre.builder().genreName(genre).build();
                 gr = genreRepository.save(gr);
+
             }
             MovieGenre movieGenre = MovieGenre.builder().movie(originalMovie).genre(gr).build();
             movieGenreRepository.save(movieGenre);
         }
 
         for (String feature : movie.getFeatures()) {
-            Feature ft = featureRepository.findByFeatureName(feature).get();
+            Feature ft = featureRepository.findByFeatureName(feature).orElse(null);
             if (ft == null) {
                 ft = Feature.builder().featureName(feature).build();
                 ft = featureRepository.save(ft);
+
             }
             MovieFeature movieFeature = MovieFeature.builder().movie(originalMovie).feature(ft).build();
             movieFeatureRepository.save(movieFeature);
@@ -214,51 +221,60 @@ public class SearchServiceImpl extends UtilService implements SearchService {
                 .dirName(movie.getMovieDto().getDirName())
                 .build();
 
+        newMovie = movieRepository.save(newMovie);
+
         for (String director : movie.getDirectors()) {
-            Director ds = directorRepository.findByName(director).get();
+            Director ds = directorRepository.findByName(director).orElse(null);
             if (ds == null) {
                 ds = Director.builder().name(director).build();
                 ds = directorRepository.save(ds);
+
             }
             MovieWorker movieWorker = MovieWorker.builder().movie(newMovie).worker(ds).build();
             movieWorkerRepository.save(movieWorker);
+
         }
 
         for (String actor : movie.getActors()) {
-            Actor ac = actorRepository.findByName(actor).get();
+            Actor ac = actorRepository.findByName(actor).orElse(null);
             if (ac == null) {
                 ac = Actor.builder().name(actor).build();
                 ac = actorRepository.save(ac);
+
             }
             MovieWorker movieWorker = MovieWorker.builder().movie(newMovie).worker(ac).build();
             movieWorkerRepository.save(movieWorker);
+
         }
 
         for (String writer : movie.getWriters()) {
-            Writer wt = writerRepository.findByName(writer).get();
+            Writer wt = writerRepository.findByName(writer).orElse(null);
             if (wt == null) {
                 wt = Writer.builder().name(writer).build();
                 wt = writerRepository.save(wt);
+
             }
             MovieWorker movieWorker = MovieWorker.builder().movie(newMovie).worker(wt).build();
             movieWorkerRepository.save(movieWorker);
         }
 
         for (String genre : movie.getGenres()) {
-            Genre gr = genreRepository.findByGenreName(genre).get();
+            Genre gr = genreRepository.findByGenreName(genre).orElse(null);
             if (gr == null) {
                 gr = Genre.builder().genreName(genre).build();
                 gr = genreRepository.save(gr);
+
             }
             MovieGenre movieGenre = MovieGenre.builder().movie(newMovie).genre(gr).build();
             movieGenreRepository.save(movieGenre);
         }
 
         for (String feature : movie.getFeatures()) {
-            Feature ft = featureRepository.findByFeatureName(feature).get();
+            Feature ft = featureRepository.findByFeatureName(feature).orElse(null);
             if (ft == null) {
                 ft = Feature.builder().featureName(feature).build();
                 ft = featureRepository.save(ft);
+
             }
             MovieFeature movieFeature = MovieFeature.builder().movie(newMovie).feature(ft).build();
             movieFeatureRepository.save(movieFeature);

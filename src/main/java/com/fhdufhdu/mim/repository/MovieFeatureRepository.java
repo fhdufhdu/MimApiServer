@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MovieFeatureRepository extends JpaRepository<MovieFeature, Long> {
 
+    void deleteByMovieId(Long movieId);
+
 }
