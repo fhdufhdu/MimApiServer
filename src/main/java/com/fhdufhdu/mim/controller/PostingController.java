@@ -1,7 +1,11 @@
 package com.fhdufhdu.mim.controller;
 
-import com.fhdufhdu.mim.dto.CommentDto;
-import com.fhdufhdu.mim.dto.PostingDto;
+import com.fhdufhdu.mim.dto.comment.CommentAddDto;
+import com.fhdufhdu.mim.dto.comment.CommentDto;
+import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
+import com.fhdufhdu.mim.dto.posting.PostingAddDto;
+import com.fhdufhdu.mim.dto.posting.PostingDto;
+import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
 import com.fhdufhdu.mim.service.PostingService;
 
 import org.springframework.data.domain.Page;
@@ -39,17 +43,18 @@ public class PostingController {
     }
 
     @PutMapping("/postings/{id}")
-    public void modifyPosting(@PathVariable Long id, @RequestBody PostingDto postingDto) {
+    public void modifyPosting(@PathVariable Long id,
+            @RequestBody PostingModifyDto postingDto) {
         postingService.modifyPosting(id, postingDto);
     }
 
     @DeleteMapping("/postings/{id}")
-    public void removiePosting(@PathVariable Long id) {
+    public void removePosting(@PathVariable Long id) {
         postingService.removePosting(id);
     }
 
     @PostMapping("/postings")
-    public void addPosting(@RequestBody PostingDto postingDto) {
+    public void addPosting(@RequestBody PostingAddDto postingDto) {
         postingService.addPosting(postingDto);
     }
 
@@ -65,7 +70,7 @@ public class PostingController {
     }
 
     @PutMapping("/comments/{id}")
-    public void modifyComment(@PathVariable Long id, @RequestBody CommentDto commentDto) {
+    public void modifyComment(@PathVariable Long id, @RequestBody CommentModifyDto commentDto) {
         postingService.modifyComment(id, commentDto);
     }
 
@@ -75,7 +80,7 @@ public class PostingController {
     }
 
     @PostMapping("/comments")
-    public void addComment(@RequestBody CommentDto commentDto) {
+    public void addComment(@RequestBody CommentAddDto commentDto) {
         postingService.addComment(commentDto);
     }
 

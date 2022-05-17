@@ -10,6 +10,7 @@ import com.fhdufhdu.mim.dto.user.UserDto;
 import com.fhdufhdu.mim.dto.user.UserInfoDto;
 import com.fhdufhdu.mim.dto.user.UserLoginDto;
 import com.fhdufhdu.mim.dto.user.UserSignUpDto;
+import com.fhdufhdu.mim.exception.MismatchAuthorException;
 import com.fhdufhdu.mim.security.CustomUser;
 import com.fhdufhdu.mim.security.JwtTokenProvider;
 import com.fhdufhdu.mim.service.UserService;
@@ -72,7 +73,7 @@ public class UserController {
     public UserInfoDto getUserInfo(@PathVariable String id, @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         SecurityContextHolder.getContext().getAuthentication();
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
-            throw new RuntimeException("test");
+            throw new MismatchAuthorException();
         return userService.getUserInfo(id);
     }
 
@@ -88,7 +89,7 @@ public class UserController {
     public void modifyUser(@PathVariable String id, @RequestBody UserInfoDto userDto,
             @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
-            throw new RuntimeException("test");
+            throw new MismatchAuthorException();
         userService.modifyUser(id, userDto);
     }
 
@@ -97,7 +98,7 @@ public class UserController {
     @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
     public void withdrawal(@PathVariable String id, @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
-            throw new RuntimeException("test");
+            throw new MismatchAuthorException();
         userService.withdrawal(id);
     }
 

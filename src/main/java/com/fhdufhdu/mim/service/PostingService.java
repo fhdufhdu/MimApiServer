@@ -1,7 +1,11 @@
 package com.fhdufhdu.mim.service;
 
-import com.fhdufhdu.mim.dto.CommentDto;
-import com.fhdufhdu.mim.dto.PostingDto;
+import com.fhdufhdu.mim.dto.comment.CommentAddDto;
+import com.fhdufhdu.mim.dto.comment.CommentDto;
+import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
+import com.fhdufhdu.mim.dto.posting.PostingAddDto;
+import com.fhdufhdu.mim.dto.posting.PostingDto;
+import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
 
 import org.springframework.data.domain.Page;
 
@@ -17,13 +21,13 @@ public interface PostingService {
     PostingDto getPostingById(Long id);
 
     /** PUT /postings/{postingId} */
-    void modifyPosting(Long id, PostingDto postingDto);
+    void modifyPosting(Long id, PostingModifyDto postingDto);
 
     /** DELETE /postings/{postingId} */
     void removePosting(Long id);
 
     /** POST /postings */
-    void addPosting(PostingDto postingDto);
+    void addPosting(PostingAddDto postingDto);
 
     /**
      * GET
@@ -35,11 +39,11 @@ public interface PostingService {
     Page<CommentDto> getAllCommentsByPostingId(Long postingId, int page);
 
     /** PUT /comments/{commentId} */
-    void modifyComment(Long commentId, CommentDto commentDto);
+    void modifyComment(Long commentId, CommentModifyDto commentDto);
 
     /** DELETE /comments/{commentId} */
     void removeComment(Long commentId);
 
     /** POST /comments */
-    void addComment(CommentDto commentDto);
+    void addComment(CommentAddDto commentDto);
 }

@@ -3,12 +3,17 @@ package com.fhdufhdu.mim.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fhdufhdu.mim.dto.CommentDto;
-import com.fhdufhdu.mim.dto.PostingDto;
+import com.fhdufhdu.mim.dto.comment.CommentAddDto;
+import com.fhdufhdu.mim.dto.comment.CommentDto;
+import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
+import com.fhdufhdu.mim.dto.posting.PostingAddDto;
+import com.fhdufhdu.mim.dto.posting.PostingDto;
+import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
 import com.fhdufhdu.mim.entity.Board;
 import com.fhdufhdu.mim.entity.Comment;
 import com.fhdufhdu.mim.entity.Posting;
 import com.fhdufhdu.mim.entity.PostingId;
+import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.entity.User;
 import com.fhdufhdu.mim.exception.MismatchAuthorException;
 import com.fhdufhdu.mim.exception.NotFoundBoardException;
@@ -44,7 +49,7 @@ public class PostingServiceImpl extends UtilService implements PostingService {
 
     @Override
     public Page<PostingDto> getAllPostings(Long boardId, int page) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "postingId.commentCnt");
+        Sort sort = Sort.by(Sort.Direction.DESC, "postingId.postingNumber");
         PageRequest pageRequest = PageRequest.of(page, POSTING_PAGE_SIZE, sort);
         Page<Posting> sources = postingRepository.findByBoardId(boardId, pageRequest);
         return convertToDests(sources, PostingDto.class);
@@ -64,10 +69,12 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     }
 
     @Override
-    public void modifyPosting(Long id, PostingDto postingDto) {
+    public void modifyPosting(Long id, PostingModifyDto postingDto) {
         Posting originalPosting = postingRepository.findById(id).orElseThrow(NotFoundPostingException::new);
 
-        checkUserId(originalPosting, getUserId());
+        if (!checkUserId(originalPosting, getUserId()) && !hasAuthority(Role.ADMIN)) {
+            throw new MismatchAuthorException();
+        }
 
         originalPosting.setTitle(postingDto.getTitle());
         originalPosting.setContent(postingDto.getContent());
@@ -79,22 +86,23 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     public void removePosting(Long id) {
         Posting originalPosting = postingRepository.findById(id).orElseThrow(NotFoundPostingException::new);
 
-        checkUserId(originalPosting, getUserId());
+        if (!checkUserId(originalPosting, getUserId()) && !hasAuthority(Role.ADMIN)) {
+            throw new MismatchAuthorException();
+        }
 
         originalPosting.setIsRemoved(true);
         postingRepository.save(originalPosting);
     }
 
     @Override
-    public void addPosting(PostingDto postingDto) {
+    public void addPosting(PostingAddDto postingDto) {
         Board board = boardRepository.findById(postingDto.getMovieBoardId())
                 .orElseThrow(NotFoundBoardException::new);
         board.setLastPostingNumber(board.getLastPostingNumber() + 1);
 
-        PostingId newPostingId = PostingId.builder()
-                .movieBoard(board)
-                .commentCnt(board.getLastPostingNumber())
-                .build();
+        PostingId newPostingId = new PostingId();
+        newPostingId.setMovieBoard(board);
+        newPostingId.setPostingNumber(board.getLastPostingNumber());
 
         User user = userRepository.findById(getUserId()).orElseThrow(NotFoundUserException::new);
         Posting newPosting = Posting.builder()
@@ -103,6 +111,8 @@ public class PostingServiceImpl extends UtilService implements PostingService {
                 .content(postingDto.getContent())
                 .time(getNowTimestamp())
                 .user(user)
+                .commentCnt(0L)
+                .isRemoved(false)
                 .build();
         postingRepository.save(newPosting);
     }
@@ -132,10 +142,12 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     }
 
     @Override
-    public void modifyComment(Long commentId, CommentDto commentDto) {
+    public void modifyComment(Long commentId, CommentModifyDto commentDto) {
         Comment originalComment = commentRepository.findById(commentId).orElseThrow(NotFoundCommentException::new);
 
-        checkUserId(originalComment, getUserId());
+        if (!checkUserId(originalComment, getUserId()) && !hasAuthority(Role.ADMIN)) {
+            throw new MismatchAuthorException();
+        }
 
         originalComment.setContent(commentDto.getContent());
         originalComment.setTime(getNowTimestamp());
@@ -144,16 +156,22 @@ public class PostingServiceImpl extends UtilService implements PostingService {
 
     @Override
     public void removeComment(Long commentId) {
+        // 아래 두줄 n+1 문제 발생함
         Comment originalComment = commentRepository.findById(commentId).orElseThrow(NotFoundCommentException::new);
+        Posting parentComment = originalComment.getPosting();
 
-        checkUserId(originalComment, getUserId());
+        parentComment.setCommentCnt(parentComment.getCommentCnt() - 1);
+
+        if (!checkUserId(originalComment, getUserId()) && !hasAuthority(Role.ADMIN)) {
+            throw new MismatchAuthorException();
+        }
 
         originalComment.setIsRemoved(true);
         commentRepository.save(originalComment);
     }
 
     @Override
-    public void addComment(CommentDto commentDto) {
+    public void addComment(CommentAddDto commentDto) {
         Posting posting = postingRepository.findById(commentDto.getPostingId())
                 .orElseThrow(NotFoundPostingException::new);
         User user = userRepository.findById(getUserId()).orElseThrow(NotFoundUserException::new);
@@ -162,6 +180,7 @@ public class PostingServiceImpl extends UtilService implements PostingService {
 
         Comment newComment = Comment.builder()
                 .content(commentDto.getContent())
+                .isRemoved(false)
                 .time(getNowTimestamp())
                 .posting(posting)
                 .commentGroup(100L)
@@ -178,17 +197,14 @@ public class PostingServiceImpl extends UtilService implements PostingService {
             commentRepository.save(newComment);
         }
 
+        posting.setCommentCnt(posting.getCommentCnt() + 1);
     }
 
-    private void checkUserId(Posting object, String userId) {
-        if (!object.getUser().getId().equals(userId)) {
-            throw new MismatchAuthorException();
-        }
+    private boolean checkUserId(Posting object, String userId) {
+        return object.getUser().getId().equals(userId);
     }
 
-    private void checkUserId(Comment object, String userId) {
-        if (!object.getUser().getId().equals(userId)) {
-            throw new MismatchAuthorException();
-        }
+    private boolean checkUserId(Comment object, String userId) {
+        return object.getUser().getId().equals(userId);
     }
 }

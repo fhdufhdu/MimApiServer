@@ -8,14 +8,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Embeddable
-@Builder
+@NoArgsConstructor
 public class PostingId implements Serializable {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,5 +23,5 @@ public class PostingId implements Serializable {
     private Board movieBoard;
 
     @NotNull
-    private Long commentCnt;
+    private Long postingNumber;
 }

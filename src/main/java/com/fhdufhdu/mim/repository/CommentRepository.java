@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    @Query(value = "select c from Comment c join c.posting p join p.postingId.movieBoard b where c.isRemoved = false and p.postingNumber = :postingNumber and b.id = :boardId", nativeQuery = false)
+    @Query(value = "select c from Comment c join c.posting p join p.postingId.movieBoard b where c.isRemoved = false and p.postingId.postingNumber = :postingNumber and b.id = :boardId", nativeQuery = false)
     Page<Comment> findByBoardIdAndPostingNum(@Param("boardId") Long boardId,
             @Param("postingNumber") Long postingNumber, Pageable pageRequest);
 

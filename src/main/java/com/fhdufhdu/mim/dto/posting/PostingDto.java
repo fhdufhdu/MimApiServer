@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim.dto;
+package com.fhdufhdu.mim.dto.posting;
 
 import java.security.Timestamp;
 

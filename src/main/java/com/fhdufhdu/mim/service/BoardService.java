@@ -1,7 +1,7 @@
 package com.fhdufhdu.mim.service;
 
-import com.fhdufhdu.mim.dto.BoardDto;
 import com.fhdufhdu.mim.dto.RequestBoardDto;
+import com.fhdufhdu.mim.dto.board.BoardDto;
 
 import org.springframework.data.domain.Page;
 

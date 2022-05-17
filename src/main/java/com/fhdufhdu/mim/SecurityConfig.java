@@ -59,6 +59,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/boards/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/boards/{id}").hasRole(ADMIN)
                 .antMatchers("/request-boards/**").hasRole(ADMIN)
+
+                .antMatchers(HttpMethod.GET, "/postings/**", "/comments/**").permitAll()
+                .antMatchers("/postings/**", "/comments/**").hasAnyRole(ADMIN, USER)
                 .anyRequest().authenticated()
                 .and()
 

@@ -39,7 +39,7 @@ CREATE TABLE `board` (
 
 LOCK TABLES `board` WRITE;
 /*!40000 ALTER TABLE `board` DISABLE KEYS */;
-INSERT INTO `board` VALUES (1,0,0,3);
+INSERT INTO `board` VALUES (1,0,4,3);
 /*!40000 ALTER TABLE `board` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -73,7 +73,12 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (1,1,'dsdaf',1,0,'2022-05-11 05:13:47.000000',1,'fhdufhdu');
+INSERT INTO `comment` VALUES (1,1,'1',0,0,'2022-05-11 05:13:47.000000',1,'fhdufhdu');
+INSERT INTO `comment` VALUES (2,2,'2',0,0,'2022-05-12 05:13:47.000000',1,'fhdufhdu');
+INSERT INTO `comment` VALUES (3,3,'3',0,0,'2022-05-13 05:13:47.000000',1,'fhdufhdu');
+INSERT INTO `comment` VALUES (4,1,'4',1,0,'2022-05-14 05:13:47.000000',1,'fhdufhdu');
+INSERT INTO `comment` VALUES (5,5,'5',0,1,'2022-05-15 05:13:47.000000',1,'fhdufhdu');
+INSERT INTO `comment` VALUES (6,1,'6',1,1,'2022-05-15 05:13:47.000000',1,'fhdufhdu');
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -349,7 +354,7 @@ CREATE TABLE `posting` (
 
 LOCK TABLES `posting` WRITE;
 /*!40000 ALTER TABLE `posting` DISABLE KEYS */;
-INSERT INTO `posting` VALUES (1,'dasf',0,1,1,'2022-05-11 05:13:47.000000','sdf',1,'fhdufhdu'),(2,'adsfa',0,1,2,'2022-05-11 05:13:47.000000','asd',1,'fhdufhdu'),(3,'asdf',0,1,3,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu'),(4,'asdf',1,1,4,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu');
+INSERT INTO `posting` VALUES (1,'dasf',0,4,1,'2022-05-11 05:13:47.000000','sdf',1,'fhdufhdu'),(2,'adsfa',0,0,2,'2022-05-11 05:13:47.000000','asd',1,'fhdufhdu'),(3,'asdf',0,0,3,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu'),(4,'asdf',1,0,4,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu');
 /*!40000 ALTER TABLE `posting` ENABLE KEYS */;
 UNLOCK TABLES;
 

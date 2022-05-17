@@ -47,10 +47,9 @@ public class Posting {
     private Timestamp time;
 
     @NotNull
-    private Long postingNumber;
-
-    @NotNull
     @Column(columnDefinition = "boolean default false")
     private Boolean isRemoved;
 
+    @NotNull
+    private Long commentCnt;
 }
