@@ -30,10 +30,10 @@ public class JwtTokenProvider {
     @Value("{secret_key}")
     private String SECRET_KEY;
 
-    // private long accessTokenValidMilisecond = 1000L * 60 * 30; // 30분
-    // private long refreshTokenValidMilisecond = 1000L * 60 * 60 * 24; // 1일
-    private long accessTokenValidMilisecond = 1000L * 60 * 60 * 24 * 365; // 30분
-    private long refreshTokenValidMilisecond = 1000L * 60 * 60 * 24 * 365; // 1일
+    private long accessTokenValidMilisecond = 1000L * 60 * 30; // 30분
+    private long refreshTokenValidMilisecond = 1000L * 60 * 60 * 24; // 1일
+    // private long accessTokenValidMilisecond = 1000L * 60 * 60 * 24 * 365; // 30분
+    // private long refreshTokenValidMilisecond = 1000L * 60 * 60 * 24 * 365; // 1일
 
     private final UserDetailsService userDetailsService;
 

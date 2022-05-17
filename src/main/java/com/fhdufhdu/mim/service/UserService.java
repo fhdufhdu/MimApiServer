@@ -2,24 +2,25 @@ package com.fhdufhdu.mim.service;
 
 import java.util.List;
 
-import com.fhdufhdu.mim.dto.UserDto;
-import com.fhdufhdu.mim.entity.User;
+import com.fhdufhdu.mim.dto.user.UserDto;
+import com.fhdufhdu.mim.dto.user.UserInfoDto;
+import com.fhdufhdu.mim.dto.user.UserSignUpDto;
 
 public interface UserService {
     /** POST /users/login */
     UserDto login(String id, String pw);
 
     /** POST /users/sign-up */
-    void signUp(UserDto user);
+    void signUp(UserSignUpDto user);
 
     /** GET /users/{id} */
-    UserDto getUserInfo(String id);
+    UserInfoDto getUserInfo(String id);
 
     /** GET /users */
-    List<UserDto> getAllUsers();
+    List<UserInfoDto> getAllUsers();
 
     /** PUT /users/{id} */
-    void modifyUser(String id, UserDto userDto);
+    void modifyUser(String id, UserInfoDto userDto);
 
     /** DELETE /users/{id} */
     void withdrawal(String id);

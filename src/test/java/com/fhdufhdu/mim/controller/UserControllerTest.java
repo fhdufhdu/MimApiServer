@@ -12,7 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fhdufhdu.mim.dto.UserDto;
+import com.fhdufhdu.mim.dto.user.UserInfoDto;
+import com.fhdufhdu.mim.dto.user.UserLoginDto;
+import com.fhdufhdu.mim.dto.user.UserSignUpDto;
 import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.mock.WithMockCustomUser;
 import com.fhdufhdu.mim.security.JwtTokenProvider;
@@ -52,7 +54,7 @@ public class UserControllerTest {
 
         @Test
         public void 로그인() throws Exception {
-                UserDto user = UserDto.builder().id("fhdufhdu").pw("fhdufhdu").build();
+                UserLoginDto user = UserLoginDto.builder().id("fhdufhdu").pw("fhdufhdu").build();
                 mock.perform(
                                 post("/login")
                                                 .contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +66,7 @@ public class UserControllerTest {
 
         @Test
         public void 회원가입() throws Exception {
-                UserDto user = UserDto.builder().id("testUser").pw("testUser").build();
+                UserSignUpDto user = UserSignUpDto.builder().id("testUser").pw("testUser").build();
                 mock.perform(
                                 post("/sign-up")
                                                 .contentType(MediaType.APPLICATION_JSON)
@@ -123,7 +125,7 @@ public class UserControllerTest {
         @Test
         @WithMockCustomUser(username = "fhdufhdu", roles = { Role.USER })
         public void 유저정보수정_본인() throws Exception {
-                UserDto user = UserDto.builder().id("fhdufhdu").nickName("modified").build();
+                UserInfoDto user = UserInfoDto.builder().id("fhdufhdu").nickName("modified").build();
                 ResultActions actions = mock.perform(put("/users/fhdufhdu")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(user)));
@@ -141,7 +143,7 @@ public class UserControllerTest {
         @Test
         @WithMockCustomUser(username = "admin", roles = { Role.ADMIN })
         public void 유저정보수정_관리자() throws Exception {
-                UserDto user = UserDto.builder().id("fhdufhdu").nickName("modified").build();
+                UserInfoDto user = UserInfoDto.builder().id("fhdufhdu").nickName("modified").build();
                 ResultActions actions = mock.perform(put("/users/fhdufhdu")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(user)));
@@ -159,7 +161,7 @@ public class UserControllerTest {
         @Test
         @WithMockCustomUser(username = "another", roles = { Role.USER })
         public void 유저정보수정_타인() throws Exception {
-                UserDto user = UserDto.builder().id("fhdufhdu").nickName("modified").build();
+                UserInfoDto user = UserInfoDto.builder().id("fhdufhdu").nickName("modified").build();
                 ResultActions actions = mock.perform(put("/users/fhdufhdu")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(user)));
@@ -179,8 +181,7 @@ public class UserControllerTest {
                 ResultActions info = mock.perform(get("/users/fhdufhdu"));
 
                 info
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.isRemoved", is(true)));
+                                .andExpect(status().isBadRequest());
         }
 
         @Test
@@ -194,8 +195,7 @@ public class UserControllerTest {
                 ResultActions info = mock.perform(get("/users/fhdufhdu"));
 
                 info
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.isRemoved", is(true)));
+                                .andExpect(status().isBadRequest());
         }
 
         @Test

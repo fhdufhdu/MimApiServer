@@ -6,8 +6,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fhdufhdu.mim.dto.UserDto;
-import com.fhdufhdu.mim.entity.Role;
+import com.fhdufhdu.mim.dto.user.UserDto;
+import com.fhdufhdu.mim.dto.user.UserInfoDto;
+import com.fhdufhdu.mim.dto.user.UserLoginDto;
+import com.fhdufhdu.mim.dto.user.UserSignUpDto;
 import com.fhdufhdu.mim.security.CustomUser;
 import com.fhdufhdu.mim.security.JwtTokenProvider;
 import com.fhdufhdu.mim.service.UserService;
@@ -42,22 +44,24 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation(value = "로그인")
-    public ResponseEntity<String> login(@RequestBody UserDto user, HttpServletRequest request,
+    public ResponseEntity<String> login(
+            @RequestBody UserLoginDto user,
+            HttpServletRequest request,
             HttpServletResponse response) {
-        user = userService.login(user.getId(), user.getPw());
+        UserDto loginUser = userService.login(user.getId(), user.getPw());
 
         // 로그인 토큰 발급
         response.setHeader(JwtTokenProvider.ACCESS_HEADER, jwtTokenProvider.createAccessToken(user.getId(),
-                Arrays.asList(user.getRole()), request.getRemoteAddr()));
+                Arrays.asList(loginUser.getRole()), request.getRemoteAddr()));
         response.setHeader(JwtTokenProvider.REFRESH_HEADER, jwtTokenProvider.createRefreshToken(user.getId(),
-                Arrays.asList(Role.ADMIN.name()), request.getRemoteAddr()));
+                Arrays.asList(loginUser.getRole()), request.getRemoteAddr()));
 
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "회원가입")
-    public ResponseEntity<String> signUp(@RequestBody UserDto user) {
+    public ResponseEntity<String> signUp(@RequestBody UserSignUpDto user) {
         userService.signUp(user);
         return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
@@ -65,7 +69,7 @@ public class UserController {
     @GetMapping("/users/{id}")
     @ApiOperation(value = "유저정보 가져오기", notes = "본인이거나 ADMIN 권한만 접근 가능")
     @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
-    public UserDto getUserInfo(@PathVariable String id, @ApiIgnore @AuthenticationPrincipal CustomUser user) {
+    public UserInfoDto getUserInfo(@PathVariable String id, @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         SecurityContextHolder.getContext().getAuthentication();
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
             throw new RuntimeException("test");
@@ -73,20 +77,25 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<UserDto> getAllUser() {
+    @ApiOperation(value = "모든 유저정보 가져오기", notes = "ADMIN 권한만 접근 가능")
+    public List<UserInfoDto> getAllUser() {
         return userService.getAllUsers();
     }
 
     @PutMapping("/users/{id}")
-    public void modifyUser(@PathVariable String id, @RequestBody UserDto userDto,
-            @AuthenticationPrincipal CustomUser user) {
+    @ApiOperation(value = "유저정보 수정", notes = "본인이거나 ADMIN 권한만 접근 가능")
+    @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
+    public void modifyUser(@PathVariable String id, @RequestBody UserInfoDto userDto,
+            @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
             throw new RuntimeException("test");
         userService.modifyUser(id, userDto);
     }
 
     @DeleteMapping("/users/{id}")
-    public void withdrawal(@PathVariable String id, @AuthenticationPrincipal CustomUser user) {
+    @ApiOperation(value = "유저정보 삭제", notes = "본인이거나 ADMIN 권한만 접근 가능")
+    @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
+    public void withdrawal(@PathVariable String id, @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
             throw new RuntimeException("test");
         userService.withdrawal(id);

@@ -4,7 +4,6 @@ import com.fhdufhdu.mim.dto.BoardDto;
 import com.fhdufhdu.mim.dto.RequestBoardDto;
 import com.fhdufhdu.mim.service.BoardService;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +33,7 @@ public class BoardController {
 
     @GetMapping("/boards/movie/{movieId}")
     public BoardDto getBoardByMovieId(@PathVariable Long movieId) {
-        return boardService.getBoardById(movieId);
+        return boardService.getBoardByMovieId(movieId);
     }
 
     @GetMapping("/boards/{id}")
@@ -45,6 +44,11 @@ public class BoardController {
     @DeleteMapping("/boards/{id}")
     public void shutDownBoard(@PathVariable Long id) {
         boardService.shutDownBoard(id);
+    }
+
+    @PostMapping("/request-boards/movie/{movieId}")
+    public void countUpBoard(@PathVariable Long movieId) {
+        boardService.countUpBoard(movieId);
     }
 
     @PostMapping("/request-boards/{id}")
@@ -60,5 +64,10 @@ public class BoardController {
     @GetMapping("/request-boards")
     public Page<RequestBoardDto> getAllRequests(@RequestParam("page") int page) {
         return boardService.getAllRequests(page);
+    }
+
+    @GetMapping("/request-boards/{id}")
+    public RequestBoardDto getRequestById(@PathVariable Long id) {
+        return boardService.getRequestById(id);
     }
 }

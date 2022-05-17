@@ -22,4 +22,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query(value = "select b from Board b join b.movie m where m.id = :movieId and b.isRemoved = false", nativeQuery = false)
     Optional<Board> findByMovieId(@Param("movieId") Long movieId);
+
+    boolean existsByMovieId(@Param("movieId") Long movieId);
 }

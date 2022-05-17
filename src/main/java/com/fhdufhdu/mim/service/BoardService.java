@@ -24,6 +24,9 @@ public interface BoardService {
     /** DELETE /boards/{id} */
     void shutDownBoard(Long id);
 
+    /** POST /request-boards/movie/{movieId} */
+    void countUpBoard(Long movieId);
+
     /** POST /request-boards/{id} */
     void openUpBoard(Long requestId);
 
@@ -32,4 +35,6 @@ public interface BoardService {
 
     /** GET /request-boards?page={page} */
     Page<RequestBoardDto> getAllRequests(int page);
+
+    RequestBoardDto getRequestById(Long id);
 }

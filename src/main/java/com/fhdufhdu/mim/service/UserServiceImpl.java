@@ -3,7 +3,10 @@ package com.fhdufhdu.mim.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fhdufhdu.mim.dto.UserDto;
+import com.fhdufhdu.mim.dto.user.UserDto;
+import com.fhdufhdu.mim.dto.user.UserInfoDto;
+import com.fhdufhdu.mim.dto.user.UserSignUpDto;
+import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.entity.User;
 import com.fhdufhdu.mim.exception.DuplicateUserException;
 import com.fhdufhdu.mim.exception.MismatchPasswdException;
@@ -48,12 +51,15 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
     }
 
     @Override
-    public void signUp(UserDto user) {
+    public void signUp(UserSignUpDto user) {
         if (isDuplicated(user.getId())) {
             throw new DuplicateUserException();
         }
         user.setPw(passwordEncoder.encode(user.getPw()));
-        userRepository.save(convertToDest(user, User.class));
+        User saveUser = convertToDest(user, User.class);
+        saveUser.setRole(Role.USER);
+        saveUser.setIsRemoved(false);
+        userRepository.save(saveUser);
     }
 
     private boolean isDuplicated(String id) {
@@ -61,16 +67,16 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
     }
 
     @Override
-    public UserDto getUserInfo(String id) {
+    public UserInfoDto getUserInfo(String id) {
         User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
-        UserDto userDto = convertToDest(user, UserDto.class);
+        UserInfoDto userDto = convertToDest(user, UserInfoDto.class);
         userDto.setPw(null);
         return userDto;
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        List<UserDto> userDtos = convertToDests(userRepository.findAll(), UserDto.class);
+    public List<UserInfoDto> getAllUsers() {
+        List<UserInfoDto> userDtos = convertToDests(userRepository.findAll(), UserInfoDto.class);
         return userDtos.stream().map(userDto -> {
             userDto.setPw(null);
             return userDto;
@@ -78,12 +84,11 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
     }
 
     @Override
-    public void modifyUser(String id, UserDto userDto) {
+    public void modifyUser(String id, UserInfoDto userDto) {
         User original = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
         if (userDto.getPw() != null)
             original.setPw(passwordEncoder.encode(userDto.getPw()));
         original.setNickName(userDto.getNickName());
-        original.setProfilePath(userDto.getProfilePath());
         userRepository.save(original);
     }
 

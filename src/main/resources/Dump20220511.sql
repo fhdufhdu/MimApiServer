@@ -405,7 +405,7 @@ CREATE TABLE `request_board` (
 
 LOCK TABLES `request_board` WRITE;
 /*!40000 ALTER TABLE `request_board` DISABLE KEYS */;
-INSERT INTO `request_board` VALUES (1,0,10,1),(2,0,20,2),(3,1,30,3);
+INSERT INTO `request_board` VALUES (2,0,20,2),(3,1,30,3);
 /*!40000 ALTER TABLE `request_board` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -57,6 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/movies/**", "/scean", "line").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/boards/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/boards/{id}").hasRole(ADMIN)
+                .antMatchers("/request-boards/**").hasRole(ADMIN)
                 .anyRequest().authenticated()
                 .and()
 

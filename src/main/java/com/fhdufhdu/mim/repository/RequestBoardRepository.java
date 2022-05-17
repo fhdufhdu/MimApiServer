@@ -16,4 +16,7 @@ public interface RequestBoardRepository extends JpaRepository<RequestBoard, Long
 
     @Query(value = "select r from RequestBoard r where r.id = :id and r.isConfirmed = false", nativeQuery = false)
     Optional<RequestBoard> findById(@Param("id") Long id);
+
+    @Query(value = "select r from RequestBoard r join r.movie m where m.id = :movieId and r.isConfirmed = false", nativeQuery = false)
+    Optional<RequestBoard> findByMovieId(@Param("movieId") Long movieId);
 }
