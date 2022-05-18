@@ -92,7 +92,7 @@ DROP TABLE IF EXISTS `comment_report`;
 CREATE TABLE `comment_report` (
   `id` bigint NOT NULL,
   `is_confirmed` tinyint(1) NOT NULL DEFAULT '0',
-  `repor_timestamp` datetime(6) NOT NULL,
+  `report_timestamp` datetime(6) NOT NULL,
   `report_reason` varchar(255) NOT NULL,
   `comment_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
@@ -107,6 +107,7 @@ CREATE TABLE `comment_report` (
 
 LOCK TABLES `comment_report` WRITE;
 /*!40000 ALTER TABLE `comment_report` DISABLE KEYS */;
+INSERT INTO `comment_report` VALUES (1,0,'2022-05-18 20:20:00.000000','나한테왜그랬어요',1),(2,1,'2022-05-18 20:20:00.000000','흑흑 슬퍼요', 2);
 /*!40000 ALTER TABLE `comment_report` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -368,7 +369,7 @@ DROP TABLE IF EXISTS `posting_report`;
 CREATE TABLE `posting_report` (
   `id` bigint NOT NULL,
   `is_confirmed` tinyint(1) NOT NULL DEFAULT '0',
-  `repor_timestamp` datetime(6) NOT NULL,
+  `report_timestamp` datetime(6) NOT NULL,
   `report_reason` varchar(255) NOT NULL,
   `posting_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
@@ -383,6 +384,7 @@ CREATE TABLE `posting_report` (
 
 LOCK TABLES `posting_report` WRITE;
 /*!40000 ALTER TABLE `posting_report` DISABLE KEYS */;
+INSERT INTO `posting_report` VALUES (1,0,'2022-05-18 20:20:00.000000','나한테왜그랬어요',1),(2,1,'2022-05-18 20:20:00.000000','흑흑 슬퍼요', 2);
 /*!40000 ALTER TABLE `posting_report` ENABLE KEYS */;
 UNLOCK TABLES;
 

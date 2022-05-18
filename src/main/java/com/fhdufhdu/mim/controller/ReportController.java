@@ -1,7 +1,9 @@
 package com.fhdufhdu.mim.controller;
 
-import com.fhdufhdu.mim.dto.CommentReportDto;
-import com.fhdufhdu.mim.dto.PostingReportDto;
+import com.fhdufhdu.mim.dto.report.CommentReportDto;
+import com.fhdufhdu.mim.dto.report.CommentReportSendDto;
+import com.fhdufhdu.mim.dto.report.PostingReportDto;
+import com.fhdufhdu.mim.dto.report.PostingReportSendDto;
 import com.fhdufhdu.mim.service.ReportService;
 
 import org.springframework.data.domain.Page;
@@ -22,12 +24,12 @@ public class ReportController {
     private final ReportService reportService;
 
     @PostMapping("/report-postings")
-    public void reportPosting(@RequestBody PostingReportDto postingReportDto) {
+    public void reportPosting(@RequestBody PostingReportSendDto postingReportDto) {
         reportService.reportPosting(postingReportDto);
     }
 
     @PostMapping("/report-comments")
-    public void reportComment(@RequestBody CommentReportDto commentReportDto) {
+    public void reportComment(@RequestBody CommentReportSendDto commentReportDto) {
         reportService.reportComment(commentReportDto);
     }
 

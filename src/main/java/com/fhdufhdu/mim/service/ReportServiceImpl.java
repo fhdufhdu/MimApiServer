@@ -1,7 +1,9 @@
 package com.fhdufhdu.mim.service;
 
-import com.fhdufhdu.mim.dto.CommentReportDto;
-import com.fhdufhdu.mim.dto.PostingReportDto;
+import com.fhdufhdu.mim.dto.report.CommentReportDto;
+import com.fhdufhdu.mim.dto.report.CommentReportSendDto;
+import com.fhdufhdu.mim.dto.report.PostingReportDto;
+import com.fhdufhdu.mim.dto.report.PostingReportSendDto;
 import com.fhdufhdu.mim.entity.Comment;
 import com.fhdufhdu.mim.entity.CommentReport;
 import com.fhdufhdu.mim.entity.Posting;
@@ -35,24 +37,26 @@ public class ReportServiceImpl extends UtilService implements ReportService {
     private final CommentRepository commentRepository;
 
     @Override
-    public void reportPosting(PostingReportDto postingReportDto) {
+    public void reportPosting(PostingReportSendDto postingReportDto) {
         Posting posting = postingRepository.findById(postingReportDto.getPostingId())
                 .orElseThrow(NotFoundPostingException::new);
         PostingReport newReport = PostingReport.builder()
                 .posting(posting)
                 .reportReason(postingReportDto.getReportReason())
+                .reportTimestamp(getNowTimestamp())
                 .build();
 
         postingReportRepository.save(newReport);
     }
 
     @Override
-    public void reportComment(CommentReportDto commentReportDto) {
+    public void reportComment(CommentReportSendDto commentReportDto) {
         Comment comment = commentRepository.findById(commentReportDto.getCommentId())
                 .orElseThrow(NotFoundCommentException::new);
         CommentReport newReport = CommentReport.builder()
                 .comment(comment)
                 .reportReason(commentReportDto.getReportReason())
+                .reportTimestamp(getNowTimestamp())
                 .build();
 
         commentReportRepository.save(newReport);

@@ -37,7 +37,7 @@ public class PostingReport {
     private String reportReason;
 
     @NotNull
-    private Timestamp reporTimestamp;
+    private Timestamp reportTimestamp;
 
     @NotNull
     @Column(columnDefinition = "boolean default false")

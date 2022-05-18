@@ -1,16 +1,18 @@
 package com.fhdufhdu.mim.service;
 
-import com.fhdufhdu.mim.dto.CommentReportDto;
-import com.fhdufhdu.mim.dto.PostingReportDto;
+import com.fhdufhdu.mim.dto.report.CommentReportDto;
+import com.fhdufhdu.mim.dto.report.CommentReportSendDto;
+import com.fhdufhdu.mim.dto.report.PostingReportDto;
+import com.fhdufhdu.mim.dto.report.PostingReportSendDto;
 
 import org.springframework.data.domain.Page;
 
 public interface ReportService {
     /** POST /report-postings */
-    void reportPosting(PostingReportDto postingReportDto);
+    void reportPosting(PostingReportSendDto postingReportDto);
 
     /** POST /report-comments */
-    void reportComment(CommentReportDto commentReportDto);
+    void reportComment(CommentReportSendDto commentReportDto);
 
     /** GET /report-postings */
     Page<PostingReportDto> getAllPostingReports(int page);

@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim.dto;
+package com.fhdufhdu.mim.dto.report;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,9 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostingReportDto {
-    @ApiModelProperty(example = "게시글 신고 아이디")
-    private Long id;
+public class PostingReportSendDto {
     @ApiModelProperty(example = "게시글 아이디")
     private Long postingId;
     @ApiModelProperty(example = "게시글 신고 이유")
