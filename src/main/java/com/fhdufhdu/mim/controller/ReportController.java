@@ -14,41 +14,62 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Api(tags = { "게시글 신고 관리", "댓글 신고 관리" })
 public class ReportController {
     private final ReportService reportService;
 
     @PostMapping("/report-postings")
+    @ApiOperation(value = "[등록] 게시글 신고")
+    @Tag(name = "게시글 신고 관리")
     public void reportPosting(@RequestBody PostingReportSendDto postingReportDto) {
         reportService.reportPosting(postingReportDto);
     }
 
-    @PostMapping("/report-comments")
-    public void reportComment(@RequestBody CommentReportSendDto commentReportDto) {
-        reportService.reportComment(commentReportDto);
-    }
-
     @GetMapping("/report-postings")
+    @ApiOperation(value = "모든 게시글신고 가져오기")
+    @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    @Tag(name = "게시글 신고 관리")
     public Page<PostingReportDto> getAllPostingReports(int page) {
         return reportService.getAllPostingReports(page);
     }
 
-    @GetMapping("/report-comments")
-    public Page<CommentReportDto> getAllCommentReports(int page) {
-        return reportService.getAllCommentReports(page);
-    }
-
     @PutMapping("/report-postings/{id}")
+    @ApiOperation(value = "게시글 신고 처리완료")
+    @ApiImplicitParam(name = "id", value = "게시글 신고 아이디", paramType = "path", required = true)
+    @Tag(name = "게시글 신고 관리")
     public void confirmPostingReport(@PathVariable Long id) {
         reportService.confirmPostingReport(id);
     }
 
+    @PostMapping("/report-comments")
+    @ApiOperation(value = "댓글 신고")
+    @Tag(name = "댓글 신고 관리")
+    public void reportComment(@RequestBody CommentReportSendDto commentReportDto) {
+        reportService.reportComment(commentReportDto);
+    }
+
+    @GetMapping("/report-comments")
+    @ApiOperation(value = "모든 댓글신고 가져오기")
+    @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    @Tag(name = "댓글 신고 관리")
+    public Page<CommentReportDto> getAllCommentReports(int page) {
+        return reportService.getAllCommentReports(page);
+    }
+
     @PutMapping("/report-comments/{id}")
+    @ApiOperation(value = "댓글 신고 처리완료")
+    @ApiImplicitParam(name = "id", value = "게시글 신고 아이디", paramType = "path", required = true)
+    @Tag(name = "댓글 신고 관리")
     public void confirmCommentReport(@PathVariable Long id) {
         reportService.confirmCommentReport(id);
     }

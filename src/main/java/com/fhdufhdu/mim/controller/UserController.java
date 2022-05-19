@@ -30,13 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequiredArgsConstructor
-@Api(tags = { "로그인, 회원가입, 유저 관리 기능 API" })
+@Api(tags = { "로그인", "회원가입", "유저관리" })
 @Slf4j
 public class UserController {
     private final UserService userService;
@@ -45,6 +46,7 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation(value = "로그인")
+    @Tag(name = "로그인")
     public ResponseEntity<String> login(
             @RequestBody UserLoginDto user,
             HttpServletRequest request,
@@ -62,14 +64,16 @@ public class UserController {
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "회원가입")
+    @Tag(name = "회원가입")
     public ResponseEntity<String> signUp(@RequestBody UserSignUpDto user) {
         userService.signUp(user);
         return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
 
     @GetMapping("/users/{id}")
-    @ApiOperation(value = "유저정보 가져오기", notes = "본인이거나 ADMIN 권한만 접근 가능")
+    @ApiOperation(value = "[단건조회] 유저정보 조회", notes = "본인이거나 ADMIN 권한만 접근 가능")
     @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
+    @Tag(name = "유저관리")
     public UserInfoDto getUserInfo(@PathVariable String id, @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         SecurityContextHolder.getContext().getAuthentication();
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
@@ -78,14 +82,16 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    @ApiOperation(value = "모든 유저정보 가져오기", notes = "ADMIN 권한만 접근 가능")
+    @ApiOperation(value = "[다건조회] 모든 유저정보 가져오기", notes = "ADMIN 권한만 접근 가능")
+    @Tag(name = "유저관리")
     public List<UserInfoDto> getAllUser() {
         return userService.getAllUsers();
     }
 
     @PutMapping("/users/{id}")
-    @ApiOperation(value = "유저정보 수정", notes = "본인이거나 ADMIN 권한만 접근 가능")
+    @ApiOperation(value = "[수정] 유저정보 수정", notes = "본인이거나 ADMIN 권한만 접근 가능")
     @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
+    @Tag(name = "유저관리")
     public void modifyUser(@PathVariable String id, @RequestBody UserInfoDto userDto,
             @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
@@ -94,8 +100,9 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    @ApiOperation(value = "유저정보 삭제", notes = "본인이거나 ADMIN 권한만 접근 가능")
+    @ApiOperation(value = "[삭제] 유저정보 삭제", notes = "본인이거나 ADMIN 권한만 접근 가능")
     @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
+    @Tag(name = "유저관리")
     public void withdrawal(@PathVariable String id, @ApiIgnore @AuthenticationPrincipal CustomUser user) {
         if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
             throw new MismatchAuthorException();

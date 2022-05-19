@@ -30,119 +30,119 @@ import org.springframework.web.context.WebApplicationContext;
 @Transactional
 @ActiveProfiles("test")
 public class ReportControllerTest {
-    @Autowired
-    WebApplicationContext wac;
+        @Autowired
+        WebApplicationContext wac;
 
-    MockMvc mvc;
-    ObjectMapper objectMapper = new ObjectMapper();
+        MockMvc mvc;
+        ObjectMapper objectMapper = new ObjectMapper();
 
-    @BeforeEach
-    void setup() {
-        mvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-    }
+        @BeforeEach
+        void setup() {
+                mvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+        }
 
-    @Test
-    @WithMockCustomUser(username = "admin", roles = Role.ADMIN)
-    void 게시글신고_모두가져오기() throws Exception {
-        ResultActions getAllPostingReports = mvc.perform(get("/report-postings").param("page", "0"));
-        getAllPostingReports
-                .andExpect(jsonPath("$.content.length()", is(1)));
-    }
+        @Test
+        @WithMockCustomUser(username = "admin", roles = Role.ADMIN)
+        void 게시글신고_모두가져오기() throws Exception {
+                ResultActions getAllPostingReports = mvc.perform(get("/report-postings").param("page", "0"));
+                getAllPostingReports
+                                .andExpect(jsonPath("$.content.length()", is(1)));
+        }
 
-    @Test
-    @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
-    void 게시글신고_모두가져오기_유저() throws Exception {
-        ResultActions getAllPostingReports = mvc.perform(get("/report-postings").param("page", "0"));
-        getAllPostingReports
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
+        void 게시글신고_모두가져오기_유저() throws Exception {
+                ResultActions getAllPostingReports = mvc.perform(get("/report-postings").param("page", "0"));
+                getAllPostingReports
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
-    void 게시글_신고하기() throws Exception {
-        PostingReportSendDto report = PostingReportSendDto.builder()
-                .postingId(1L)
-                .reportReason("testReason")
-                .build();
+        @Test
+        @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
+        void 게시글_신고하기() throws Exception {
+                PostingReportSendDto report = PostingReportSendDto.builder()
+                                .postingId(1L)
+                                .reportReason("testReason")
+                                .build();
 
-        ResultActions reportPosting = mvc.perform(post("/report-postings")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(report)));
-        reportPosting
-                .andExpect(status().isOk());
+                ResultActions reportPosting = mvc.perform(post("/report-postings")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(report)));
+                reportPosting
+                                .andExpect(status().isOk());
 
-    }
+        }
 
-    @Test
-    @WithMockCustomUser(username = "admin", roles = Role.ADMIN)
-    void 게시글신고_처리완료() throws Exception {
-        ResultActions confirmPostingReport = mvc.perform(put("/report-postings/1"));
-        confirmPostingReport
-                .andExpect(status().isOk());
+        @Test
+        @WithMockCustomUser(username = "admin", roles = Role.ADMIN)
+        void 게시글신고_처리완료() throws Exception {
+                ResultActions confirmPostingReport = mvc.perform(put("/report-postings/1"));
+                confirmPostingReport
+                                .andExpect(status().isOk());
 
-        ResultActions getAllPostingReports = mvc.perform(get("/report-postings").param("page", "0"));
-        getAllPostingReports
-                .andExpect(jsonPath("$.content.length()", is(0)));
-    }
+                ResultActions getAllPostingReports = mvc.perform(get("/report-postings").param("page", "0"));
+                getAllPostingReports
+                                .andExpect(jsonPath("$.content.length()", is(0)));
+        }
 
-    @Test
-    @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
-    void 게시글신고_처리완료_유저() throws Exception {
-        ResultActions confirmPostingReport = mvc.perform(put("/report-postings/1"));
-        confirmPostingReport
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
+        void 게시글신고_처리완료_유저() throws Exception {
+                ResultActions confirmPostingReport = mvc.perform(put("/report-postings/1"));
+                confirmPostingReport
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @WithMockCustomUser(username = "admin", roles = Role.ADMIN)
-    void 댓글신고_모두가져오기() throws Exception {
-        ResultActions getAllPostingReports = mvc.perform(get("/report-comments").param("page", "0"));
-        getAllPostingReports
-                .andExpect(jsonPath("$.content.length()", is(1)));
-    }
+        @Test
+        @WithMockCustomUser(username = "admin", roles = Role.ADMIN)
+        void 댓글신고_모두가져오기() throws Exception {
+                ResultActions getAllPostingReports = mvc.perform(get("/report-comments").param("page", "0"));
+                getAllPostingReports
+                                .andExpect(jsonPath("$.content.length()", is(1)));
+        }
 
-    @Test
-    @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
-    void 댓글신고_모두가져오기_유저() throws Exception {
-        ResultActions getAllPostingReports = mvc.perform(get("/report-comments").param("page", "0"));
-        getAllPostingReports
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
+        void 댓글신고_모두가져오기_유저() throws Exception {
+                ResultActions getAllPostingReports = mvc.perform(get("/report-comments").param("page", "0"));
+                getAllPostingReports
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
-    void 댓글_신고하기() throws Exception {
-        CommentReportSendDto report = CommentReportSendDto.builder()
-                .commentId(1L)
-                .reportReason("testReason")
-                .build();
+        @Test
+        @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
+        void 댓글_신고하기() throws Exception {
+                CommentReportSendDto report = CommentReportSendDto.builder()
+                                .commentId(1L)
+                                .reportReason("testReason")
+                                .build();
 
-        ResultActions reportPosting = mvc.perform(post("/report-comments")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(report)));
-        reportPosting
-                .andExpect(status().isOk());
+                ResultActions reportPosting = mvc.perform(post("/report-comments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(report)));
+                reportPosting
+                                .andExpect(status().isOk());
 
-    }
+        }
 
-    @Test
-    @WithMockCustomUser(username = "admin", roles = Role.ADMIN)
-    void 댓글신고_처리완료() throws Exception {
-        ResultActions confirmPostingReport = mvc.perform(put("/report-comments/1"));
-        confirmPostingReport
-                .andExpect(status().isOk());
+        @Test
+        @WithMockCustomUser(username = "admin", roles = Role.ADMIN)
+        void 댓글신고_처리완료() throws Exception {
+                ResultActions confirmPostingReport = mvc.perform(put("/report-comments/1"));
+                confirmPostingReport
+                                .andExpect(status().isOk());
 
-        ResultActions getAllPostingReports = mvc.perform(get("/report-comments").param("page", "0"));
-        getAllPostingReports
-                .andExpect(jsonPath("$.content.length()", is(0)));
-    }
+                ResultActions getAllPostingReports = mvc.perform(get("/report-comments").param("page", "0"));
+                getAllPostingReports
+                                .andExpect(jsonPath("$.content.length()", is(0)));
+        }
 
-    @Test
-    @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
-    void 댓글신고_처리완료_유저() throws Exception {
-        ResultActions confirmPostingReport = mvc.perform(put("/report-comments/1"));
-        confirmPostingReport
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
+        void 댓글신고_처리완료_유저() throws Exception {
+                ResultActions confirmPostingReport = mvc.perform(put("/report-comments/1"));
+                confirmPostingReport
+                                .andExpect(status().isForbidden());
+        }
 
 }

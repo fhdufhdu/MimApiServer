@@ -18,68 +18,118 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Api(tags = { "게시글 관리", "댓글 관리" })
 public class PostingController {
     private final PostingService postingService;
 
     @GetMapping("/postings/board/{boardId}")
+    @ApiOperation(value = "[다건 조회] 해당 게시판의 모든 게시글 조회")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "boardId", value = "게시판 아이디", paramType = "path", required = true),
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    })
+    @Tag(name = "게시글 관리")
     public Page<PostingDto> getAllPostings(@PathVariable Long boardId, @RequestParam("page") int page) {
         return postingService.getAllPostings(boardId, page);
     }
 
     @GetMapping("/postings/board/{boardId}/posting-number/{postingNumber}")
+    @ApiOperation(value = "[단건 조회] 해당 게시판과 게시글 번호로 게시글 조회")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "boardId", value = "게시판 아이디", paramType = "path", required = true),
+            @ApiImplicitParam(name = "postingNumber", value = "게시글 번호", paramType = "path", required = true)
+    })
+    @Tag(name = "게시글 관리")
     public PostingDto getPostingByBoardAndPostingNum(@PathVariable Long boardId, @PathVariable Long postingNumber) {
         return postingService.getPostingByBoardAndPostingNum(boardId, postingNumber);
     }
 
     @GetMapping("/postings/{id}")
+    @ApiOperation(value = "[단건 조회] 게시글 아이디로 게시글 조회")
+    @ApiImplicitParam(name = "id", value = "게시글 아이디", paramType = "path", required = true)
+    @Tag(name = "게시글 관리")
     public PostingDto getPostingById(@PathVariable Long id) {
         return postingService.getPostingById(id);
     }
 
     @PutMapping("/postings/{id}")
+    @ApiOperation(value = "[수정] 게시글 수정")
+    @ApiImplicitParam(name = "id", value = "게시글 아이디", paramType = "path", required = true)
+    @Tag(name = "게시글 관리")
     public void modifyPosting(@PathVariable Long id,
             @RequestBody PostingModifyDto postingDto) {
         postingService.modifyPosting(id, postingDto);
     }
 
     @DeleteMapping("/postings/{id}")
+    @ApiOperation(value = "[삭제] 게시글 삭제")
+    @ApiImplicitParam(name = "id", value = "게시글 아이디", paramType = "path", required = true)
+    @Tag(name = "게시글 관리")
     public void removePosting(@PathVariable Long id) {
         postingService.removePosting(id);
     }
 
     @PostMapping("/postings")
+    @ApiOperation(value = "[등록] 게시글 작성")
+    @Tag(name = "게시글 관리")
     public void addPosting(@RequestBody PostingAddDto postingDto) {
         postingService.addPosting(postingDto);
     }
 
     @GetMapping("/comments/board/{boardId}/posting-number/{postingNumber}")
+    @ApiOperation(value = "[다건 조회] 게시판 아이디와 게시글 번호로 모든 댓글 조회")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "boardId", value = "게시판 아이디", paramType = "path", required = true),
+            @ApiImplicitParam(name = "postingNumber", value = "게시글 번호", paramType = "path", required = true),
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    })
+    @Tag(name = "댓글 관리")
     public Page<CommentDto> getAllCommentsByBoardAndPostingNum(@PathVariable Long boardId,
             @PathVariable Long postingNumber, @RequestParam("page") int page) {
         return postingService.getAllCommentsByBoardAndPostingNum(boardId, postingNumber, page);
     }
 
     @GetMapping("/comments/posting/{postingId}")
+    @ApiOperation(value = "[다건 조회] 게시글 아이디로 모든 댓글 조회")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "postingId", value = "게시글 아이디", paramType = "path", required = true),
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    })
+    @Tag(name = "댓글 관리")
     public Page<CommentDto> getAllCommentsByPostingId(@PathVariable Long postingId, @RequestParam("page") int page) {
         return postingService.getAllCommentsByPostingId(postingId, page);
     }
 
     @PutMapping("/comments/{id}")
+    @ApiOperation(value = "[수정] 댓글 수정")
+    @ApiImplicitParam(name = "id", value = "댓글 아이디", paramType = "path", required = true)
+    @Tag(name = "댓글 관리")
     public void modifyComment(@PathVariable Long id, @RequestBody CommentModifyDto commentDto) {
         postingService.modifyComment(id, commentDto);
     }
 
     @DeleteMapping("/comments/{id}")
+    @ApiOperation(value = "[삭제] 댓글 삭제")
+    @ApiImplicitParam(name = "id", value = "댓글 아이디", paramType = "path", required = true)
+    @Tag(name = "댓글 관리")
     public void removeComment(@PathVariable Long id) {
         postingService.removeComment(id);
     }
 
     @PostMapping("/comments")
+    @ApiOperation(value = "[등록] 댓글 작성")
+    @Tag(name = "댓글 관리")
     public void addComment(@RequestBody CommentAddDto commentDto) {
         postingService.addComment(commentDto);
     }

@@ -16,53 +16,87 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Api(tags = { "영화 관리", "장면 검색", "대사 검색" })
 public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/movies/{id}")
+    @ApiOperation(value = "[단건 조회] 아이디로 영화 조회")
+    @ApiImplicitParam(name = "id", value = "영화아이디", paramType = "path", required = true)
+    @Tag(name = "영화 관리")
     public MovieDtoV2 getMovieById(@PathVariable Long id) {
         return searchService.getMovieById(id);
     }
 
     @GetMapping("/movies/titles")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true),
+            @ApiImplicitParam(name = "titles", value = "영화 제목들(리스트)", paramType = "query", required = true)
+    })
+    @ApiOperation(value = "[다건 조회] 영화 제목 리스트로 영화 정보 조회(정확한 제목 필요)")
+    @Tag(name = "영화 관리")
     public Page<MovieDto> getMovieList(@RequestParam("titles") List<String> titles, int page) {
         return searchService.getMovieList(titles, page);
     }
 
     @GetMapping("/movies")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true),
+            @ApiImplicitParam(name = "title", value = "영화 제목", paramType = "query", required = true)
+    })
+    @ApiOperation(value = "[다건 조ㅣ] 영화 제목으로 영화 정보 조회(영화 제목의 일부만으로 가능)")
+    @Tag(name = "영화 관리")
     public Page<MovieDto> getMovieList(@RequestParam("title") String title, int page) {
         return searchService.getMovieList(title, page);
     }
 
     // 사용하지 않을 예정
     @DeleteMapping("/movies/{movieId}")
+    @ApiOperation(value = "굳이 사용할 필요 없어보임")
+    @Tag(name = "영화 관리")
     public void removeMovie(@PathVariable Long movieId) {
         searchService.removeMovie(movieId);
     }
 
     @PutMapping("/movies/{movieId}")
+    @ApiOperation(value = "[수정] 영화 정보 변경")
+    @ApiImplicitParam(name = "movieId", value = "영화 아이디", paramType = "path", required = true)
+    @Tag(name = "영화 관리")
     public void changeMovieInfo(@PathVariable Long movieId, @RequestBody MovieDtoV2 movie) {
         searchService.changeMovieInfo(movieId, movie);
     }
 
     @PostMapping("/movies")
+    @ApiOperation(value = "[등록] 영화 추가")
+    @Tag(name = "영화 관리")
     public void addMovie(@RequestBody MovieDtoV2 movie) {
         searchService.addMovie(movie);
     }
 
     @GetMapping("/scean")
+    @ApiOperation(value = "장면 검색")
+    @ApiImplicitParam(name = "input", value = "장면 서술", paramType = "query", required = true)
+    @Tag(name = "장면 검색")
     public String searchByScan(@RequestParam("input") String input) {
-        return "not complete";
+        return "미완성";
     }
 
     @GetMapping("/line")
+    @ApiOperation(value = "대사 검색")
+    @ApiImplicitParam(name = "input", value = "대사 서술", paramType = "query", required = true)
+    @Tag(name = "대사 검색")
     public String lineByScan(@RequestParam("input") String input) {
-        return "not complete";
+        return "미완성";
     }
 }
