@@ -8,3 +8,5 @@ Spring Boot, Java를 이용한 RESTful API 입니다.
 * Spring Security
 * DataBase : MySql(Docker)
 * ORM : JPA
+* API Doc : Swagger
+  * [API 문서](http://fhdufhdu.iptime.org:8081/swagger-ui/index.html)
