@@ -20,6 +20,9 @@ public interface PostingService {
     /** GET /postings/{postingId} */
     PostingDto getPostingById(Long id);
 
+    /** GET /postings/user/{userId} */
+    Page<PostingDto> getPostingsByUserId(String userId, int page);
+
     /** PUT /postings/{postingId} */
     void modifyPosting(Long id, PostingModifyDto postingDto);
 
@@ -37,6 +40,9 @@ public interface PostingService {
 
     /** GET /comments/posting/{postingId}?page={page} */
     Page<CommentDto> getAllCommentsByPostingId(Long postingId, int page);
+
+    /** GET /postings/user/{userId} */
+    Page<CommentDto> getCommentsByUserId(String userId, int page);
 
     /** PUT /comments/{commentId} */
     void modifyComment(Long commentId, CommentModifyDto commentDto);

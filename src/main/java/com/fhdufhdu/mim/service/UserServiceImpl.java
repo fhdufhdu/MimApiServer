@@ -52,18 +52,25 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
 
     @Override
     public void signUp(UserSignUpDto user) {
-        if (isDuplicated(user.getId())) {
+        if (checkId(user.getId())) {
             throw new DuplicateUserException();
         }
         user.setPw(passwordEncoder.encode(user.getPw()));
         User saveUser = convertToDest(user, User.class);
         saveUser.setRole(Role.USER);
         saveUser.setIsRemoved(false);
+        saveUser.setNickName(user.getNickName());
         userRepository.save(saveUser);
     }
 
-    private boolean isDuplicated(String id) {
+    @Override
+    public boolean checkId(String id) {
         return userRepository.existsById(id);
+    }
+
+    @Override
+    public boolean checkNickName(String nickName) {
+        return userRepository.existsByNickName(nickName);
     }
 
     @Override
@@ -95,6 +102,7 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
     @Override
     public void withdrawal(String id) {
         User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
+
         user.setIsRemoved(true);
         userRepository.save(user);
     }

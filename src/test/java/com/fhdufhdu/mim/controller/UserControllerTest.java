@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -80,6 +81,42 @@ public class UserControllerTest {
                                 .andExpect(status().isOk())
                                 .andExpect(header().exists(JwtTokenProvider.ACCESS_HEADER))
                                 .andExpect(header().exists(JwtTokenProvider.REFRESH_HEADER));
+        }
+
+        @Test
+        public void 아이디_중복_체크() throws Exception {
+                UserSignUpDto user = UserSignUpDto.builder().id("testUser").pw("testUser").nickName("testUser").build();
+                mock.perform(
+                                post("/sign-up")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(objectMapper.writeValueAsString(user)))
+                                .andExpect(status().isCreated());
+
+                ResultActions checkId = mock.perform(get("/users/id/testUser"));
+                checkId
+                                .andExpect(content().string("true"));
+
+                ResultActions checkId1 = mock.perform(get("/users/id/testUser1"));
+                checkId1
+                                .andExpect(content().string("false"));
+        }
+
+        @Test
+        public void 닉네임_중복_체크() throws Exception {
+                UserSignUpDto user = UserSignUpDto.builder().id("testUser").pw("testUser").nickName("testUser").build();
+                mock.perform(
+                                post("/sign-up")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(objectMapper.writeValueAsString(user)))
+                                .andExpect(status().isCreated());
+
+                ResultActions checkId = mock.perform(get("/users/nick-name/testUser"));
+                checkId
+                                .andExpect(content().string("true"));
+
+                ResultActions checkId1 = mock.perform(get("/users/nick-name/testUser1"));
+                checkId1
+                                .andExpect(content().string("false"));
         }
 
         @Test

@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Api(tags = { "게시글 관리", "댓글 관리" })
+@Api(tags = { "게시글 관리", "댓글 관리", "유저별 게시글, 댓글 확인" })
 public class PostingController {
     private final PostingService postingService;
 
@@ -132,6 +132,28 @@ public class PostingController {
     @Tag(name = "댓글 관리")
     public void addComment(@RequestBody CommentAddDto commentDto) {
         postingService.addComment(commentDto);
+    }
+
+    @GetMapping("/postings/user/{userId}")
+    @ApiOperation(value = "[다건 조회] 특정 유저가 작성한 게시글 조회")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "유저 아이디", paramType = "path", required = true),
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    })
+    @Tag(name = "유저별 게시글, 댓글 확인")
+    public Page<PostingDto> getPostingsByUserId(@PathVariable String userId, @RequestParam("page") int page) {
+        return postingService.getPostingsByUserId(userId, page);
+    }
+
+    @GetMapping("/comments/user/{userId}")
+    @ApiOperation(value = "[다건 조회] 특정 유저가 작성한 댓글 조회")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "유저 아이디", paramType = "path", required = true),
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    })
+    @Tag(name = "유저별 게시글, 댓글 확인")
+    public Page<CommentDto> getCommentsByUserId(@PathVariable String userId, @RequestParam("page") int page) {
+        return postingService.getCommentsByUserId(userId, page);
     }
 
 }

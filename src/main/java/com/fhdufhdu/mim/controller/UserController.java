@@ -70,6 +70,22 @@ public class UserController {
         return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
 
+    @GetMapping("/users/id/{id}")
+    @ApiOperation(value = "[단건 조회] 아이디 중복 체크")
+    @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
+    @Tag(name = "회원가입")
+    public boolean checkId(@PathVariable String id) {
+        return userService.checkId(id);
+    }
+
+    @GetMapping("/users/nick-name/{nickName}")
+    @ApiOperation(value = "[단건 조회] 닉네임 중복 체크")
+    @ApiImplicitParam(name = "nickName", value = "닉네임", paramType = "path")
+    @Tag(name = "회원가입")
+    public boolean checkNickName(@PathVariable String nickName) {
+        return userService.checkNickName(nickName);
+    }
+
     @GetMapping("/users/{id}")
     @ApiOperation(value = "[단건조회] 유저정보 조회", notes = "본인이거나 ADMIN 권한만 접근 가능")
     @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
@@ -89,7 +105,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    @ApiOperation(value = "[수정] 유저정보 수정", notes = "본인이거나 ADMIN 권한만 접근 가능")
+    @ApiOperation(value = "[수정] 유저정보 수정", notes = "본인이거나 ADMIN 권한만 접근 가능, 비밀번호가 수정되었을 때만 비밀번호 넣어서 보내주면 됌")
     @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
     @Tag(name = "유저관리")
     public void modifyUser(@PathVariable String id, @RequestBody UserInfoDto userDto,

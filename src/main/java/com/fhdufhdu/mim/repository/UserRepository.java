@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query(value = "select u from User u where u.isRemoved = false", nativeQuery = false)
     List<User> findAll();
+
+    boolean existsByNickName(String nickName);
 }

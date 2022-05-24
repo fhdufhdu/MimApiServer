@@ -69,6 +69,14 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     }
 
     @Override
+    public Page<PostingDto> getPostingsByUserId(String userId, int page) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "time");
+        PageRequest pageRequest = PageRequest.of(page, POSTING_PAGE_SIZE, sort);
+        Page<Posting> sources = postingRepository.findByUserId(userId, pageRequest);
+        return convertToDests(sources, PostingDto.class);
+    }
+
+    @Override
     public void modifyPosting(Long id, PostingModifyDto postingDto) {
         Posting originalPosting = postingRepository.findById(id).orElseThrow(NotFoundPostingException::new);
 
@@ -139,6 +147,14 @@ public class PostingServiceImpl extends UtilService implements PostingService {
         PageRequest pageRequest = PageRequest.of(page, COMMENT_PAGE_SIZE, sort);
         Page<Comment> comments = commentRepository.findByPostingId(postingId, pageRequest);
         return convertToDests(comments, CommentDto.class);
+    }
+
+    @Override
+    public Page<CommentDto> getCommentsByUserId(String userId, int page) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "time");
+        PageRequest pageRequest = PageRequest.of(page, POSTING_PAGE_SIZE, sort);
+        Page<Comment> sources = commentRepository.findByUserId(userId, pageRequest);
+        return convertToDests(sources, CommentDto.class);
     }
 
     @Override

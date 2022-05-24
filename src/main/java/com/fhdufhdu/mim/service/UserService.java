@@ -13,6 +13,12 @@ public interface UserService {
     /** POST /users/sign-up */
     void signUp(UserSignUpDto user);
 
+    /** GET /users/id/{id} */
+    boolean checkId(String id);
+
+    /** GET /users/nick-name/{nickName} */
+    boolean checkNickName(String nickName);
+
     /** GET /users/{id} */
     UserInfoDto getUserInfo(String id);
 
