@@ -6,6 +6,7 @@ import com.fhdufhdu.mim.entity.FavoriteMovie;
 import com.fhdufhdu.mim.entity.Movie;
 import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.entity.User;
+import com.fhdufhdu.mim.exception.DuplicateFavoriteMovieException;
 import com.fhdufhdu.mim.exception.MismatchAuthorException;
 import com.fhdufhdu.mim.exception.NotFoundFavoriteMovieException;
 import com.fhdufhdu.mim.exception.NotFoundMovieException;
@@ -48,6 +49,11 @@ public class FavoriteMovieServiceImpl extends UtilService implements FavoriteMov
 
         if (!user.getId().equals(getUserId()) && !hasAuthority(Role.ADMIN)) {
             throw new MismatchAuthorException();
+        }
+
+        if (favoriteMovieRepository.existsByUserIdAndMovieId(favoriteMovieDto.getUserId(),
+                favoriteMovieDto.getMovieId())) {
+            throw new DuplicateFavoriteMovieException();
         }
 
         FavoriteMovie newFavoriteMovie = FavoriteMovie.builder()

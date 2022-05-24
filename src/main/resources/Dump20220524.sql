@@ -1,5 +1,5 @@
-CREATE DATABASE  IF NOT EXISTS `mim_local` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `mim_local`;
+CREATE DATABASE  IF NOT EXISTS `mim_test` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `mim_test`;
 -- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
 -- Host: fhdufhdu.iptime.org    Database: mim_local
@@ -20,7 +20,7 @@ USE `mim_local`;
 --
 -- Table structure for table `board`
 --
-
+SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS `board`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -41,7 +41,7 @@ CREATE TABLE `board` (
 
 LOCK TABLES `board` WRITE;
 /*!40000 ALTER TABLE `board` DISABLE KEYS */;
-INSERT INTO `board` VALUES (1,0,4,3);
+INSERT INTO `board` VALUES (1,0,5,3);
 /*!40000 ALTER TABLE `board` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -382,7 +382,7 @@ CREATE TABLE `posting` (
 
 LOCK TABLES `posting` WRITE;
 /*!40000 ALTER TABLE `posting` DISABLE KEYS */;
-INSERT INTO `posting` VALUES (1,'dasf',0,4,1,'2022-05-11 05:13:47.000000','sdf',1,'fhdufhdu'),(2,'adsfa',0,0,2,'2022-05-11 05:13:47.000000','asd',1,'fhdufhdu'),(3,'asdf',0,0,3,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu'),(4,'asdf',1,0,4,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu'),(5,'asdf',0,0,5,'2022-05-11 05:13:47.000000','dfasdf',1,'admin');
+INSERT INTO `posting` VALUES (1,'dasf',0,5,1,'2022-05-11 05:13:47.000000','sdf',1,'fhdufhdu'),(2,'adsfa',0,0,2,'2022-05-11 05:13:47.000000','asd',1,'fhdufhdu'),(3,'asdf',0,0,3,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu'),(4,'asdf',1,0,4,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu'),(5,'asdf',0,0,5,'2022-05-11 05:13:47.000000','dfasdf',1,'admin');
 /*!40000 ALTER TABLE `posting` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -506,3 +506,4 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2022-05-24 21:02:58
+SET foreign_key_checks = 1;

@@ -39,208 +39,208 @@ import lombok.extern.slf4j.Slf4j;
 @ActiveProfiles("test")
 @Slf4j
 public class UserControllerTest {
-        @Autowired
-        WebApplicationContext wac;
+	@Autowired
+	WebApplicationContext wac;
 
-        MockMvc mock;
-        ObjectMapper objectMapper = new ObjectMapper();
+	MockMvc mock;
+	ObjectMapper objectMapper = new ObjectMapper();
 
-        @BeforeEach
-        void setup() {
-                mock = MockMvcBuilders
-                                .webAppContextSetup(wac)
-                                .apply(springSecurity())
-                                .build();
-        }
+	@BeforeEach
+	void setup() {
+		mock = MockMvcBuilders
+				.webAppContextSetup(wac)
+				.apply(springSecurity())
+				.build();
+	}
 
-        @Test
-        public void 로그인() throws Exception {
-                UserLoginDto user = UserLoginDto.builder().id("fhdufhdu").pw("fhdufhdu").build();
-                mock.perform(
-                                post("/login")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(objectMapper.writeValueAsString(user)))
-                                .andExpect(status().isOk())
-                                .andExpect(header().exists(JwtTokenProvider.ACCESS_HEADER))
-                                .andExpect(header().exists(JwtTokenProvider.REFRESH_HEADER));
-        }
+	@Test
+	public void 로그인() throws Exception {
+		UserLoginDto user = UserLoginDto.builder().id("fhdufhdu").pw("fhdufhdu").build();
+		mock.perform(
+				post("/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(user)))
+				.andExpect(status().isOk())
+				.andExpect(header().exists(JwtTokenProvider.ACCESS_HEADER))
+				.andExpect(header().exists(JwtTokenProvider.REFRESH_HEADER));
+	}
 
-        @Test
-        public void 회원가입() throws Exception {
-                UserSignUpDto user = UserSignUpDto.builder().id("testUser").pw("testUser").build();
-                mock.perform(
-                                post("/sign-up")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(objectMapper.writeValueAsString(user)))
-                                .andExpect(status().isCreated());
+	@Test
+	public void 회원가입() throws Exception {
+		UserSignUpDto user = UserSignUpDto.builder().id("testUser").pw("testUser").build();
+		mock.perform(
+				post("/sign-up")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(user)))
+				.andExpect(status().isCreated());
 
-                mock.perform(
-                                post("/login")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(objectMapper.writeValueAsString(user)))
-                                .andExpect(status().isOk())
-                                .andExpect(header().exists(JwtTokenProvider.ACCESS_HEADER))
-                                .andExpect(header().exists(JwtTokenProvider.REFRESH_HEADER));
-        }
+		mock.perform(
+				post("/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(user)))
+				.andExpect(status().isOk())
+				.andExpect(header().exists(JwtTokenProvider.ACCESS_HEADER))
+				.andExpect(header().exists(JwtTokenProvider.REFRESH_HEADER));
+	}
 
-        @Test
-        public void 아이디_중복_체크() throws Exception {
-                UserSignUpDto user = UserSignUpDto.builder().id("testUser").pw("testUser").nickName("testUser").build();
-                mock.perform(
-                                post("/sign-up")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(objectMapper.writeValueAsString(user)))
-                                .andExpect(status().isCreated());
+	@Test
+	public void 아이디_중복_체크() throws Exception {
+		UserSignUpDto user = UserSignUpDto.builder().id("testUser").pw("testUser").nickName("testUser").build();
+		mock.perform(
+				post("/sign-up")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(user)))
+				.andExpect(status().isCreated());
 
-                ResultActions checkId = mock.perform(get("/users/id/testUser"));
-                checkId
-                                .andExpect(content().string("true"));
+		ResultActions checkId = mock.perform(get("/users/id/testUser"));
+		checkId
+				.andExpect(content().string("true"));
 
-                ResultActions checkId1 = mock.perform(get("/users/id/testUser1"));
-                checkId1
-                                .andExpect(content().string("false"));
-        }
+		ResultActions checkId1 = mock.perform(get("/users/id/testUser1"));
+		checkId1
+				.andExpect(content().string("false"));
+	}
 
-        @Test
-        public void 닉네임_중복_체크() throws Exception {
-                UserSignUpDto user = UserSignUpDto.builder().id("testUser").pw("testUser").nickName("testUser").build();
-                mock.perform(
-                                post("/sign-up")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(objectMapper.writeValueAsString(user)))
-                                .andExpect(status().isCreated());
+	@Test
+	public void 닉네임_중복_체크() throws Exception {
+		UserSignUpDto user = UserSignUpDto.builder().id("testUser").pw("testUser").nickName("testUser").build();
+		mock.perform(
+				post("/sign-up")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(user)))
+				.andExpect(status().isCreated());
 
-                ResultActions checkId = mock.perform(get("/users/nick-name/testUser"));
-                checkId
-                                .andExpect(content().string("true"));
+		ResultActions checkId = mock.perform(get("/users/nick-name/testUser"));
+		checkId
+				.andExpect(content().string("true"));
 
-                ResultActions checkId1 = mock.perform(get("/users/nick-name/testUser1"));
-                checkId1
-                                .andExpect(content().string("false"));
-        }
+		ResultActions checkId1 = mock.perform(get("/users/nick-name/testUser1"));
+		checkId1
+				.andExpect(content().string("false"));
+	}
 
-        @Test
-        @WithMockCustomUser(username = "fhdufhdu", roles = { Role.USER })
-        public void 유저정보가져오기_본인() throws Exception {
-                ResultActions actions = mock.perform(get("/users/fhdufhdu"));
+	@Test
+	@WithMockCustomUser(username = "fhdufhdu", roles = { Role.USER })
+	public void 유저정보가져오기_본인() throws Exception {
+		ResultActions actions = mock.perform(get("/users/fhdufhdu"));
 
-                actions
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id", is("fhdufhdu")));
-        }
+		actions
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is("fhdufhdu")));
+	}
 
-        @Test
-        @WithMockCustomUser(username = "admin", roles = { Role.ADMIN })
-        public void 유저정보가져오기_관리자() throws Exception {
-                ResultActions actions = mock.perform(get("/users/fhdufhdu"));
+	@Test
+	@WithMockCustomUser(username = "admin", roles = { Role.ADMIN })
+	public void 유저정보가져오기_관리자() throws Exception {
+		ResultActions actions = mock.perform(get("/users/fhdufhdu"));
 
-                actions
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id", is("fhdufhdu")));
+		actions
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is("fhdufhdu")));
 
-        }
+	}
 
-        @Test
-        @WithMockCustomUser(username = "another", roles = { Role.USER })
-        public void 유저정보가져오기_타인() throws Exception {
-                ResultActions actions = mock.perform(get("/users/fhdufhdu"));
+	@Test
+	@WithMockCustomUser(username = "another", roles = { Role.USER })
+	public void 유저정보가져오기_타인() throws Exception {
+		ResultActions actions = mock.perform(get("/users/fhdufhdu"));
 
-                actions
-                                .andExpect(status().isBadRequest());
-        }
+		actions
+				.andExpect(status().isBadRequest());
+	}
 
-        @Test
-        @WithMockCustomUser(username = "admin", roles = { Role.ADMIN })
-        public void 모든유저정보() throws Exception {
-                ResultActions actions = mock.perform(get("/users"));
+	@Test
+	@WithMockCustomUser(username = "admin", roles = { Role.ADMIN })
+	public void 모든유저정보() throws Exception {
+		ResultActions actions = mock.perform(get("/users"));
 
-                actions
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.length()", greaterThan(1)));
-        }
+		actions
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()", greaterThan(1)));
+	}
 
-        @Test
-        @WithMockCustomUser(username = "fhdufhdu", roles = { Role.USER })
-        public void 유저정보수정_본인() throws Exception {
-                UserInfoDto user = UserInfoDto.builder().id("fhdufhdu").nickName("modified").build();
-                ResultActions actions = mock.perform(put("/users/fhdufhdu")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(user)));
+	@Test
+	@WithMockCustomUser(username = "fhdufhdu", roles = { Role.USER })
+	public void 유저정보수정_본인() throws Exception {
+		UserInfoDto user = UserInfoDto.builder().id("fhdufhdu").nickName("modified").build();
+		ResultActions actions = mock.perform(put("/users/fhdufhdu")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(user)));
 
-                actions
-                                .andExpect(status().isOk());
+		actions
+				.andExpect(status().isOk());
 
-                ResultActions info = mock.perform(get("/users/fhdufhdu"));
+		ResultActions info = mock.perform(get("/users/fhdufhdu"));
 
-                info
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.nickName", is("modified")));
-        }
+		info
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.nickName", is("modified")));
+	}
 
-        @Test
-        @WithMockCustomUser(username = "admin", roles = { Role.ADMIN })
-        public void 유저정보수정_관리자() throws Exception {
-                UserInfoDto user = UserInfoDto.builder().id("fhdufhdu").nickName("modified").build();
-                ResultActions actions = mock.perform(put("/users/fhdufhdu")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(user)));
+	@Test
+	@WithMockCustomUser(username = "admin", roles = { Role.ADMIN })
+	public void 유저정보수정_관리자() throws Exception {
+		UserInfoDto user = UserInfoDto.builder().id("fhdufhdu").nickName("modified").build();
+		ResultActions actions = mock.perform(put("/users/fhdufhdu")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(user)));
 
-                actions
-                                .andExpect(status().isOk());
+		actions
+				.andExpect(status().isOk());
 
-                ResultActions info = mock.perform(get("/users/fhdufhdu"));
+		ResultActions info = mock.perform(get("/users/fhdufhdu"));
 
-                info
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.nickName", is("modified")));
-        }
+		info
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.nickName", is("modified")));
+	}
 
-        @Test
-        @WithMockCustomUser(username = "another", roles = { Role.USER })
-        public void 유저정보수정_타인() throws Exception {
-                UserInfoDto user = UserInfoDto.builder().id("fhdufhdu").nickName("modified").build();
-                ResultActions actions = mock.perform(put("/users/fhdufhdu")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(user)));
+	@Test
+	@WithMockCustomUser(username = "another", roles = { Role.USER })
+	public void 유저정보수정_타인() throws Exception {
+		UserInfoDto user = UserInfoDto.builder().id("fhdufhdu").nickName("modified").build();
+		ResultActions actions = mock.perform(put("/users/fhdufhdu")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(user)));
 
-                actions
-                                .andExpect(status().isBadRequest());
-        }
+		actions
+				.andExpect(status().isBadRequest());
+	}
 
-        @Test
-        @WithMockCustomUser(username = "fhdufhdu", roles = { Role.USER })
-        public void 유저정보삭제_본인() throws Exception {
-                ResultActions actions = mock.perform(delete("/users/fhdufhdu"));
+	@Test
+	@WithMockCustomUser(username = "fhdufhdu", roles = { Role.USER })
+	public void 유저정보삭제_본인() throws Exception {
+		ResultActions actions = mock.perform(delete("/users/fhdufhdu"));
 
-                actions
-                                .andExpect(status().isOk());
+		actions
+				.andExpect(status().isOk());
 
-                ResultActions info = mock.perform(get("/users/fhdufhdu"));
+		ResultActions info = mock.perform(get("/users/fhdufhdu"));
 
-                info
-                                .andExpect(status().isBadRequest());
-        }
+		info
+				.andExpect(status().isBadRequest());
+	}
 
-        @Test
-        @WithMockCustomUser(username = "admin", roles = { Role.ADMIN })
-        public void 유저정보삭제_관리자() throws Exception {
-                ResultActions actions = mock.perform(delete("/users/fhdufhdu"));
+	@Test
+	@WithMockCustomUser(username = "admin", roles = { Role.ADMIN })
+	public void 유저정보삭제_관리자() throws Exception {
+		ResultActions actions = mock.perform(delete("/users/fhdufhdu"));
 
-                actions
-                                .andExpect(status().isOk());
+		actions
+				.andExpect(status().isOk());
 
-                ResultActions info = mock.perform(get("/users/fhdufhdu"));
+		ResultActions info = mock.perform(get("/users/fhdufhdu"));
 
-                info
-                                .andExpect(status().isBadRequest());
-        }
+		info
+				.andExpect(status().isBadRequest());
+	}
 
-        @Test
-        @WithMockCustomUser(username = "another", roles = { Role.USER })
-        public void 유저정보삭제_타인() throws Exception {
-                ResultActions actions = mock.perform(delete("/users/fhdufhdu"));
+	@Test
+	@WithMockCustomUser(username = "another", roles = { Role.USER })
+	public void 유저정보삭제_타인() throws Exception {
+		ResultActions actions = mock.perform(delete("/users/fhdufhdu"));
 
-                actions
-                                .andExpect(status().isBadRequest());
-        }
+		actions
+				.andExpect(status().isBadRequest());
+	}
 }

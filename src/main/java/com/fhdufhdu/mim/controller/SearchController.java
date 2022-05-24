@@ -58,7 +58,7 @@ public class SearchController {
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true),
             @ApiImplicitParam(name = "title", value = "영화 제목", paramType = "query", required = true)
     })
-    @ApiOperation(value = "[다건 조ㅣ] 영화 제목으로 영화 정보 조회(영화 제목의 일부만으로 가능)")
+    @ApiOperation(value = "[다건 조회] 영화 제목으로 영화 정보 조회(영화 제목의 일부만으로 가능)")
     @Tag(name = "영화 관리")
     public Page<MovieDto> getMovieList(@RequestParam("title") String title, int page) {
         return searchService.getMovieList(title, page);

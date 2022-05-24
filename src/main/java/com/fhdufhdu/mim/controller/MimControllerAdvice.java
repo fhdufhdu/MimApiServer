@@ -16,7 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 public class MimControllerAdvice {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ExceptionResponse> anyException(Exception e) {
-        log.error(e.getMessage());
+        log.error(e.toString());
+        for (StackTraceElement element : e.getStackTrace()) {
+            log.error(element.toString());
+        }
         ExceptionResponse response = new ExceptionResponse(new Date(), HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
