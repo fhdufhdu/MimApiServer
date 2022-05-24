@@ -36,5 +36,6 @@ public interface BoardService {
     /** GET /request-boards?page={page} */
     Page<RequestBoardDto> getAllRequests(int page);
 
+    /** GET /request-boards/{id} */
     RequestBoardDto getRequestById(Long id);
 }

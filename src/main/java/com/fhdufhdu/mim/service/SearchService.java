@@ -32,6 +32,7 @@ public interface SearchService {
         /** GET /movies?titles={title1, title2, title3} */
         Page<MovieDto> getMovieList(List<String> titles, int page);
 
+        /** GET /movies */
         Page<MovieDto> getMovieList(String title, int page);
 
         /** DELETE /movies/{movieId} */

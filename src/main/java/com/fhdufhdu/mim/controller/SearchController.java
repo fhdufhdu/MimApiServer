@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.fhdufhdu.mim.dto.MovieDto;
 import com.fhdufhdu.mim.dto.MovieDtoV2;
+import com.fhdufhdu.mim.dto.favoritemovie.FavoriteMovieAddDto;
+import com.fhdufhdu.mim.service.FavoriteMovieService;
 import com.fhdufhdu.mim.service.SearchService;
 
 import org.springframework.data.domain.Page;
@@ -27,9 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Api(tags = { "영화 관리", "장면 검색", "대사 검색" })
+@Api(tags = { "영화 관리", "장면 검색", "대사 검색", "즐겨찾기(영화)" })
 public class SearchController {
     private final SearchService searchService;
+    private final FavoriteMovieService favoriteMovieService;
 
     @GetMapping("/movies/{id}")
     @ApiOperation(value = "[단건 조회] 아이디로 영화 조회")
@@ -99,4 +102,30 @@ public class SearchController {
     public String lineByScan(@RequestParam("input") String input) {
         return "미완성";
     }
+
+    @GetMapping("/favorite-movies/user/{userId}")
+    @ApiOperation(value = "[다건 조회] 즐겨찾기한 영화 찾기")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true),
+            @ApiImplicitParam(name = "userId", value = "유저 아이디", paramType = "query", required = true)
+    })
+    @Tag(name = "즐겨찾기(영화)")
+    public Page<MovieDto> getMovieListByUserId(@PathVariable String userId, @RequestParam("page") int page) {
+        return favoriteMovieService.getMovieListByUserId(userId, page);
+    }
+
+    @PostMapping("/favorite-movies")
+    @ApiOperation(value = "[등록] 영화 즐겨찾기 하기")
+    @Tag(name = "즐겨찾기(영화)")
+    public void addFavorite(@RequestBody FavoriteMovieAddDto favoriteMovieDto) {
+        favoriteMovieService.addFavorite(favoriteMovieDto);
+    }
+
+    @DeleteMapping("/favorite-movies/{id}")
+    @ApiOperation(value = "[삭제] 즐겨찾기한 영화 제거")
+    @Tag(name = "즐겨찾기(영화)")
+    public void removeFavorite(@PathVariable Long id) {
+        favoriteMovieService.removeFavorite(id);
+    }
+
 }
