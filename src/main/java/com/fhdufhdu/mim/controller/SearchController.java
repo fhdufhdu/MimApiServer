@@ -42,6 +42,11 @@ public class SearchController {
         return searchService.getMovieById(id);
     }
 
+    @GetMapping("/movies/{id}/image")
+    public void getMovieImage(@PathVariable Long id) {
+
+    }
+
     @GetMapping("/movies/titles")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true),

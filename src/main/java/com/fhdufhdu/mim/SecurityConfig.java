@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**", "/v2/**")
                 .permitAll()
                 .antMatchers("/login", "/sign-up", "/users/id/{id}", "/users/nick-name/{nickName}").permitAll()
-                .antMatchers("/users/{id}").hasAnyRole(USER, ADMIN)
+                .antMatchers("/users/{id}", "/users/{id}/profile").hasAnyRole(USER, ADMIN)
                 .antMatchers("/users").hasAnyRole(ADMIN)
 
                 .antMatchers(HttpMethod.PUT, "/movies/{movieId}").hasRole(ADMIN)

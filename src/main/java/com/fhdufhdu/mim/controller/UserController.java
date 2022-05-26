@@ -1,5 +1,7 @@
 package com.fhdufhdu.mim.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +17,9 @@ import com.fhdufhdu.mim.security.CustomUser;
 import com.fhdufhdu.mim.security.JwtTokenProvider;
 import com.fhdufhdu.mim.service.UserService;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,10 +29,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -125,4 +132,41 @@ public class UserController {
         userService.withdrawal(id);
     }
 
+    @PostMapping("/users/{id}/profile")
+    @ApiOperation(value = "[등록] 프로필사진 등록", notes = "multipart/form-data로 보내야함, 일반적인 form 형태의 파일 업로드 사용하면 됌")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path"),
+            @ApiImplicitParam(name = "profile", value = "프로필 사진", paramType = "form")
+    })
+    @Tag(name = "유저 관리")
+    public ResponseEntity<String> saveProfile(@PathVariable String id,
+            @RequestParam("profile") MultipartFile file,
+            @ApiIgnore @AuthenticationPrincipal CustomUser user) throws IOException {
+        if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
+            throw new MismatchAuthorException();
+        userService.saveProfile(id, file);
+        return new ResponseEntity<String>("test", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/users/{id}/profile")
+    @ApiOperation(value = "[삭제] 프로필사진 삭제")
+    @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
+    @Tag(name = "유저 관리")
+    public ResponseEntity<String> deleteProfile(@PathVariable String id,
+            @ApiIgnore @AuthenticationPrincipal CustomUser user) {
+        if (!user.getUsername().equals(id) && !util.checkAdminAuthority(user))
+            throw new MismatchAuthorException();
+        userService.deleteProfile(id);
+        return new ResponseEntity<String>("test", HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/users/{id}/profile")
+    @ApiOperation(value = "[조회] 프로필사진 조회", notes = "프로필이 없는 유저의 경우 에러 출력함. 에러발생시 적절한 조치 취해주면 됌")
+    @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
+    @Tag(name = "유저 관리")
+    public void getUserProfile(HttpServletResponse response, @PathVariable String id) throws IOException {
+        InputStream in = userService.getUserProfile(id);
+        response.setContentType(MediaType.IMAGE_PNG_VALUE);
+        IOUtils.copy(in, response.getOutputStream());
+    }
 }

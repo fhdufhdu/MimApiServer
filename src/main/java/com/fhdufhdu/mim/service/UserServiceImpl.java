@@ -1,6 +1,14 @@
 package com.fhdufhdu.mim.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.fhdufhdu.mim.dto.user.UserDto;
@@ -10,17 +18,21 @@ import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.entity.User;
 import com.fhdufhdu.mim.exception.DuplicateUserException;
 import com.fhdufhdu.mim.exception.MismatchPasswdException;
+import com.fhdufhdu.mim.exception.NotFoundProfilePathException;
 import com.fhdufhdu.mim.exception.NotFoundUserException;
 import com.fhdufhdu.mim.repository.UserRepository;
 import com.fhdufhdu.mim.security.CustomUser;
 import com.fhdufhdu.mim.service.util.UtilService;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
@@ -102,9 +114,56 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
     @Override
     public void withdrawal(String id) {
         User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
-
+        deleteUserProfile(user);
+        user.setNickName(null);
         user.setIsRemoved(true);
         userRepository.save(user);
+    }
+
+    @Override
+    public void saveProfile(String id, MultipartFile file) throws IOException {
+        Date curDate = new Date();
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyyMMddHHmmss_");
+        String dateString = simpleFormat.format(curDate);
+
+        // UUID 사용
+        String uuid = UUID.randomUUID().toString();
+        // 파일의 확장자 알아오기
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        // 파일명 생성하고 디비에 저장
+        String filename = "/home/fhdufhdu/user_profile/" + dateString + uuid + "." + extension;
+
+        User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
+        deleteUserProfile(user);
+        user.setProfilePath(filename);
+        userRepository.save(user);
+        // 파일 저장
+        FileCopyUtils.copy(file.getBytes(), new File(filename));
+    }
+
+    @Override
+    public void deleteProfile(String id) {
+        User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
+        deleteUserProfile(user);
+        user.setProfilePath(null);
+        userRepository.save(user);
+    }
+
+    private void deleteUserProfile(User user) {
+        if (user.getProfilePath() != null) {
+            File savedFile = new File(user.getProfilePath());
+            if (savedFile.exists()) {
+                savedFile.delete();
+            }
+        }
+    }
+
+    public InputStream getUserProfile(String id) throws FileNotFoundException {
+        User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
+        if (user.getProfilePath() == null) {
+            throw new NotFoundProfilePathException();
+        }
+        return new FileInputStream(user.getProfilePath());
     }
 
 }

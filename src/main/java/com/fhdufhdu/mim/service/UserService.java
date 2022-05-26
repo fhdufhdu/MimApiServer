@@ -1,10 +1,15 @@
 package com.fhdufhdu.mim.service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import com.fhdufhdu.mim.dto.user.UserDto;
 import com.fhdufhdu.mim.dto.user.UserInfoDto;
 import com.fhdufhdu.mim.dto.user.UserSignUpDto;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
     /** POST /users/login */
@@ -30,4 +35,17 @@ public interface UserService {
 
     /** DELETE /users/{id} */
     void withdrawal(String id);
+
+    /** POST /users/{id}/profile */
+    void saveProfile(String id, MultipartFile file) throws IOException;
+
+    /** DELETE /users{id}/profile */
+    void deleteProfile(String id);
+
+    /**
+     * GET /users{id}/profile
+     * 
+     * @throws FileNotFoundException
+     */
+    InputStream getUserProfile(String id) throws FileNotFoundException;
 }
