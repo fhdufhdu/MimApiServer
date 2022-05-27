@@ -164,7 +164,7 @@ public class UserController {
     @ApiOperation(value = "[조회] 프로필사진 조회", notes = "프로필이 없는 유저의 경우 에러 출력함. 에러발생시 적절한 조치 취해주면 됌")
     @ApiImplicitParam(name = "id", value = "유저아이디", paramType = "path")
     @Tag(name = "유저 관리")
-    public void getUserProfile(HttpServletResponse response, @PathVariable String id) throws IOException {
+    public void getUserProfile(@ApiIgnore HttpServletResponse response, @PathVariable String id) throws IOException {
         InputStream in = userService.getUserProfile(id);
         response.setContentType(MediaType.IMAGE_PNG_VALUE);
         IOUtils.copy(in, response.getOutputStream());

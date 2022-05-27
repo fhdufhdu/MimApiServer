@@ -1,5 +1,8 @@
 package com.fhdufhdu.mim.service;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,6 +125,18 @@ public class SearchServiceImpl extends UtilService implements SearchService {
     }
 
     @Override
+    public InputStream getMovieBackground(Long movieId) throws FileNotFoundException {
+        Movie movie = movieRepository.findById(movieId).orElseThrow(NotFoundMovieException::new);
+        return new FileInputStream(movie.getDirName() + "/image.png");
+    }
+
+    @Override
+    public InputStream getMoviePoster(Long movieId) throws FileNotFoundException {
+        Movie movie = movieRepository.findById(movieId).orElseThrow(NotFoundMovieException::new);
+        return new FileInputStream(movie.getDirName() + "/poster.png");
+    }
+
+    @Override
     public void removeMovie(Long movieId) {
         // if (!hasPermission(Role.ADMIN)) {
         // throw new WrongPermissionException();
@@ -137,7 +152,12 @@ public class SearchServiceImpl extends UtilService implements SearchService {
         // throw new WrongPermissionException();
         // }
         Movie originalMovie = movieRepository.findById(movieId).orElseThrow(NotFoundMovieException::new);
-        MovieRating movieRating = movieRatingRepository.findByRating(movie.getRating()).get();
+        MovieRating movieRating = movieRatingRepository.findByRating(movie.getRating()).orElseGet(() -> {
+            MovieRating newMovieRating = MovieRating.builder()
+                    .rating(movie.getRating())
+                    .build();
+            return movieRatingRepository.save(newMovieRating);
+        });
         originalMovie.setTitle(movie.getMovieDto().getTitle());
         originalMovie.setEngTitle(movie.getMovieDto().getEngTitle());
         originalMovie.setYear(movie.getMovieDto().getYear());
@@ -151,11 +171,10 @@ public class SearchServiceImpl extends UtilService implements SearchService {
         movieFeatureRepository.deleteByMovieId(movieId);
 
         for (String director : movie.getDirectors()) {
-            Director ds = directorRepository.findByName(director).orElse(null);
-            if (ds == null) {
-                ds = Director.builder().name(director).build();
-                ds = directorRepository.save(ds);
-            }
+            Director ds = directorRepository.findByName(director).orElseGet(() -> {
+                Director newDs = Director.builder().name(director).build();
+                return directorRepository.save(newDs);
+            });
             MovieWorker movieWorker = MovieWorker.builder().movie(originalMovie).worker(ds).build();
             movieWorkerRepository.save(movieWorker);
         }
@@ -210,7 +229,12 @@ public class SearchServiceImpl extends UtilService implements SearchService {
 
     @Override
     public void addMovie(MovieDtoV2 movie) {
-        MovieRating movieRating = movieRatingRepository.findByRating(movie.getRating()).get();
+        MovieRating movieRating = movieRatingRepository.findByRating(movie.getRating()).orElseGet(() -> {
+            MovieRating newMovieRating = MovieRating.builder()
+                    .rating(movie.getRating())
+                    .build();
+            return movieRatingRepository.save(newMovieRating);
+        });
         Movie newMovie = Movie.builder()
                 .title(movie.getMovieDto().getTitle())
                 .engTitle(movie.getMovieDto().getEngTitle())

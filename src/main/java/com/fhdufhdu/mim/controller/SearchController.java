@@ -1,6 +1,10 @@
 package com.fhdufhdu.mim.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import com.fhdufhdu.mim.dto.MovieDto;
 import com.fhdufhdu.mim.dto.MovieDtoV2;
@@ -8,7 +12,9 @@ import com.fhdufhdu.mim.dto.favoritemovie.FavoriteMovieAddDto;
 import com.fhdufhdu.mim.service.FavoriteMovieService;
 import com.fhdufhdu.mim.service.SearchService;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +31,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
 @RestController
@@ -40,11 +47,6 @@ public class SearchController {
     @Tag(name = "영화 관리")
     public MovieDtoV2 getMovieById(@PathVariable Long id) {
         return searchService.getMovieById(id);
-    }
-
-    @GetMapping("/movies/{id}/image")
-    public void getMovieImage(@PathVariable Long id) {
-
     }
 
     @GetMapping("/movies/titles")
@@ -67,6 +69,26 @@ public class SearchController {
     @Tag(name = "영화 관리")
     public Page<MovieDto> getMovieList(@RequestParam("title") String title, int page) {
         return searchService.getMovieList(title, page);
+    }
+
+    @GetMapping("/movies/{id}/background")
+    @ApiOperation(value = "[조회] 영화 아이디로 배경 이미지 가져오기")
+    @ApiImplicitParam(name = "id", value = "영화아이디", paramType = "path", required = true)
+    @Tag(name = "영화 관리")
+    public void getMovieBackground(@ApiIgnore HttpServletResponse response, @PathVariable Long id) throws IOException {
+        InputStream in = searchService.getMovieBackground(id);
+        response.setContentType(MediaType.IMAGE_PNG_VALUE);
+        IOUtils.copy(in, response.getOutputStream());
+    }
+
+    @GetMapping("/movies/{id}/poster")
+    @ApiOperation(value = "[조회] 영화 아이디로 포스터 이미지 가져오기")
+    @ApiImplicitParam(name = "id", value = "영화아이디", paramType = "path", required = true)
+    @Tag(name = "영화 관리")
+    public void getMoviePosting(@ApiIgnore HttpServletResponse response, @PathVariable Long id) throws IOException {
+        InputStream in = searchService.getMoviePoster(id);
+        response.setContentType(MediaType.IMAGE_PNG_VALUE);
+        IOUtils.copy(in, response.getOutputStream());
     }
 
     // 사용하지 않을 예정

@@ -1,5 +1,7 @@
 package com.fhdufhdu.mim.service;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 import com.fhdufhdu.mim.dto.MovieDto;
@@ -34,6 +36,20 @@ public interface SearchService {
 
         /** GET /movies */
         Page<MovieDto> getMovieList(String title, int page);
+
+        /**
+         * GET /movies/{movieId}/background
+         * 
+         * @throws FileNotFoundException
+         */
+        InputStream getMovieBackground(Long movieId) throws FileNotFoundException;
+
+        /**
+         * GET /movies/{movieId}/posting
+         * 
+         * @throws FileNotFoundException
+         */
+        InputStream getMoviePoster(Long movieId) throws FileNotFoundException;
 
         /** DELETE /movies/{movieId} */
         void removeMovie(Long movieId);
