@@ -50,25 +50,32 @@ public class SearchController {
     }
 
     @GetMapping("/movies/titles")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true),
-            @ApiImplicitParam(name = "titles", value = "영화 제목들(리스트)", paramType = "query", required = true)
-    })
+    @ApiImplicitParam(name = "titles", value = "영화 제목들(리스트)", paramType = "query", required = true)
     @ApiOperation(value = "[다건 조회] 영화 제목 리스트로 영화 정보 조회(정확한 제목 필요)")
     @Tag(name = "영화 관리")
-    public Page<MovieDto> getMovieList(@RequestParam("titles") List<String> titles, int page) {
-        return searchService.getMovieList(titles, page);
+    public List<MovieDto> getMovieList(@RequestParam("titles") List<String> titles) {
+        return searchService.getMovieList(titles);
+    }
+
+    // 이거 테스트 추가
+    @GetMapping("/movies/ids")
+    @ApiImplicitParam(name = "ids", value = "영화 아이디(리스트)", paramType = "query", required = true)
+    @ApiOperation(value = "[다건 조회] 영화 아이디 리스트로 영화 정보 조회")
+    @Tag(name = "영화 관리")
+    public List<MovieDto> getMovieListByIds(@RequestParam("ids") List<Long> ids) {
+        return searchService.getMovieListByIds(ids);
     }
 
     @GetMapping("/movies")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true),
             @ApiImplicitParam(name = "title", value = "영화 제목", paramType = "query", required = true)
     })
     @ApiOperation(value = "[다건 조회] 영화 제목으로 영화 정보 조회(영화 제목의 일부만으로 가능)")
     @Tag(name = "영화 관리")
-    public Page<MovieDto> getMovieList(@RequestParam("title") String title, int page) {
-        return searchService.getMovieList(title, page);
+    public Page<MovieDto> getMovieList(@RequestParam("title") String title, int page, @RequestParam("size") int size) {
+        return searchService.getMovieList(title, page, size);
     }
 
     @GetMapping("/movies/{id}/background")
@@ -133,12 +140,25 @@ public class SearchController {
     @GetMapping("/favorite-movies/user/{userId}")
     @ApiOperation(value = "[다건 조회] 즐겨찾기한 영화 찾기")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true),
-            @ApiImplicitParam(name = "userId", value = "유저 아이디", paramType = "query", required = true)
+            @ApiImplicitParam(name = "userId", value = "유저 아이디", paramType = "path", required = true)
     })
     @Tag(name = "즐겨찾기(영화)")
-    public Page<MovieDto> getMovieListByUserId(@PathVariable String userId, @RequestParam("page") int page) {
-        return favoriteMovieService.getMovieListByUserId(userId, page);
+    public Page<MovieDto> getMovieListByUserId(@PathVariable String userId, @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return favoriteMovieService.getMovieListByUserId(userId, page, size);
+    }
+
+    @GetMapping("/favorite-movies/user/{userId}/movie/{movieId}")
+    @ApiOperation(value = "[조회] 즐겨찾기한 영화 찾기")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "유저 아이디", paramType = "path", required = true),
+            @ApiImplicitParam(name = "movieId", value = "영화 아이디", paramType = "path", required = true)
+    })
+    @Tag(name = "즐겨찾기(영화)")
+    public boolean isFavoriteMovie(@PathVariable String userId, @PathVariable Long movieId) {
+        return favoriteMovieService.isFavoriteMovie(userId, movieId);
     }
 
     @PostMapping("/favorite-movies")
@@ -149,10 +169,21 @@ public class SearchController {
     }
 
     @DeleteMapping("/favorite-movies/{id}")
-    @ApiOperation(value = "[삭제] 즐겨찾기한 영화 제거")
+    @ApiOperation(value = "[삭제] 즐겨찾기 아이디로 즐겨찾기한 영화 제거")
+    @ApiImplicitParam(name = "id", value = "즐겨찾기 아이디", paramType = "path", required = true)
     @Tag(name = "즐겨찾기(영화)")
     public void removeFavorite(@PathVariable Long id) {
         favoriteMovieService.removeFavorite(id);
     }
 
+    @DeleteMapping("/favorite-movies/user/{userId}/movie/{movieId}")
+    @ApiOperation(value = "[삭제] 유저 아이디와 영화 아이디로 즐겨찾기한 영화 제거")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "유저 아이디", paramType = "path", required = true),
+            @ApiImplicitParam(name = "movieId", value = "영화 아이디", paramType = "path", required = true)
+    })
+    @Tag(name = "즐겨찾기(영화)")
+    public void removeFavoriteByUserIdAndMovieId(@PathVariable String userId, @PathVariable Long movieId) {
+        favoriteMovieService.removeFavorite(userId, movieId);
+    }
 }

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import com.fhdufhdu.mim.dto.user.UserDto;
 import com.fhdufhdu.mim.dto.user.UserInfoDto;
 import com.fhdufhdu.mim.dto.user.UserSignUpDto;
 
@@ -13,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
     /** POST /users/login */
-    UserDto login(String id, String pw);
+    UserInfoDto login(String id, String pw);
 
     /** POST /users/sign-up */
     void signUp(UserSignUpDto user);

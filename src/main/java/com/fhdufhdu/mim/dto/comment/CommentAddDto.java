@@ -15,6 +15,8 @@ import lombok.Setter;
 public class CommentAddDto {
     @ApiModelProperty(example = "게시글 아이디")
     private Long postingId;
+    @ApiModelProperty(example = "작성자 아이디")
+    private String userId;
     @ApiModelProperty(example = "댓글 그룹(대댓글 구분용도, 대댓글이면 대댓글의 ID, 댓글이면 안보내도 됌)")
     private Long commentGroup;
     @ApiModelProperty(example = "댓글 깊이(0 = 댓글, 1 = 대댓글)")

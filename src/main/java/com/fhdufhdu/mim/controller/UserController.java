@@ -58,7 +58,7 @@ public class UserController {
             @RequestBody UserLoginDto user,
             HttpServletRequest request,
             HttpServletResponse response) {
-        UserDto loginUser = userService.login(user.getId(), user.getPw());
+        UserInfoDto loginUser = userService.login(user.getId(), user.getPw());
 
         // 로그인 토큰 발급
         response.setHeader(JwtTokenProvider.ACCESS_HEADER, jwtTokenProvider.createAccessToken(user.getId(),

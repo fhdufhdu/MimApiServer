@@ -23,6 +23,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
+// @NamedEntityGraphs({
+// @NamedEntityGraph(name = "CommentReport.comment", attributeNodes = {
+// @NamedAttributeNode("comment")
+// })
+// })
 public class CommentReport {
     @Id
     @GeneratedValue

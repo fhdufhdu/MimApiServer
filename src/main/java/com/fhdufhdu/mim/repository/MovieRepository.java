@@ -11,9 +11,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
-    @Query(value = "select m from Movie m where m.title in (:titles)", nativeQuery = false)
-    Page<Movie> findByTitleList(@Param("titles") List<String> titles, Pageable pageable);
+    @Query(value = "select m from Movie m where m.title in (:titles) and m.id != 1", nativeQuery = false)
+    List<Movie> findByTitleList(@Param("titles") List<String> titles);
 
-    @Query(value = "select m from Movie m where m.title like %:title%", nativeQuery = false)
+    @Query(value = "select m from Movie m where m.id in (:ids) and m.id != 1", nativeQuery = false)
+    List<Movie> findByIdList(@Param("ids") List<Long> ids);
+
+    @Query(value = "select m from Movie m where m.title like %:title% and m.id != 1", nativeQuery = false)
     Page<Movie> findByTitle(@Param("title") String title, Pageable pageable);
 }

@@ -36,12 +36,14 @@ public class PostingController {
     @GetMapping("/postings/board/{boardId}")
     @ApiOperation(value = "[다건 조회] 해당 게시판의 모든 게시글 조회")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
             @ApiImplicitParam(name = "boardId", value = "게시판 아이디", paramType = "path", required = true),
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
     })
     @Tag(name = "게시글 관리")
-    public Page<PostingDto> getAllPostings(@PathVariable Long boardId, @RequestParam("page") int page) {
-        return postingService.getAllPostings(boardId, page);
+    public Page<PostingDto> getAllPostings(@PathVariable Long boardId, @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return postingService.getAllPostings(boardId, page, size);
     }
 
     @GetMapping("/postings/board/{boardId}/posting-number/{postingNumber}")
@@ -53,6 +55,22 @@ public class PostingController {
     @Tag(name = "게시글 관리")
     public PostingDto getPostingByBoardAndPostingNum(@PathVariable Long boardId, @PathVariable Long postingNumber) {
         return postingService.getPostingByBoardAndPostingNum(boardId, postingNumber);
+    }
+
+    @GetMapping("/postings/board/{boardId}/query")
+    @ApiOperation(value = "[다건 조회] 해당 게시판에서 제목으로 조회(문자열 일부만 가능)")
+    @ApiImplicitParams({
+
+            @ApiImplicitParam(name = "boardId", value = "게시판 아이디", paramType = "path", required = true),
+            @ApiImplicitParam(name = "query", value = "제목 일부", paramType = "query", required = true),
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    })
+    @Tag(name = "게시글 관리")
+    public Page<PostingDto> getPostingByQuery(@PathVariable Long boardId, @RequestParam("query") String query,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return postingService.getPostingByQuery(boardId, query, page, size);
     }
 
     @GetMapping("/postings/{id}")
@@ -90,25 +108,28 @@ public class PostingController {
     @GetMapping("/comments/board/{boardId}/posting-number/{postingNumber}")
     @ApiOperation(value = "[다건 조회] 게시판 아이디와 게시글 번호로 모든 댓글 조회")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
             @ApiImplicitParam(name = "boardId", value = "게시판 아이디", paramType = "path", required = true),
             @ApiImplicitParam(name = "postingNumber", value = "게시글 번호", paramType = "path", required = true),
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
     })
     @Tag(name = "댓글 관리")
     public Page<CommentDto> getAllCommentsByBoardAndPostingNum(@PathVariable Long boardId,
-            @PathVariable Long postingNumber, @RequestParam("page") int page) {
-        return postingService.getAllCommentsByBoardAndPostingNum(boardId, postingNumber, page);
+            @PathVariable Long postingNumber, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return postingService.getAllCommentsByBoardAndPostingNum(boardId, postingNumber, page, size);
     }
 
     @GetMapping("/comments/posting/{postingId}")
     @ApiOperation(value = "[다건 조회] 게시글 아이디로 모든 댓글 조회")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
             @ApiImplicitParam(name = "postingId", value = "게시글 아이디", paramType = "path", required = true),
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
     })
     @Tag(name = "댓글 관리")
-    public Page<CommentDto> getAllCommentsByPostingId(@PathVariable Long postingId, @RequestParam("page") int page) {
-        return postingService.getAllCommentsByPostingId(postingId, page);
+    public Page<CommentDto> getAllCommentsByPostingId(@PathVariable Long postingId, @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return postingService.getAllCommentsByPostingId(postingId, page, size);
     }
 
     @PutMapping("/comments/{id}")
@@ -137,23 +158,27 @@ public class PostingController {
     @GetMapping("/postings/user/{userId}")
     @ApiOperation(value = "[다건 조회] 특정 유저가 작성한 게시글 조회")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
             @ApiImplicitParam(name = "userId", value = "유저 아이디", paramType = "path", required = true),
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
     })
     @Tag(name = "유저별 게시글, 댓글 확인")
-    public Page<PostingDto> getPostingsByUserId(@PathVariable String userId, @RequestParam("page") int page) {
-        return postingService.getPostingsByUserId(userId, page);
+    public Page<PostingDto> getPostingsByUserId(@PathVariable String userId, @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return postingService.getPostingsByUserId(userId, page, size);
     }
 
     @GetMapping("/comments/user/{userId}")
     @ApiOperation(value = "[다건 조회] 특정 유저가 작성한 댓글 조회")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
             @ApiImplicitParam(name = "userId", value = "유저 아이디", paramType = "path", required = true),
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
     })
     @Tag(name = "유저별 게시글, 댓글 확인")
-    public Page<CommentDto> getCommentsByUserId(@PathVariable String userId, @RequestParam("page") int page) {
-        return postingService.getCommentsByUserId(userId, page);
+    public Page<CommentDto> getCommentsByUserId(@PathVariable String userId, @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return postingService.getCommentsByUserId(userId, page, size);
     }
 
 }

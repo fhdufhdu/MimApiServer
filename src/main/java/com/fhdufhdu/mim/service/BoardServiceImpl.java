@@ -1,5 +1,7 @@
 package com.fhdufhdu.mim.service;
 
+import java.util.Optional;
+
 import com.fhdufhdu.mim.dto.RequestBoardDto;
 import com.fhdufhdu.mim.dto.board.BoardDto;
 import com.fhdufhdu.mim.entity.Board;
@@ -27,12 +29,11 @@ public class BoardServiceImpl extends UtilService implements BoardService {
     private final BoardRepository boardRepository;
     private final RequestBoardRepository rBoardRepository;
     private final MovieRepository movieRepository;
-    private final static int PAGE_SIZE = 10;
 
     @Override
-    public Page<BoardDto> getAllBoards(int page) {
+    public Page<BoardDto> getAllBoards(int page, int size) {
         // 1대다 문제 발생함, 게시판 불러올때 영화도 불러오기
-        PageRequest request = PageRequest.of(page, PAGE_SIZE);
+        PageRequest request = PageRequest.of(page, size);
         Page<Board> boards = boardRepository.findAll(request);
         // Page<BoardDto> boardDtos = boards.map(x -> {
         // BoardDto dto = convertToDest(x, BoardDto.class);
@@ -45,8 +46,8 @@ public class BoardServiceImpl extends UtilService implements BoardService {
     }
 
     @Override
-    public Page<BoardDto> getBoardsByTitle(String title, int page) {
-        PageRequest request = PageRequest.of(page, PAGE_SIZE);
+    public Page<BoardDto> getBoardsByTitle(String title, int page, int size) {
+        PageRequest request = PageRequest.of(page, size);
         Page<Board> boards = boardRepository.findByMovieTitle(title, request);
         return convertToDests(boards, BoardDto.class);
     }
@@ -80,12 +81,13 @@ public class BoardServiceImpl extends UtilService implements BoardService {
     public void openUpBoard(Long requestId) {
         // 여기 요청게시판하고 영화하고 n + 1문제 발생함
         RequestBoard rBoard = rBoardRepository.findById(requestId).orElseThrow(NotFoundBoardException::new);
-        Boolean checkBoard = boardRepository.existsByMovieId(rBoard.getMovie().getId());
-        if (checkBoard == true)
+        Optional<Board> checkBoard = boardRepository.findByMovieId(rBoard.getMovie().getId());
+        if (checkBoard.isPresent())
             throw new DuplicateBoardException();
         Board board = Board.builder()
                 .lastPostingNumber(0L)
                 .movie(rBoard.getMovie())
+                .isRemoved(false)
                 .build();
         boardRepository.save(board);
 
@@ -101,8 +103,8 @@ public class BoardServiceImpl extends UtilService implements BoardService {
     }
 
     @Override
-    public Page<RequestBoardDto> getAllRequests(int page) {
-        PageRequest request = PageRequest.of(page, PAGE_SIZE);
+    public Page<RequestBoardDto> getAllRequests(int page, int size) {
+        PageRequest request = PageRequest.of(page, size);
         return convertToDests(rBoardRepository.findAll(request), RequestBoardDto.class);
     }
 

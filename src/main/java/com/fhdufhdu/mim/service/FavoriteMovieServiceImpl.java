@@ -31,15 +31,22 @@ public class FavoriteMovieServiceImpl extends UtilService implements FavoriteMov
     private final FavoriteMovieRepository favoriteMovieRepository;
     private final MovieRepository movieRepository;
     private final UserRepository userRepository;
-    private final static int PAGE_SIZE = 10;
 
     @Override
-    public Page<MovieDto> getMovieListByUserId(String userId, int page) {
+    public Page<MovieDto> getMovieListByUserId(String userId, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.ASC, "time");
-        PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
-        Page<Movie> movies = favoriteMovieRepository.findMovieByUserId(userId, pageRequest)
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Page<Movie> movies = favoriteMovieRepository.findByUserId(userId, pageRequest)
                 .map(favorite -> favorite.getMovie());
         return convertToDests(movies, MovieDto.class);
+    }
+
+    @Override
+    public boolean isFavoriteMovie(String userId, Long movieId) {
+        if (!userId.equals(getUserId()) && !hasAuthority(Role.ADMIN)) {
+            throw new MismatchAuthorException();
+        }
+        return favoriteMovieRepository.existsByUserIdAndMovieId(userId, movieId);
     }
 
     @Override
@@ -72,5 +79,10 @@ public class FavoriteMovieServiceImpl extends UtilService implements FavoriteMov
             throw new MismatchAuthorException();
         }
         favoriteMovieRepository.deleteById(id);
+    }
+
+    @Override
+    public void removeFavorite(String userId, Long movieId) {
+        favoriteMovieRepository.deleteByUserIdAndMovieId(userId, movieId);
     }
 }

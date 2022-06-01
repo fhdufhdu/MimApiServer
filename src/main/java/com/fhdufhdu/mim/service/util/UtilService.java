@@ -29,6 +29,10 @@ public abstract class UtilService {
         return user;
     }
 
+    public ModelMapper getModelMapper() {
+        return modelMapper;
+    }
+
     protected <T, G> List<T> convertToDests(List<G> sources, Class<T> dest) {
         List<T> dtos = sources.stream().map(dto -> modelMapper.map(dto, dest))
                 .collect(Collectors.toList());

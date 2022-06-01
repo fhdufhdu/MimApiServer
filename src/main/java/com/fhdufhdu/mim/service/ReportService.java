@@ -15,10 +15,10 @@ public interface ReportService {
     void reportComment(CommentReportSendDto commentReportDto);
 
     /** GET /report-postings */
-    Page<PostingReportDto> getAllPostingReports(int page);
+    Page<PostingReportDto> getAllPostingReports(int page, int size);
 
     /** GET /report-comments */
-    Page<CommentReportDto> getAllCommentReports(int page);
+    Page<CommentReportDto> getAllCommentReports(int page, int size);
 
     /** PUT /report-postings/{id} */
     void confirmPostingReport(Long id);

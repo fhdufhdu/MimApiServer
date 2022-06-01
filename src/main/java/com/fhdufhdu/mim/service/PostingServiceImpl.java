@@ -12,7 +12,6 @@ import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
 import com.fhdufhdu.mim.entity.Board;
 import com.fhdufhdu.mim.entity.Comment;
 import com.fhdufhdu.mim.entity.Posting;
-import com.fhdufhdu.mim.entity.PostingId;
 import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.entity.User;
 import com.fhdufhdu.mim.exception.MismatchAuthorException;
@@ -44,13 +43,11 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-    private final static int POSTING_PAGE_SIZE = 10;
-    private final static int COMMENT_PAGE_SIZE = 10;
 
     @Override
-    public Page<PostingDto> getAllPostings(Long boardId, int page) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "postingId.postingNumber");
-        PageRequest pageRequest = PageRequest.of(page, POSTING_PAGE_SIZE, sort);
+    public Page<PostingDto> getAllPostings(Long boardId, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "postingNumber");
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
         Page<Posting> sources = postingRepository.findByBoardId(boardId, pageRequest);
         return convertToDests(sources, PostingDto.class);
     }
@@ -63,15 +60,23 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     }
 
     @Override
+    public Page<PostingDto> getPostingByQuery(Long boardId, String query, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "postingNumber");
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Page<Posting> sources = postingRepository.findByBoardIdAndQuery(boardId, query, pageRequest);
+        return convertToDests(sources, PostingDto.class);
+    }
+
+    @Override
     public PostingDto getPostingById(Long id) {
         Posting source = postingRepository.findById(id).orElseThrow(NotFoundPostingException::new);
         return convertToDest(source, PostingDto.class);
     }
 
     @Override
-    public Page<PostingDto> getPostingsByUserId(String userId, int page) {
+    public Page<PostingDto> getPostingsByUserId(String userId, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "time");
-        PageRequest pageRequest = PageRequest.of(page, POSTING_PAGE_SIZE, sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
         Page<Posting> sources = postingRepository.findByUserId(userId, pageRequest);
         return convertToDests(sources, PostingDto.class);
     }
@@ -107,14 +112,15 @@ public class PostingServiceImpl extends UtilService implements PostingService {
         Board board = boardRepository.findById(postingDto.getMovieBoardId())
                 .orElseThrow(NotFoundBoardException::new);
         board.setLastPostingNumber(board.getLastPostingNumber() + 1);
+        User user = userRepository.findById(postingDto.getUserId()).orElseThrow(NotFoundUserException::new);
 
-        PostingId newPostingId = new PostingId();
-        newPostingId.setMovieBoard(board);
-        newPostingId.setPostingNumber(board.getLastPostingNumber());
+        if (!user.getId().equals(getUserId())) {
+            throw new MismatchAuthorException();
+        }
 
-        User user = userRepository.findById(getUserId()).orElseThrow(NotFoundUserException::new);
         Posting newPosting = Posting.builder()
-                .postingId(newPostingId)
+                .movieBoard(board)
+                .postingNumber(board.getLastPostingNumber())
                 .title(postingDto.getTitle())
                 .content(postingDto.getContent())
                 .time(getNowTimestamp())
@@ -126,33 +132,33 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     }
 
     @Override
-    public Page<CommentDto> getAllCommentsByBoardAndPostingNum(Long boardId, Long postingNumber, int page) {
+    public Page<CommentDto> getAllCommentsByBoardAndPostingNum(Long boardId, Long postingNumber, int page, int size) {
         List<Order> sortList = new ArrayList<>();
         sortList.add(Order.asc("commentGroup"));
         sortList.add(Order.asc("depth"));
 
         Sort sort = Sort.by(sortList);
-        PageRequest pageRequest = PageRequest.of(page, COMMENT_PAGE_SIZE, sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
         Page<Comment> comments = commentRepository.findByBoardIdAndPostingNum(boardId, postingNumber, pageRequest);
         return convertToDests(comments, CommentDto.class);
     }
 
     @Override
-    public Page<CommentDto> getAllCommentsByPostingId(Long postingId, int page) {
+    public Page<CommentDto> getAllCommentsByPostingId(Long postingId, int page, int size) {
         List<Order> sortList = new ArrayList<>();
         sortList.add(Order.asc("commentGroup"));
         sortList.add(Order.asc("depth"));
 
         Sort sort = Sort.by(sortList);
-        PageRequest pageRequest = PageRequest.of(page, COMMENT_PAGE_SIZE, sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
         Page<Comment> comments = commentRepository.findByPostingId(postingId, pageRequest);
         return convertToDests(comments, CommentDto.class);
     }
 
     @Override
-    public Page<CommentDto> getCommentsByUserId(String userId, int page) {
+    public Page<CommentDto> getCommentsByUserId(String userId, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "time");
-        PageRequest pageRequest = PageRequest.of(page, POSTING_PAGE_SIZE, sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
         Page<Comment> sources = commentRepository.findByUserId(userId, pageRequest);
         return convertToDests(sources, CommentDto.class);
     }
@@ -190,10 +196,11 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     public void addComment(CommentAddDto commentDto) {
         Posting posting = postingRepository.findById(commentDto.getPostingId())
                 .orElseThrow(NotFoundPostingException::new);
-        User user = userRepository.findById(getUserId()).orElseThrow(NotFoundUserException::new);
-        // Comment parentComment =
-        // commentRepository.findById(commentDto.getCommentId()).get();
+        User user = userRepository.findById(commentDto.getUserId()).orElseThrow(NotFoundUserException::new);
 
+        if (!user.getId().equals(getUserId())) {
+            throw new MismatchAuthorException();
+        }
         Comment newComment = Comment.builder()
                 .content(commentDto.getContent())
                 .isRemoved(false)

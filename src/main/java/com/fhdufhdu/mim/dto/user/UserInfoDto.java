@@ -19,6 +19,8 @@ public class UserInfoDto {
     private String pw;
     @ApiModelProperty(example = "닉네임")
     private String nickName;
+    @ApiModelProperty(example = "역할(ADMIN, USER 둘 중 하나)")
+    private String role;
     @ApiModelProperty(example = "프로필 사진 경로")
     private String profilePath;
 }

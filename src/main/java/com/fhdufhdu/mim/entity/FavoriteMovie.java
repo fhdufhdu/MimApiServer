@@ -22,6 +22,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
+// @NamedEntityGraphs({
+// @NamedEntityGraph(name = "report_user", attributeNodes = {
+// @NamedAttributeNode("comment")
+// })
+// })
 public class FavoriteMovie {
     @Id
     @GeneratedValue

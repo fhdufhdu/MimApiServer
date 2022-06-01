@@ -9,9 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedEntityGraphs;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -26,11 +23,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
-@NamedEntityGraphs({
-                @NamedEntityGraph(name = "comment_user", attributeNodes = {
-                                @NamedAttributeNode("user")
-                })
-})
+// @NamedEntityGraphs({
+// @NamedEntityGraph(name = "comment_user", attributeNodes = {
+// @NamedAttributeNode("user")
+// }),
+// @NamedEntityGraph(name = "comment_posting", attributeNodes = {
+// @NamedAttributeNode("posting")
+// })
+// })
 public class Comment {
         @Id
         @GeneratedValue
@@ -45,14 +45,6 @@ public class Comment {
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
         private User user;
-
-        // @ManyToOne(fetch = FetchType.LAZY)
-        // @JoinColumn(name = "parent_id")
-        // private Comment parent;
-
-        // @Builder.Default
-        // @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
-        // private List<Comment> childs = new ArrayList<>();
 
         @NotNull
         private Long commentGroup;

@@ -43,7 +43,6 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class SearchServiceImpl extends UtilService implements SearchService {
-    private static final int PAGE_SIZE = 10;
     private final MovieRepository movieRepository;
     private final MovieGenreRepository movieGenreRepository;
     private final MovieFeatureRepository movieFeatureRepository;
@@ -109,17 +108,21 @@ public class SearchServiceImpl extends UtilService implements SearchService {
     }
 
     @Override
-    public Page<MovieDto> getMovieList(List<String> titles, int page) {
-        Sort sort = Sort.by(Sort.Direction.ASC, "title");
-        PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
-        Page<Movie> movies = movieRepository.findByTitleList(titles, pageRequest);
+    public List<MovieDto> getMovieList(List<String> titles) {
+        List<Movie> movies = movieRepository.findByTitleList(titles);
         return convertToDests(movies, MovieDto.class);
     }
 
     @Override
-    public Page<MovieDto> getMovieList(String title, int page) {
+    public List<MovieDto> getMovieListByIds(List<Long> ids) {
+        List<Movie> movies = movieRepository.findByIdList(ids);
+        return convertToDests(movies, MovieDto.class);
+    }
+
+    @Override
+    public Page<MovieDto> getMovieList(String title, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.ASC, "title");
-        PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
         Page<Movie> movies = movieRepository.findByTitle(title, pageRequest);
         return convertToDests(movies, MovieDto.class);
     }

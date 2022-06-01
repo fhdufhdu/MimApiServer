@@ -7,9 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedEntityGraphs;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -24,11 +21,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Builder
-@NamedEntityGraphs({
-                @NamedEntityGraph(name = "board_movie", attributeNodes = {
-                                @NamedAttributeNode("movie")
-                })
-})
+// @NamedEntityGraphs({
+// @NamedEntityGraph(name = "board_movie", attributeNodes = {
+// @NamedAttributeNode("movie")
+// })
+// })
 public class Board {
         @Id
         @GeneratedValue

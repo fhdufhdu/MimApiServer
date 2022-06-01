@@ -32,23 +32,18 @@ public interface SearchService {
         // MovieRatingDto getMovieRatingByMovieId(Long movieId);
 
         /** GET /movies?titles={title1, title2, title3} */
-        Page<MovieDto> getMovieList(List<String> titles, int page);
+        List<MovieDto> getMovieList(List<String> titles);
+
+        /** GET /movies?ids={id1, id2, id3} */
+        List<MovieDto> getMovieListByIds(List<Long> ids);
 
         /** GET /movies */
-        Page<MovieDto> getMovieList(String title, int page);
+        Page<MovieDto> getMovieList(String title, int page, int size);
 
-        /**
-         * GET /movies/{movieId}/background
-         * 
-         * @throws FileNotFoundException
-         */
+        /** GET /movies/{movieId}/background */
         InputStream getMovieBackground(Long movieId) throws FileNotFoundException;
 
-        /**
-         * GET /movies/{movieId}/posting
-         * 
-         * @throws FileNotFoundException
-         */
+        /** GET /movies/{movieId}/posting */
         InputStream getMoviePoster(Long movieId) throws FileNotFoundException;
 
         /** DELETE /movies/{movieId} */

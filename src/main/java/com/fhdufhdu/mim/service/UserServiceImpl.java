@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.fhdufhdu.mim.dto.user.UserDto;
 import com.fhdufhdu.mim.dto.user.UserInfoDto;
 import com.fhdufhdu.mim.dto.user.UserSignUpDto;
 import com.fhdufhdu.mim.entity.Role;
@@ -44,12 +43,12 @@ public class UserServiceImpl extends UtilService implements UserDetailsService, 
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDto login(String id, String pw) {
+    public UserInfoDto login(String id, String pw) {
         User user = userRepository.findById(id).orElseThrow(NotFoundUserException::new);
         if (!passwordEncoder.matches(pw, user.getPw())) {
             throw new MismatchPasswdException();
         }
-        return convertToDest(user, UserDto.class);
+        return convertToDest(user, UserInfoDto.class);
     }
 
     @Override

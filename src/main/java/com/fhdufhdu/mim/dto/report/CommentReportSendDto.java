@@ -17,4 +17,5 @@ public class CommentReportSendDto {
     private Long commentId;
     @ApiModelProperty(example = "신고 이유")
     private String reportReason;
+
 }

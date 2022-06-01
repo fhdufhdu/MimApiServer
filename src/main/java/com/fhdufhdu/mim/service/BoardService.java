@@ -10,10 +10,10 @@ public interface BoardService {
      * GET /boards?page={page}
      * 영화 이름
      */
-    Page<BoardDto> getAllBoards(int page);
+    Page<BoardDto> getAllBoards(int page, int size);
 
     /** GET /boards/title/{title}?page={page} */
-    Page<BoardDto> getBoardsByTitle(String title, int page);
+    Page<BoardDto> getBoardsByTitle(String title, int page, int size);
 
     /** GET /boards/movie/{movieId} */
     BoardDto getBoardByMovieId(Long movieId);
@@ -34,7 +34,7 @@ public interface BoardService {
     void cancelRequestBoard(Long requestId);
 
     /** GET /request-boards?page={page} */
-    Page<RequestBoardDto> getAllRequests(int page);
+    Page<RequestBoardDto> getAllRequests(int page, int size);
 
     /** GET /request-boards/{id} */
     RequestBoardDto getRequestById(Long id);

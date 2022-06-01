@@ -29,21 +29,26 @@ public class BoardController {
 
     @GetMapping("/boards")
     @ApiOperation(value = "[다건 조회] 모든 게시판 조회")
-    @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    })
     @Tag(name = "게시판 관리")
-    public Page<BoardDto> getAllBoards(@RequestParam("page") int page) {
-        return boardService.getAllBoards(page);
+    public Page<BoardDto> getAllBoards(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return boardService.getAllBoards(page, size);
     }
 
     @GetMapping("/boards/title/{title}")
     @ApiOperation(value = "[다건 조회] 영화 제목으로 게시판 조회(일부 문자열로 가능)")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true),
             @ApiImplicitParam(name = "title", value = "영화 제목", paramType = "path", required = true)
     })
     @Tag(name = "게시판 관리")
-    public Page<BoardDto> getBoardsByTitle(@PathVariable String title, @RequestParam("page") int page) {
-        return boardService.getBoardsByTitle(title, page);
+    public Page<BoardDto> getBoardsByTitle(@PathVariable String title, @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return boardService.getBoardsByTitle(title, page, size);
     }
 
     @GetMapping("/boards/movie/{movieId}")
@@ -96,10 +101,14 @@ public class BoardController {
 
     @GetMapping("/request-boards")
     @ApiOperation(value = "[다건 조회] 게시판 요청 모두 조회")
-    @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "size", value = "페이지 사이즈", paramType = "query", required = true),
+            @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
+    })
+
     @Tag(name = "게시판 요청 관리")
-    public Page<RequestBoardDto> getAllRequests(@RequestParam("page") int page) {
-        return boardService.getAllRequests(page);
+    public Page<RequestBoardDto> getAllRequests(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return boardService.getAllRequests(page, size);
     }
 
     @GetMapping("/request-boards/{id}")

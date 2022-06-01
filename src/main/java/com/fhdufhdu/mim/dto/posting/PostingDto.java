@@ -1,6 +1,6 @@
 package com.fhdufhdu.mim.dto.posting;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

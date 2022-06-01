@@ -49,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**", "/v2/**")
                 .permitAll()
                 .antMatchers("/login", "/sign-up", "/users/id/{id}", "/users/nick-name/{nickName}").permitAll()
+                .antMatchers(HttpMethod.GET, "/users/{id}/profile").permitAll()
                 .antMatchers("/users/{id}", "/users/{id}/profile").hasAnyRole(USER, ADMIN)
                 .antMatchers("/users").hasAnyRole(ADMIN)
 
@@ -59,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers(HttpMethod.GET, "/boards/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/boards/{id}").hasRole(ADMIN)
+                .antMatchers("/request-boards/movie/{movieId}").permitAll()
                 .antMatchers("/request-boards/**").hasRole(ADMIN)
 
                 .antMatchers(HttpMethod.GET, "/postings/**", "/comments/**").permitAll()

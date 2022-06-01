@@ -3,7 +3,6 @@ package com.fhdufhdu.mim.entity;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,8 +28,15 @@ public class Posting {
     @GeneratedValue
     private Long id;
 
-    @Embedded
-    private PostingId postingId;
+    // @Embedded
+    // private PostingId postingId;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private Board movieBoard;
+
+    @NotNull
+    private Long postingNumber;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
