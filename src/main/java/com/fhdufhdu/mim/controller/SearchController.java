@@ -6,12 +6,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.fhdufhdu.mim.dto.MovieDto;
-import com.fhdufhdu.mim.dto.MovieDtoV2;
-import com.fhdufhdu.mim.dto.favoritemovie.FavoriteMovieAddDto;
-import com.fhdufhdu.mim.service.FavoriteMovieService;
-import com.fhdufhdu.mim.service.SearchService;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -23,6 +17,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fhdufhdu.mim.dto.MovieDto;
+import com.fhdufhdu.mim.dto.MovieDtoV2;
+import com.fhdufhdu.mim.dto.MovieLineDto;
+import com.fhdufhdu.mim.dto.favoritemovie.FavoriteMovieAddDto;
+import com.fhdufhdu.mim.service.FavoriteMovieService;
+import com.fhdufhdu.mim.service.SearchService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -125,16 +126,16 @@ public class SearchController {
     @ApiOperation(value = "장면 검색")
     @ApiImplicitParam(name = "input", value = "장면 서술", paramType = "query", required = true)
     @Tag(name = "장면 검색")
-    public String searchByScan(@RequestParam("input") String input) {
-        return "미완성";
+    public List<MovieDto> searchByScean(@RequestParam("input") String input) {
+        return searchService.searchByScean(input);
     }
 
     @GetMapping("/line")
     @ApiOperation(value = "대사 검색")
     @ApiImplicitParam(name = "input", value = "대사 서술", paramType = "query", required = true)
     @Tag(name = "대사 검색")
-    public String lineByScan(@RequestParam("input") String input) {
-        return "미완성";
+    public List<MovieLineDto> lineByScan(@RequestParam("input") String input) {
+        return searchService.searchByLine(input);
     }
 
     @GetMapping("/favorite-movies/user/{userId}")

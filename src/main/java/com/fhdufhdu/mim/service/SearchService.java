@@ -4,10 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.fhdufhdu.mim.dto.MovieDto;
 import com.fhdufhdu.mim.dto.MovieDtoV2;
-
-import org.springframework.data.domain.Page;
+import com.fhdufhdu.mim.dto.MovieLineDto;
 
 public interface SearchService {
         /** GET /movies/{movieId} */
@@ -56,8 +57,8 @@ public interface SearchService {
         void addMovie(MovieDtoV2 movie);
 
         /** GET /scean?input={input} */
-        List<Object> searchByScean(String input);
+        List<MovieDto> searchByScean(String input);
 
         /** GET /line?input={input} */
-        List<Object> searchByLine(String input);
+        List<MovieLineDto> searchByLine(String input);
 }

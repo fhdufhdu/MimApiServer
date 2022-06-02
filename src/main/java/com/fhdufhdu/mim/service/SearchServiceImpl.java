@@ -2,12 +2,27 @@ package com.fhdufhdu.mim.service;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fhdufhdu.mim.dto.MovieDto;
 import com.fhdufhdu.mim.dto.MovieDtoV2;
+import com.fhdufhdu.mim.dto.MovieLineDto;
+import com.fhdufhdu.mim.dto.SceanResultDto;
+import com.fhdufhdu.mim.dto.ScriptDto;
+import com.fhdufhdu.mim.dto.ScriptResultDto;
+import com.fhdufhdu.mim.dto.SearchDto;
 import com.fhdufhdu.mim.entity.Feature;
 import com.fhdufhdu.mim.entity.Genre;
 import com.fhdufhdu.mim.entity.Movie;
@@ -31,13 +46,13 @@ import com.fhdufhdu.mim.repository.MovieWorkerRepository;
 import com.fhdufhdu.mim.repository.WriterRepository;
 import com.fhdufhdu.mim.service.util.UtilService;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import lombok.RequiredArgsConstructor;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 @Service
 @Transactional
@@ -53,6 +68,7 @@ public class SearchServiceImpl extends UtilService implements SearchService {
     private final WriterRepository writerRepository;
     private final GenreRepository genreRepository;
     private final FeatureRepository featureRepository;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public MovieDtoV2 getMovieById(Long movieId) {
@@ -312,17 +328,125 @@ public class SearchServiceImpl extends UtilService implements SearchService {
     }
 
     @Override
-    public List<Object> searchByScean(String input) {
-        // TODO Auto-generated method stub
-        // 미구현
-        return null;
+    public List<MovieDto> searchByScean(String input) {
+        List<String> titleList = getResultSceanSearch(input).getData();
+        List<MovieDto> dbResult = getMovieList(titleList);
+        List<MovieDto> result = new ArrayList<>();
+        for (int i = 0; i < titleList.size(); i++) {
+            for (int j = 0; j < dbResult.size(); j++) {
+                if (titleList.get(i).equals(dbResult.get(j).getTitle())) {
+                    result.add(dbResult.get(j));
+                }
+            }
+        }
+        return result;
     }
 
     @Override
-    public List<Object> searchByLine(String input) {
-        // TODO Auto-generated method stub
-        // 미구현
-        return null;
+    public List<MovieLineDto> searchByLine(String input) {
+        List<ScriptDto> sResultList = getResultLineSearch(input).getData();
+        List<String> titleList = new ArrayList<>();
+        for (ScriptDto dto : sResultList) {
+            titleList.add(dto.getTitle());
+        }
+        List<MovieDto> dbResult = getMovieList(titleList);
+        List<MovieLineDto> result = new ArrayList<>();
+        for (int i = 0; i < titleList.size(); i++) {
+            for (int j = 0; j < dbResult.size(); j++) {
+                if (titleList.get(i).equals(dbResult.get(j).getTitle())) {
+                    result.add(MovieLineDto.builder()
+                            .movieDto(dbResult.get(j))
+                            .subtitles(sResultList.get(i).getSubtitle())
+                            .build());
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private SceanResultDto getResultSceanSearch(String query) {
+        SearchDto data = SearchDto.builder()
+                .type(true)
+                .query(query)
+                .build();
+
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+
+        RequestBody body = null;
+        try {
+            body = RequestBody.create(objectMapper.writeValueAsString(data),
+                    MediaType.get("application/json; charset=utf-8"));
+        } catch (JsonProcessingException e1) {
+            e1.printStackTrace();
+        }
+
+        Request request = new Request.Builder()
+                .url("http://202.31.202.147:443/search")
+                .post(body)
+                .build();
+        SceanResultDto responseData = null;
+        try {
+            Response response = client.newCall(request).execute();
+
+            if (response.isSuccessful()) {
+                ResponseBody responseBody = response.body();
+
+                if (body != null) {
+                    String jsonText = responseBody.string();
+
+                    responseBody.close();
+
+                    responseData = objectMapper.readValue(jsonText, SceanResultDto.class);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return responseData;
+    }
+
+    private ScriptResultDto getResultLineSearch(String query) {
+        SearchDto data = SearchDto.builder()
+                .type(false)
+                .query(query)
+                .build();
+
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+
+        RequestBody body = null;
+        try {
+            body = RequestBody.create(objectMapper.writeValueAsString(data),
+                    MediaType.get("application/json; charset=utf-8"));
+        } catch (JsonProcessingException e1) {
+            e1.printStackTrace();
+        }
+
+        Request request = new Request.Builder()
+                .url("http://202.31.202.147:443/search")
+                .post(body)
+                .build();
+        ScriptResultDto responseData = null;
+        try {
+            Response response = client.newCall(request).execute();
+
+            if (response.isSuccessful()) {
+                ResponseBody responseBody = response.body();
+
+                if (body != null) {
+                    String jsonText = responseBody.string();
+
+                    responseBody.close();
+
+                    responseData = objectMapper.readValue(jsonText, ScriptResultDto.class);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return responseData;
     }
 
 }

@@ -1,10 +1,5 @@
 package com.fhdufhdu.mim;
 
-import com.fhdufhdu.mim.entity.Role;
-import com.fhdufhdu.mim.security.CustomAccessDeniedHandler;
-import com.fhdufhdu.mim.security.CustomAuthenticationEntryPoint;
-import com.fhdufhdu.mim.security.JwtAuthenticationFilter;
-
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +8,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.fhdufhdu.mim.entity.Role;
+import com.fhdufhdu.mim.security.CustomAccessDeniedHandler;
+import com.fhdufhdu.mim.security.CustomAuthenticationEntryPoint;
+import com.fhdufhdu.mim.security.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/movies/{movieId}").hasRole(ADMIN)
                 .antMatchers(HttpMethod.POST, "/movies").hasRole(ADMIN)
                 .antMatchers("/favorite-movies/**").hasAnyRole(ADMIN, USER)
-                .antMatchers("/movies/**", "/scean", "line").permitAll()
+                .antMatchers("/movies/**", "/scean", "/line").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/boards/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/boards/{id}").hasRole(ADMIN)
