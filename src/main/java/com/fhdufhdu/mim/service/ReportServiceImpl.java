@@ -5,6 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.fhdufhdu.mim.dto.MovieDto;
 import com.fhdufhdu.mim.dto.board.BoardDto;
 import com.fhdufhdu.mim.dto.comment.CommentDto;
@@ -31,12 +37,6 @@ import com.fhdufhdu.mim.repository.CommentRepository;
 import com.fhdufhdu.mim.repository.PostingReportRepository;
 import com.fhdufhdu.mim.repository.PostingRepository;
 import com.fhdufhdu.mim.service.util.UtilService;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -86,28 +86,34 @@ public class ReportServiceImpl extends UtilService implements ReportService {
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
         Page<PostingReport> reports = postingReportRepository.findAll(pageRequest);
 
-        Map<Long, Long> postingIds = new HashMap<>();
-        Map<Long, Long> boardIds = new HashMap<>();
+        List<Long> postingIds = new ArrayList<>();
+        List<Long> boardIds = new ArrayList<>();
 
         Map<Long, Posting> postingMap = new HashMap<>();
         Map<Long, Board> boardMap = new HashMap<>();
+        Map<Long, Movie> movieMap = new HashMap<>();
 
-        reports.forEach(x -> postingIds.put(x.getPosting().getId(), x.getId()));
-        List<Posting> postings = postingRepository.findByIds(new ArrayList<>(postingIds.keySet()));
-        postings.forEach(x -> {
-            boardIds.put(x.getMovieBoard().getId(), postingIds.get(x.getId()));
-            postingMap.put(postingIds.get(x.getId()), x);
+        reports.forEach(x -> {
+            postingIds.add(x.getPosting().getId());
+            postingMap.put(x.getId(), x.getPosting());
         });
-        List<Board> boards = boardRepository.findByIds(new ArrayList<>(boardIds.keySet()));
+
+        List<Posting> postings = postingRepository.findByIds(postingIds);
+        postings.forEach(x -> {
+            boardIds.add(x.getMovieBoard().getId());
+            boardMap.put(x.getId(), x.getMovieBoard());
+        });
+
+        List<Board> boards = boardRepository.findByIds(boardIds);
         boards.forEach(x -> {
-            boardMap.put(boardIds.get(x.getId()), x);
+            movieMap.put(x.getId(), x.getMovie());
         });
 
         Page<PostingReportDto> reportsDto = reports.map((x) -> {
             Long reportId = x.getId();
             Posting posting = postingMap.get(reportId);
-            Board board = boardMap.get(reportId);
-            Movie movie = board.getMovie();
+            Board board = boardMap.get(posting.getId());
+            Movie movie = movieMap.get(board.getId());
 
             PostingReportDto dto = getModelMapper().map(x, PostingReportDto.class);
             dto.setPostingDto(getModelMapper().map(posting, PostingDto.class));
@@ -115,6 +121,7 @@ public class ReportServiceImpl extends UtilService implements ReportService {
             dto.setMovieDto(getModelMapper().map(movie, MovieDto.class));
             return dto;
         });
+
         return reportsDto;
     }
 
@@ -124,36 +131,43 @@ public class ReportServiceImpl extends UtilService implements ReportService {
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, sort);
         Page<CommentReport> reports = commentReportRepository.findAll(pageRequest);
 
-        Map<Long, Long> commentIds = new HashMap<>();
-        Map<Long, Long> postingIds = new HashMap<>();
-        Map<Long, Long> boardIds = new HashMap<>();
+        List<Long> commentIds = new ArrayList<>();
+        List<Long> postingIds = new ArrayList<>();
+        List<Long> boardIds = new ArrayList<>();
 
         Map<Long, Comment> commentMap = new HashMap<>();
         Map<Long, Posting> postingMap = new HashMap<>();
         Map<Long, Board> boardMap = new HashMap<>();
+        Map<Long, Movie> movieMap = new HashMap<>();
 
-        reports.forEach(x -> commentIds.put(x.getComment().getId(), x.getId())); // <댓글아이디, 신고아이디>
-        List<Comment> comments = commentRepository.findByIds(new ArrayList<>(commentIds.keySet()));
+        reports.forEach(x -> {
+            commentIds.add(x.getComment().getId());
+            commentMap.put(x.getId(), x.getComment());
+        }); // <댓글아이디, 신고아이디>
+
+        List<Comment> comments = commentRepository.findByIds(commentIds);
         comments.forEach(x -> {
-            postingIds.put(x.getPosting().getId(), commentIds.get(x.getId())); // <게시글아이디, 신고아이디>
-            commentMap.put(commentIds.get(x.getId()), x); // <신고아이디, 댓글객체>
+            postingIds.add(x.getPosting().getId()); // <게시글아이디, 신고아이디>
+            postingMap.put(x.getId(), x.getPosting()); // <신고아이디, 댓글객체>
         });
-        List<Posting> postings = postingRepository.findByIds(new ArrayList<>(postingIds.keySet()));
+
+        List<Posting> postings = postingRepository.findByIds(postingIds);
         postings.forEach(x -> {
-            boardIds.put(x.getMovieBoard().getId(), postingIds.get(x.getId()));
-            postingMap.put(postingIds.get(x.getId()), x);
+            boardIds.add(x.getMovieBoard().getId());
+            boardMap.put(x.getId(), x.getMovieBoard());
         });
-        List<Board> boards = boardRepository.findByIds(new ArrayList<>(boardIds.keySet()));
+
+        List<Board> boards = boardRepository.findByIds(boardIds);
         boards.forEach(x -> {
-            boardMap.put(boardIds.get(x.getId()), x);
+            movieMap.put(x.getId(), x.getMovie());
         });
 
         Page<CommentReportDto> reportsDto = reports.map((x) -> {
             Long reportId = x.getId();
             Comment comment = commentMap.get(reportId);
-            Posting posting = postingMap.get(reportId);
-            Board board = boardMap.get(reportId);
-            Movie movie = board.getMovie();
+            Posting posting = postingMap.get(comment.getId());
+            Board board = boardMap.get(posting.getId());
+            Movie movie = movieMap.get(board.getId());
 
             CommentReportDto dto = getModelMapper().map(x, CommentReportDto.class);
             dto.setCommentDto(getModelMapper().map(comment, CommentDto.class));
@@ -178,8 +192,8 @@ public class ReportServiceImpl extends UtilService implements ReportService {
         Posting originalPosting = report.getPosting();
         originalPosting.setIsRemoved(true);
 
-        report.setPosting(originalPosting);
-        postingReportRepository.save(report);
+        List<PostingReport> reports = postingReportRepository.findByPostingId(originalPosting.getId());
+        reports.forEach(x -> x.setIsConfirmed(true));
     }
 
     @Override
@@ -189,13 +203,11 @@ public class ReportServiceImpl extends UtilService implements ReportService {
             throw new MismatchAuthorException();
         }
         CommentReport report = commentReportRepository.findById(id).orElseThrow(NotFoundCommentReportException::new);
-        report.setIsConfirmed(true);
 
         Comment comment = report.getComment();
         comment.setIsRemoved(true);
 
-        report.setComment(comment);
-        commentReportRepository.save(report);
+        List<CommentReport> reports = commentReportRepository.findByCommentId(comment.getId());
+        reports.forEach(x -> x.setIsConfirmed(true));
     }
-
 }

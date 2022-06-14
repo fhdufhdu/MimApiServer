@@ -1,13 +1,5 @@
 package com.fhdufhdu.mim.controller;
 
-import com.fhdufhdu.mim.dto.comment.CommentAddDto;
-import com.fhdufhdu.mim.dto.comment.CommentDto;
-import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
-import com.fhdufhdu.mim.dto.posting.PostingAddDto;
-import com.fhdufhdu.mim.dto.posting.PostingDto;
-import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
-import com.fhdufhdu.mim.service.PostingService;
-
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +9,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fhdufhdu.mim.dto.comment.CommentAddDto;
+import com.fhdufhdu.mim.dto.comment.CommentDto;
+import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
+import com.fhdufhdu.mim.dto.posting.PostingAddDto;
+import com.fhdufhdu.mim.dto.posting.PostingDto;
+import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
+import com.fhdufhdu.mim.dto.posting.PostingUserDto;
+import com.fhdufhdu.mim.service.PostingService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -163,7 +164,7 @@ public class PostingController {
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
     })
     @Tag(name = "유저별 게시글, 댓글 확인")
-    public Page<PostingDto> getPostingsByUserId(@PathVariable String userId, @RequestParam("page") int page,
+    public Page<PostingUserDto> getPostingsByUserId(@PathVariable String userId, @RequestParam("page") int page,
             @RequestParam("size") int size) {
         return postingService.getPostingsByUserId(userId, page, size);
     }

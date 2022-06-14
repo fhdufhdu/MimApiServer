@@ -1,13 +1,14 @@
 package com.fhdufhdu.mim.service;
 
+import org.springframework.data.domain.Page;
+
 import com.fhdufhdu.mim.dto.comment.CommentAddDto;
 import com.fhdufhdu.mim.dto.comment.CommentDto;
 import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
 import com.fhdufhdu.mim.dto.posting.PostingAddDto;
 import com.fhdufhdu.mim.dto.posting.PostingDto;
 import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
-
-import org.springframework.data.domain.Page;
+import com.fhdufhdu.mim.dto.posting.PostingUserDto;
 
 public interface PostingService {
 
@@ -24,7 +25,7 @@ public interface PostingService {
     PostingDto getPostingById(Long id);
 
     /** GET /postings/user/{userId} */
-    Page<PostingDto> getPostingsByUserId(String userId, int page, int size);
+    Page<PostingUserDto> getPostingsByUserId(String userId, int page, int size);
 
     /** PUT /postings/{postingId} */
     void modifyPosting(Long id, PostingModifyDto postingDto);

@@ -1,7 +1,16 @@
 package com.fhdufhdu.mim.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fhdufhdu.mim.dto.comment.CommentAddDto;
 import com.fhdufhdu.mim.dto.comment.CommentDto;
@@ -9,8 +18,10 @@ import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
 import com.fhdufhdu.mim.dto.posting.PostingAddDto;
 import com.fhdufhdu.mim.dto.posting.PostingDto;
 import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
+import com.fhdufhdu.mim.dto.posting.PostingUserDto;
 import com.fhdufhdu.mim.entity.Board;
 import com.fhdufhdu.mim.entity.Comment;
+import com.fhdufhdu.mim.entity.Movie;
 import com.fhdufhdu.mim.entity.Posting;
 import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.entity.User;
@@ -24,13 +35,6 @@ import com.fhdufhdu.mim.repository.CommentRepository;
 import com.fhdufhdu.mim.repository.PostingRepository;
 import com.fhdufhdu.mim.repository.UserRepository;
 import com.fhdufhdu.mim.service.util.UtilService;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -74,11 +78,37 @@ public class PostingServiceImpl extends UtilService implements PostingService {
     }
 
     @Override
-    public Page<PostingDto> getPostingsByUserId(String userId, int page, int size) {
+    public Page<PostingUserDto> getPostingsByUserId(String userId, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "time");
         PageRequest pageRequest = PageRequest.of(page, size, sort);
         Page<Posting> sources = postingRepository.findByUserId(userId, pageRequest);
-        return convertToDests(sources, PostingDto.class);
+
+        List<Long> boardIds = new ArrayList<>();
+
+        Map<Long, Board> boardMap = new HashMap<>();
+        Map<Long, Movie> MovieMap = new HashMap<>();
+
+        sources.forEach(x -> {
+            boardIds.add(x.getMovieBoard().getId());
+            boardMap.put(x.getId(), x.getMovieBoard());
+        });
+        List<Board> boards = boardRepository.findByIds(boardIds);
+        boards.forEach(x -> {
+            MovieMap.put(x.getId(), x.getMovie());
+        });
+
+        Page<PostingUserDto> dtos = sources.map(x -> {
+            PostingUserDto dto = convertToDest(x, PostingUserDto.class);
+
+            Long postingId = x.getId();
+            Board board = boardMap.get(postingId);
+            Movie movie = MovieMap.get(board.getId());
+
+            dto.setMovieId(movie.getId());
+            return dto;
+        });
+
+        return dtos;
     }
 
     @Override
