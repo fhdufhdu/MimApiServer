@@ -22,7 +22,6 @@ import com.fhdufhdu.mim.dto.MovieDto;
 import com.fhdufhdu.mim.dto.MovieDtoV2;
 import com.fhdufhdu.mim.dto.MovieLineDto;
 import com.fhdufhdu.mim.dto.favoritemovie.FavoriteMovieAddDto;
-import com.fhdufhdu.mim.service.FavoriteMovieService;
 import com.fhdufhdu.mim.service.SearchService;
 
 import io.swagger.annotations.Api;

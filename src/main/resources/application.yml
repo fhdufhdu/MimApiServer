@@ -3,25 +3,24 @@ spring:
     activate:
       on-profile: default
   jpa:
-    generate-ddl: false
-    defer-datasource-initialization: true
+    #쿼리 발생 시 sql을 보기위한 옵션
     properties:
       hibernate:
-        use_sql_comments: true
+        show_sql: true
         format_sql: true
+        use_sql_comments: false
     hibernate:
-      ddl-auto: none
       use-new-id-generator-mappings: true
-    show-sql: false
+    #service계층을 넘어선 controller 계층에서 영속성을 유지할 것인지 설정하는 것. true일때 controller에서도 영속성을 유지한다.
     open-in-view: false
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
 
+#JWT 토큰 시크릿 키
 seckret_key: d4f'23p}793_+bg43'79'pd<./sabrg
 
 ---
-
 spring:
   config:
     activate:
@@ -31,20 +30,24 @@ spring:
       schema-locations: classpath:Dump20220524.sql
       mode: always
   jpa:
-    hibernate:
-      ddl-auto: none
-    database: h2
-    database-platform: org.hibernate.dialect.H2Dialect
+    #spring.sql.init을 작동시키기 위한 옵션
+    defer-datasource-initialization: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+    #ddl-auto를 사용하기 위한 옵션, true일때 ddl-auto가 작동함
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
   h2:
     console:
       enabled: true
       path: /h2-console
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/test
+    url: jdbc:h2:tcp://localhost/~/dev
     username: sa
     password:
 server:
@@ -69,13 +72,18 @@ spring:
 ---
 
 spring:
-  config:
-    activate:
-      on-profile: test
   sql:
     init:
+      schema-locations: classpath:Dump20220524.sql
       mode: always
   jpa:
+    #spring.sql.init을 작동시키기 위한 옵션
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    #ddl-auto를 사용하기 위한 옵션, true일때 ddl-auto가 작동함
+    generate-ddl: false
     hibernate:
       ddl-auto: none
     database: h2
@@ -83,9 +91,29 @@ spring:
   h2:
     console:
       enabled: true
-      path: ~/test
+      path: /h2-console
   datasource:
-    driver-class-name: org.h2.Driver  #h2 드라이버 설정
-    url: jdbc:h2:tcp://localhost/~/test  #접속 URL
-    username: sa  # 사용자 이름 (로그인 시 사용)
-    password:  # 사용자 암호 (로그인 시 사용)
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password:
+
+#spring:
+#  config:
+#    activate:
+#      on-profile: default
+#  jpa:
+#    generate-ddl: false
+#    defer-datasource-initialization: true
+#    properties:
+#      hibernate:
+#        use_sql_comments: true
+#        format_sql: true
+#    hibernate:
+#      ddl-auto: none
+#      use-new-id-generator-mappings: true
+#    show-sql: false
+#    open-in-view: false
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ANT_PATH_MATCHER

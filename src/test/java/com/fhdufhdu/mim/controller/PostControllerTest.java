@@ -14,8 +14,8 @@ import javax.transaction.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fhdufhdu.mim.dto.comment.CommentAddDto;
 import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
-import com.fhdufhdu.mim.dto.posting.PostingAddDto;
-import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
+import com.fhdufhdu.mim.dto.post.PostingAddDto;
+import com.fhdufhdu.mim.dto.post.PostingModifyDto;
 import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.mock.WithMockCustomUser;
 
@@ -33,7 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-public class PostingControllerTest {
+public class PostControllerTest {
 	@Autowired
 	WebApplicationContext wac;
 

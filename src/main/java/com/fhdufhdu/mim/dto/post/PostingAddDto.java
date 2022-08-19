@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim.dto.posting;
+package com.fhdufhdu.mim.dto.post;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

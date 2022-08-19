@@ -2,7 +2,6 @@ package com.fhdufhdu.mim.entity;
 
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,14 +22,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
-// @NamedEntityGraphs({
-// @NamedEntityGraph(name = "comment_user", attributeNodes = {
-// @NamedAttributeNode("user")
-// }),
-// @NamedEntityGraph(name = "comment_posting", attributeNodes = {
-// @NamedAttributeNode("posting")
-// })
-// })
 public class Comment {
         @Id
         @GeneratedValue
@@ -39,7 +30,7 @@ public class Comment {
         @ManyToOne(fetch = FetchType.LAZY)
         @NotNull
         @JoinColumn(name = "posting_id")
-        private Posting posting;
+        private Post post;
 
         @NotNull
         @ManyToOne(fetch = FetchType.LAZY)
@@ -57,8 +48,4 @@ public class Comment {
 
         @NotNull
         private Timestamp time;
-
-        @NotNull
-        @Column(columnDefinition = "boolean default false")
-        private Boolean isRemoved;
 }

@@ -1,6 +1,6 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.5'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.springframework.boot' version '2.7.3'
+	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
 }
 
@@ -19,33 +19,28 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testCompileOnly 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-	runtimeOnly 'mysql:mysql-connector-java'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter'
 	runtimeOnly 'com.h2database:h2'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-  	testImplementation 'org.springframework.security:spring-security-test'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation "javax.xml.bind:jaxb-api"
+	runtimeOnly 'mysql:mysql-connector-java'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	/*******************************************************************/
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation "javax.xml.bind:jaxb-api"
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.2'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
-	// https://mvnrepository.com/artifact/commons-io/commons-io
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 }
 
-test {
-    useJUnitPlatform()
+tasks.named('test') {
+	useJUnitPlatform()
 }

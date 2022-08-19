@@ -62,7 +62,7 @@ CREATE TABLE `comment` (
   PRIMARY KEY (`id`),
   KEY `FK4uvy94ui17hs3qcch04plyltp` (`posting_id`),
   KEY `FK8kcum44fvpupyw6f5baccx25c` (`user_id`),
-  CONSTRAINT `FK4uvy94ui17hs3qcch04plyltp` FOREIGN KEY (`posting_id`) REFERENCES `posting` (`id`),
+  CONSTRAINT `FK4uvy94ui17hs3qcch04plyltp` FOREIGN KEY (`posting_id`) REFERENCES `post` (`id`),
   CONSTRAINT `FK8kcum44fvpupyw6f5baccx25c` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -325,13 +325,13 @@ INSERT INTO `movie_worker` VALUES (1,1,1),(2,2,2),(3,3,3),(4,1,4),(5,1,5),(6,2,5
 UNLOCK TABLES;
 
 --
--- Table structure for table `posting`
+-- Table structure for table `post`
 --
 
-DROP TABLE IF EXISTS `posting`;
+DROP TABLE IF EXISTS `post`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `posting` (
+CREATE TABLE `post` (
   `id` bigint NOT NULL,
   `content` varchar(255) NOT NULL,
   `is_removed` tinyint(1) NOT NULL DEFAULT '0',
@@ -350,13 +350,13 @@ CREATE TABLE `posting` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `posting`
+-- Dumping data for table `post`
 --
 
-LOCK TABLES `posting` WRITE;
-/*!40000 ALTER TABLE `posting` DISABLE KEYS */;
-INSERT INTO `posting` VALUES (1,'dasf',0,4,1,'2022-05-11 05:13:47.000000','sdf',1,'fhdufhdu'),(2,'adsfa',0,0,2,'2022-05-11 05:13:47.000000','asd',1,'fhdufhdu'),(3,'asdf',0,0,3,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu'),(4,'asdf',1,0,4,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu');
-/*!40000 ALTER TABLE `posting` ENABLE KEYS */;
+LOCK TABLES `post` WRITE;
+/*!40000 ALTER TABLE `post` DISABLE KEYS */;
+INSERT INTO `post` VALUES (1,'dasf',0,4,1,'2022-05-11 05:13:47.000000','sdf',1,'fhdufhdu'),(2,'adsfa',0,0,2,'2022-05-11 05:13:47.000000','asd',1,'fhdufhdu'),(3,'asdf',0,0,3,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu'),(4,'asdf',1,0,4,'2022-05-11 05:13:47.000000','asdf',1,'fhdufhdu');
+/*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -374,7 +374,7 @@ CREATE TABLE `posting_report` (
   `posting_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKi7mjvpyg36kviif356byvrbw` (`posting_id`),
-  CONSTRAINT `FKi7mjvpyg36kviif356byvrbw` FOREIGN KEY (`posting_id`) REFERENCES `posting` (`id`)
+  CONSTRAINT `FKi7mjvpyg36kviif356byvrbw` FOREIGN KEY (`posting_id`) REFERENCES `post` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

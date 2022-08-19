@@ -1,6 +1,7 @@
 package com.fhdufhdu.mim.entity;
 
-import javax.persistence.Column;
+import java.sql.Timestamp;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,20 +22,25 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
-public class RequestBoard {
+public class Post {
     @Id
     @GeneratedValue
     private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id")
-    private Movie movie;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @NotNull
-    private Integer requestCnt;
+    private String title;
 
     @NotNull
-    @Column(columnDefinition = "boolean default false")
-    private Boolean isConfirmed;
+    private String content;
+
+    @NotNull
+    private Timestamp time;
+
+    @NotNull
+    private Integer commentCnt;
 }

@@ -12,6 +12,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -22,20 +24,16 @@ public class User {
     private String id;
     @NotNull
     private String pw;
-
+    @NotNull
     private String nickName;
-    private String profilePath;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private Timestamp banEndDate;
+
     public User() {
         role = Role.USER;
     }
-
-    @NotNull
-    @Column(columnDefinition = "boolean default false")
-    private Boolean isRemoved;
-
 }

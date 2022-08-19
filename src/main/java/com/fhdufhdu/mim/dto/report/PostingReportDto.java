@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 import com.fhdufhdu.mim.dto.MovieDto;
 import com.fhdufhdu.mim.dto.board.BoardDto;
-import com.fhdufhdu.mim.dto.posting.PostingDto;
+import com.fhdufhdu.mim.dto.post.PostingDto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

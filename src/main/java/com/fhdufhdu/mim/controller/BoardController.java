@@ -2,7 +2,6 @@ package com.fhdufhdu.mim.controller;
 
 import com.fhdufhdu.mim.dto.RequestBoardDto;
 import com.fhdufhdu.mim.dto.board.BoardDto;
-import com.fhdufhdu.mim.service.BoardService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;

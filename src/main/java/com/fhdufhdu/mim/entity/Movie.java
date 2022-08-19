@@ -30,16 +30,10 @@ public class Movie {
     private Integer year;
     private String synopsis;
     private String runningTime;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MovieRating movieRating;
+    private String movieRating;
+    private String directors;
+    private String actors;
+    private String genres;
+    private String features;
     private String dirName;
-
-    public void setMovieRating(MovieRating movieRating) {
-        if (this.movieRating != null) {
-            this.movieRating.getMovies().remove(this);
-        }
-        this.movieRating = movieRating;
-        this.movieRating.getMovies().add(this);
-    }
 }

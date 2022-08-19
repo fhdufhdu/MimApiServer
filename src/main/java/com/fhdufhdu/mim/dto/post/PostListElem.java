@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim.dto.posting;
+package com.fhdufhdu.mim.dto.post;
 
 import java.sql.Timestamp;
 
@@ -14,13 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostingDto {
+public class PostListElem {
     @ApiModelProperty(example = "게시글 아이디")
     private Long id;
-    @ApiModelProperty(example = "게시판 아이디")
-    private Long movieBoardId;
-    @ApiModelProperty(example = "게시글에 달린 댓글 갯수")
-    private Integer commentCnt;
     @ApiModelProperty(example = "작성자 아이디")
     private String userId;
     @ApiModelProperty(example = "게시글 제목")
@@ -29,6 +25,6 @@ public class PostingDto {
     private String content;
     @ApiModelProperty(example = "게시글 작성 및 수정 시간")
     private Timestamp time;
-    @ApiModelProperty(example = "게시글 순번")
-    private Long postingNumber;
+    @ApiModelProperty(example = "게시글에 달린 댓글 갯수")
+    private Integer commentCnt;
 }

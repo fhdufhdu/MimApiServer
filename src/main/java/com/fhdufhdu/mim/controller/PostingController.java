@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fhdufhdu.mim.dto.comment.CommentAddDto;
 import com.fhdufhdu.mim.dto.comment.CommentDto;
 import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
-import com.fhdufhdu.mim.dto.posting.PostingAddDto;
-import com.fhdufhdu.mim.dto.posting.PostingDto;
-import com.fhdufhdu.mim.dto.posting.PostingModifyDto;
-import com.fhdufhdu.mim.dto.posting.PostingUserDto;
+import com.fhdufhdu.mim.dto.post.PostingAddDto;
+import com.fhdufhdu.mim.dto.post.PostingDto;
+import com.fhdufhdu.mim.dto.post.PostingModifyDto;
+import com.fhdufhdu.mim.dto.post.PostListElem;
 import com.fhdufhdu.mim.service.PostingService;
 
 import io.swagger.annotations.Api;
@@ -164,8 +164,8 @@ public class PostingController {
             @ApiImplicitParam(name = "page", value = "페이지 번호(0부터 시작)", paramType = "query", required = true)
     })
     @Tag(name = "유저별 게시글, 댓글 확인")
-    public Page<PostingUserDto> getPostingsByUserId(@PathVariable String userId, @RequestParam("page") int page,
-            @RequestParam("size") int size) {
+    public Page<PostListElem> getPostingsByUserId(@PathVariable String userId, @RequestParam("page") int page,
+                                                  @RequestParam("size") int size) {
         return postingService.getPostingsByUserId(userId, page, size);
     }
 
