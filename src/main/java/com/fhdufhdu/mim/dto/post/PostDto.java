@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostElem {
+public class PostDto {
     @ApiModelProperty(example = "게시글 아이디")
     private Long id;
     @ApiModelProperty(example = "작성자 아이디")

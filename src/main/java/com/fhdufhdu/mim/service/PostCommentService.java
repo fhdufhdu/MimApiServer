@@ -1,5 +1,8 @@
 package com.fhdufhdu.mim.service;
 
+import com.fhdufhdu.mim.dto.PageParam;
+import com.fhdufhdu.mim.dto.post.PostDto;
+import com.fhdufhdu.mim.dto.post.PostListElem;
 import org.springframework.data.domain.Page;
 
 import com.fhdufhdu.mim.dto.comment.CommentDto;
