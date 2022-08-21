@@ -3,7 +3,7 @@ package com.fhdufhdu.mim.controller;
 import com.fhdufhdu.mim.dto.report.CommentReportDto;
 import com.fhdufhdu.mim.dto.report.CommentReportSendDto;
 import com.fhdufhdu.mim.dto.report.PostingReportDto;
-import com.fhdufhdu.mim.dto.report.PostingReportSendDto;
+import com.fhdufhdu.mim.dto.report.ReportForm;
 import com.fhdufhdu.mim.service.ReportService;
 
 import org.springframework.data.domain.Page;
@@ -34,7 +34,7 @@ public class ReportController {
     @ApiOperation(value = "[등록] 게시글 신고")
     @Tag(name = "게시글 신고 관리")
     public void reportPosting(
-            @RequestBody PostingReportSendDto postingReportDto) {
+            @RequestBody ReportForm postingReportDto) {
         reportService.reportPosting(postingReportDto);
     }
 

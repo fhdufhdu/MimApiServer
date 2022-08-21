@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim.dto.post;
+package com.fhdufhdu.mim.dto.comment;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,9 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostingModifyDto {
-    @ApiModelProperty(example = "게시글 제목")
-    private String title;
-    @ApiModelProperty(example = "게시글 내용")
+public class ModifiedComment {
+    @ApiModelProperty(example = "댓글 내용")
     private String content;
 }

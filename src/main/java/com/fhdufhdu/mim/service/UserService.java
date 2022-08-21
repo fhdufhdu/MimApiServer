@@ -11,6 +11,8 @@ import com.fhdufhdu.mim.dto.user.UserSignUpDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
+    //유저 제재 기능 추가 필요함
+
     /** POST /users/login */
     UserInfoDto login(String id, String pw);
 

@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fhdufhdu.mim.dto.report.CommentReportSendDto;
-import com.fhdufhdu.mim.dto.report.PostingReportSendDto;
+import com.fhdufhdu.mim.dto.report.ReportForm;
 import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.mock.WithMockCustomUser;
 
@@ -60,7 +60,7 @@ public class ReportControllerTest {
 	@Test
 	@WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
 	void 게시글_신고하기() throws Exception {
-		PostingReportSendDto report = PostingReportSendDto.builder()
+		ReportForm report = ReportForm.builder()
 				.postingId(1L)
 				.reportReason("testReason")
 				.build();

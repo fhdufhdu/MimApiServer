@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommentAddDto {
+public class WrittenComment {
     @ApiModelProperty(example = "게시글 아이디")
     private Long postingId;
     @ApiModelProperty(example = "작성자 아이디")

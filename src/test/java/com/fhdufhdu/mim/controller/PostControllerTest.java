@@ -12,10 +12,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fhdufhdu.mim.dto.comment.CommentAddDto;
-import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
-import com.fhdufhdu.mim.dto.post.PostingAddDto;
-import com.fhdufhdu.mim.dto.post.PostingModifyDto;
+import com.fhdufhdu.mim.dto.comment.WrittenComment;
+import com.fhdufhdu.mim.dto.comment.ModifiedComment;
+import com.fhdufhdu.mim.dto.post.WrittenPost;
+import com.fhdufhdu.mim.dto.post.ModifiedPost;
 import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.mock.WithMockCustomUser;
 
@@ -72,7 +72,7 @@ public class PostControllerTest {
 	@Test
 	@WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
 	void 게시글_수정() throws Exception {
-		PostingModifyDto modifiedPosting = PostingModifyDto.builder()
+		ModifiedPost modifiedPosting = ModifiedPost.builder()
 				.title("testTitle")
 				.content("testContent")
 				.build();
@@ -92,7 +92,7 @@ public class PostControllerTest {
 	@Test
 	@WithMockCustomUser(username = "admin", roles = Role.ADMIN)
 	void 게시글_수정_관리자() throws Exception {
-		PostingModifyDto modifiedPosting = PostingModifyDto.builder()
+		ModifiedPost modifiedPosting = ModifiedPost.builder()
 				.title("testTitle")
 				.content("testContent")
 				.build();
@@ -112,7 +112,7 @@ public class PostControllerTest {
 	@Test
 	@WithMockCustomUser(username = "another", roles = Role.USER)
 	void 게시글_수정_타인() throws Exception {
-		PostingModifyDto modifiedPosting = PostingModifyDto.builder()
+		ModifiedPost modifiedPosting = ModifiedPost.builder()
 				.title("testTitle")
 				.content("testContent")
 				.build();
@@ -153,7 +153,7 @@ public class PostControllerTest {
 	@Test
 	@WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
 	void 게시글_작성() throws Exception {
-		PostingAddDto addedPosting = PostingAddDto.builder()
+		WrittenPost addedPosting = WrittenPost.builder()
 				.movieBoardId(1L)
 				.title("testTitle")
 				.content("testContent")
@@ -202,7 +202,7 @@ public class PostControllerTest {
 	@Test
 	@WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
 	void 댓글_수정() throws Exception {
-		CommentModifyDto modifiedComment = CommentModifyDto.builder()
+		ModifiedComment modifiedComment = ModifiedComment.builder()
 				.content("testContent")
 				.build();
 
@@ -224,7 +224,7 @@ public class PostControllerTest {
 	@Test
 	@WithMockCustomUser(username = "admin", roles = Role.ADMIN)
 	void 댓글_수정_관리자() throws Exception {
-		CommentModifyDto modifiedComment = CommentModifyDto.builder()
+		ModifiedComment modifiedComment = ModifiedComment.builder()
 				.content("testContent")
 				.build();
 
@@ -247,7 +247,7 @@ public class PostControllerTest {
 	@Test
 	@WithMockCustomUser(username = "another", roles = Role.USER)
 	void 댓글_수정_타인() throws Exception {
-		CommentModifyDto modifiedComment = CommentModifyDto.builder()
+		ModifiedComment modifiedComment = ModifiedComment.builder()
 				.content("testContent")
 				.build();
 
@@ -302,7 +302,7 @@ public class PostControllerTest {
 	@Test
 	@WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
 	void 댓글_등록() throws Exception {
-		CommentAddDto addedComment = CommentAddDto.builder()
+		WrittenComment addedComment = WrittenComment.builder()
 				.postingId(1L)
 				.depth(0)
 				.content("testContent")
@@ -329,7 +329,7 @@ public class PostControllerTest {
 	@Test
 	@WithMockCustomUser(username = "fhdufhdu", roles = Role.USER)
 	void 대댓글_등록() throws Exception {
-		CommentAddDto addedComment = CommentAddDto.builder()
+		WrittenComment addedComment = WrittenComment.builder()
 				.postingId(1L)
 				.depth(1)
 				.commentGroup(1L)

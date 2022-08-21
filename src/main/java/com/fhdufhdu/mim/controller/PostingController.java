@@ -10,12 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fhdufhdu.mim.dto.comment.CommentAddDto;
+import com.fhdufhdu.mim.dto.comment.WrittenComment;
 import com.fhdufhdu.mim.dto.comment.CommentDto;
-import com.fhdufhdu.mim.dto.comment.CommentModifyDto;
-import com.fhdufhdu.mim.dto.post.PostingAddDto;
-import com.fhdufhdu.mim.dto.post.PostingDto;
-import com.fhdufhdu.mim.dto.post.PostingModifyDto;
+import com.fhdufhdu.mim.dto.comment.ModifiedComment;
+import com.fhdufhdu.mim.dto.post.WrittenPost;
+import com.fhdufhdu.mim.dto.post.ModifiedPost;
 import com.fhdufhdu.mim.dto.post.PostListElem;
 import com.fhdufhdu.mim.service.PostingService;
 
@@ -87,7 +86,7 @@ public class PostingController {
     @ApiImplicitParam(name = "id", value = "게시글 아이디", paramType = "path", required = true)
     @Tag(name = "게시글 관리")
     public void modifyPosting(@PathVariable Long id,
-            @RequestBody PostingModifyDto postingDto) {
+            @RequestBody ModifiedPost postingDto) {
         postingService.modifyPosting(id, postingDto);
     }
 
@@ -102,7 +101,7 @@ public class PostingController {
     @PostMapping("/postings")
     @ApiOperation(value = "[등록] 게시글 작성")
     @Tag(name = "게시글 관리")
-    public void addPosting(@RequestBody PostingAddDto postingDto) {
+    public void addPosting(@RequestBody WrittenPost postingDto) {
         postingService.addPosting(postingDto);
     }
 
@@ -137,7 +136,7 @@ public class PostingController {
     @ApiOperation(value = "[수정] 댓글 수정")
     @ApiImplicitParam(name = "id", value = "댓글 아이디", paramType = "path", required = true)
     @Tag(name = "댓글 관리")
-    public void modifyComment(@PathVariable Long id, @RequestBody CommentModifyDto commentDto) {
+    public void modifyComment(@PathVariable Long id, @RequestBody ModifiedComment commentDto) {
         postingService.modifyComment(id, commentDto);
     }
 
@@ -152,7 +151,7 @@ public class PostingController {
     @PostMapping("/comments")
     @ApiOperation(value = "[등록] 댓글 작성")
     @Tag(name = "댓글 관리")
-    public void addComment(@RequestBody CommentAddDto commentDto) {
+    public void addComment(@RequestBody WrittenComment commentDto) {
         postingService.addComment(commentDto);
     }
 
