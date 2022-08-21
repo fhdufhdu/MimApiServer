@@ -16,5 +16,6 @@ public class ReportForm {
     private String suspect;
     private String reportType;
     private String report_content;
+
     private Long postId;
 }
