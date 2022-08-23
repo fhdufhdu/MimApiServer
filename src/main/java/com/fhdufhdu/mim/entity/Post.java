@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Post {
+public class Post extends BaseEntity<Long> {
     @Id
     @GeneratedValue
     private Long id;
@@ -43,4 +44,62 @@ public class Post {
 
     @NotNull
     private Integer commentCnt;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class Info{
+        @ApiModelProperty(example = "게시글 아이디")
+        private Long id;
+        @ApiModelProperty(example = "작성자 아이디")
+        private String userId;
+        @ApiModelProperty(example = "게시글 제목")
+        private String title;
+        @ApiModelProperty(example = "게시글 내용")
+        private String content;
+        @ApiModelProperty(example = "게시글 작성 및 수정 시간")
+        private Timestamp time;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class ListElem{
+        @ApiModelProperty(example = "게시글 아이디")
+        private Long id;
+        @ApiModelProperty(example = "작성자 아이디")
+        private String userId;
+        @ApiModelProperty(example = "게시글 제목")
+        private String title;
+        @ApiModelProperty(example = "게시글 작성 및 수정 시간")
+        private Timestamp time;
+        @ApiModelProperty(example = "게시글에 달린 댓글 갯수")
+        private Integer commentCnt;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class Change {
+        @ApiModelProperty(example = "게시글 제목")
+        private String title;
+        @ApiModelProperty(example = "게시글 내용")
+        private String content;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class Writing {
+        @ApiModelProperty(example = "작성자 아이디")
+        private String userId;
+        @ApiModelProperty(example = "게시글 제목")
+        private String title;
+        @ApiModelProperty(example = "게시글 내용")
+        private String content;
+    }
 }

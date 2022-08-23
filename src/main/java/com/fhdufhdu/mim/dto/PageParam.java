@@ -2,6 +2,7 @@ package com.fhdufhdu.mim.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.data.domain.PageRequest;
 
 import javax.validation.constraints.NotNull;
 
@@ -24,4 +25,8 @@ public class PageParam {
             dataType = "int",
             example = "10")
     private int size;
+
+    public PageRequest toPageRequest(){
+        return PageRequest.of(page, size);
+    }
 }

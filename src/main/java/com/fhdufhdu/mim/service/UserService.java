@@ -1,23 +1,17 @@
 package com.fhdufhdu.mim.service;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import com.fhdufhdu.mim.entity.User;
 
-import com.fhdufhdu.mim.dto.user.UserInfoDto;
-import com.fhdufhdu.mim.dto.user.UserSignUpDto;
-
-import org.springframework.web.multipart.MultipartFile;
+import java.sql.Timestamp;
 
 public interface UserService {
     //유저 제재 기능 추가 필요함
 
     /** POST /users/login */
-    UserInfoDto login(String id, String pw);
+    User.Info login(User.Login user);
 
     /** POST /users/sign-up */
-    void signUp(UserSignUpDto user);
+    void signUp(User.SignUp user);
 
     /** GET /users/id/{id} */
     boolean checkId(String id);
@@ -26,27 +20,16 @@ public interface UserService {
     boolean checkNickName(String nickName);
 
     /** GET /users/{id} */
-    UserInfoDto getUserInfo(String id);
+    User.Info getUserInfo(String id);
 
-    /** GET /users */
-    List<UserInfoDto> getAllUsers();
+    /** PUT /users/{id}/nickname */
+    void changeNickname(String id, String nickName);
 
-    /** PUT /users/{id} */
-    void modifyUser(String id, UserInfoDto userDto);
+    /** PUT /users/{id}/password */
+    void changePassword(String id, String pw);
+
+    void banUser(String id, Timestamp endDate);
 
     /** DELETE /users/{id} */
     void withdrawal(String id);
-
-    /** POST /users/{id}/profile */
-    void saveProfile(String id, MultipartFile file) throws IOException;
-
-    /** DELETE /users{id}/profile */
-    void deleteProfile(String id);
-
-    /**
-     * GET /users{id}/profile
-     * 
-     * @throws FileNotFoundException
-     */
-    InputStream getUserProfile(String id) throws FileNotFoundException;
 }

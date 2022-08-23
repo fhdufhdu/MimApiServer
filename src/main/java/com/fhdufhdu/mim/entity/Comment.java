@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Comment {
+public class Comment extends BaseEntity<Long>{
         @Id
         @GeneratedValue
         private Long id;
@@ -48,4 +49,50 @@ public class Comment {
 
         @NotNull
         private Timestamp time;
+
+        @Getter
+        @Setter
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Builder
+        public static class Info {
+                @ApiModelProperty(example = "댓글 아이디")
+                private Long id;
+                @ApiModelProperty(example = "게시글 아이디")
+                private Long postId;
+                @ApiModelProperty(example = "작성자 아이디")
+                private String userId;
+                @ApiModelProperty(example = "댓글 그룹(대댓글 구분용도)")
+                private Long commentGroup;
+                @ApiModelProperty(example = "댓글 깊이(0 = 댓글, 1 = 대댓글)")
+                private Integer depth;
+                @ApiModelProperty(example = "댓글 내용")
+                private String content;
+                @ApiModelProperty(example = "작성 시간")
+                private Timestamp time;
+        }
+
+        @Getter
+        @Setter
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Builder
+        public static class Change {
+                @ApiModelProperty(example = "댓글 내용")
+                private String content;
+        }
+
+        @Getter
+        @Setter
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Builder
+        public static class Writing {
+                @ApiModelProperty(example = "게시글 아이디")
+                private Long postId;
+                @ApiModelProperty(example = "작성자 아이디")
+                private String userId;
+                @ApiModelProperty(example = "댓글 내용")
+                private String content;
+        }
 }

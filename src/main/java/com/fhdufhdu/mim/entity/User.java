@@ -7,25 +7,23 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Builder
-public class User {
+public class User extends BaseEntity<String> {
     @Id
     private String id;
     @NotNull
     private String pw;
     @NotNull
-    private String nickName;
+    private String nickname;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -33,7 +31,33 @@ public class User {
 
     private Timestamp banEndDate;
 
-    public User() {
-        role = Role.USER;
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class Info{
+        private String id;
+        private String nickname;
+        private String role;
+        private String banEndDate;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class Login{
+        private String id;
+        private String pw;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class SignUp{
+        private String id;
+        private String pw;
+        private String nickname;
     }
 }

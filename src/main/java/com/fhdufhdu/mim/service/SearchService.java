@@ -1,18 +1,17 @@
 package com.fhdufhdu.mim.service;
 
+import com.fhdufhdu.mim.dto.PageParam;
+import com.fhdufhdu.mim.entity.Movie;
+import com.fhdufhdu.mim.entity.SearchHistory;
+import org.springframework.data.domain.Page;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-
-import com.fhdufhdu.mim.dto.MovieDto;
-import com.fhdufhdu.mim.dto.MovieDtoV2;
-import com.fhdufhdu.mim.dto.MovieLineDto;
-
 public interface SearchService {
         /** GET /movies/{movieId} */
-        MovieDtoV2 getMovieById(Long movieId);
+        Movie.Info getMovieById(Long movieId);
 
         /** GET /movies/{movieId}/background */
         InputStream getMovieBackground(Long movieId) throws FileNotFoundException;
@@ -20,12 +19,12 @@ public interface SearchService {
         /** GET /movies/{movieId}/posting */
         InputStream getMoviePoster(Long movieId) throws FileNotFoundException;
 
-        /** POST /movies */
-        void addMovie(MovieDtoV2 movie);
+        /** GET /search/scene?input={input} */
+        List<Movie.Info> searchByScene(String input);
 
-        /** GET /scean?input={input} */
-        List<MovieDto> searchByScean(String input);
+        /** GET /search/line?input={input} */
+        List<Movie.InfoWithLine> searchByLine(String input);
 
-        /** GET /line?input={input} */
-        List<MovieLineDto> searchByLine(String input);
+        /** GET /search/history/user/{userId} */
+        Page<SearchHistory.ListElem> getSearchHistoryOfUser(String userId, PageParam pageParam);
 }

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Report {
+public class Report extends BaseEntity<Long> {
     @Id
     @GeneratedValue
     private Long id;
@@ -36,4 +36,29 @@ public class Report {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class Info {
+        private Long id;
+        private String complainant;
+        private String suspect;
+        private String reportType;
+        private String report_content;
+        private Long postId;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class Form {
+        private String complainant;
+        private String suspect;
+        private String reportType;
+        private String report_content;
+        private Long postId;
+    }
 }
