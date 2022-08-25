@@ -2,12 +2,7 @@ package com.fhdufhdu.mim.entity;
 
 import java.sql.Timestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -23,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Comment extends BaseEntity<Long>{
+public class Comment {
         @Id
         @GeneratedValue
         private Long id;
@@ -94,5 +89,7 @@ public class Comment extends BaseEntity<Long>{
                 private String userId;
                 @ApiModelProperty(example = "댓글 내용")
                 private String content;
+                private Long commentGroup;
+                private Integer depth;
         }
 }

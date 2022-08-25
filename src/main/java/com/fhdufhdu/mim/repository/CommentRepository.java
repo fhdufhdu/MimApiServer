@@ -15,6 +15,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query(value = "select new Comment.Info(c.id, p.id, c.user.id, c.commentGroup, c.depth, c.content, c.time) from Comment c join c.post p where p.id = :postId", nativeQuery = false)
     Page<Comment.Info> findByPostId(@Param("postId") Long postId, Pageable pageable);
 
-    @Query(value = "select new Comment.Info(c.id, p.id, c.user.id, c.commentGroup, c.depth, c.content, c.time) from Comment c join c.user u where u.id = :userId", nativeQuery = false)
+    @Query(value = "select c.id from Comment c join c.post p where p.id = :postId", nativeQuery = false)
+    List<Long> findByPostId(@Param("postId") Long postId);
+
+    @Query(value = "select new Comment.Info(c.id, c.post.id, u.id, c.commentGroup, c.depth, c.content, c.time) from Comment c join c.user u where u.id = :userId", nativeQuery = false)
     Page<Comment.Info> findByUserId(@Param("userId") String userId, Pageable pageable);
 }

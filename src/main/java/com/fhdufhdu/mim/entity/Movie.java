@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Movie extends BaseEntity<Long> {
+public class Movie {
     @Id
     @GeneratedValue
     private Long id;

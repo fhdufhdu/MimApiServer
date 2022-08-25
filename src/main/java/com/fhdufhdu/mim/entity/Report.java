@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Report extends BaseEntity<Long> {
+public class Report{
     @Id
     @GeneratedValue
     private Long id;

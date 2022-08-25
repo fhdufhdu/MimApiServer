@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Entity
 @Builder
-public class User extends BaseEntity<String> {
+public class User{
     @Id
     private String id;
     @NotNull

@@ -3,6 +3,7 @@ package com.fhdufhdu.mim.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import javax.validation.constraints.NotNull;
 
@@ -28,5 +29,9 @@ public class PageParam {
 
     public PageRequest toPageRequest(){
         return PageRequest.of(page, size);
+    }
+
+    public PageRequest toPageRequest(Sort sort){
+        return PageRequest.of(page, size, sort);
     }
 }

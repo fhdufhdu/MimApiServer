@@ -23,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Post extends BaseEntity<Long> {
+public class Post{
     @Id
     @GeneratedValue
     private Long id;

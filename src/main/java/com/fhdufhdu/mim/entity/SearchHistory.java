@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SearchHistory extends BaseEntity<Long> {
+public class SearchHistory{
     @Id
     @GeneratedValue
     private Long id;
