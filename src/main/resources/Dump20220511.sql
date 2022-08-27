@@ -63,7 +63,7 @@ CREATE TABLE `comment` (
   KEY `FK4uvy94ui17hs3qcch04plyltp` (`posting_id`),
   KEY `FK8kcum44fvpupyw6f5baccx25c` (`user_id`),
   CONSTRAINT `FK4uvy94ui17hs3qcch04plyltp` FOREIGN KEY (`posting_id`) REFERENCES `post` (`id`),
-  CONSTRAINT `FK8kcum44fvpupyw6f5baccx25c` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `FK8kcum44fvpupyw6f5baccx25c` FOREIGN KEY (`user_id`) REFERENCES `member` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -344,7 +344,7 @@ CREATE TABLE `post` (
   PRIMARY KEY (`id`),
   KEY `FKpg6syulatj8o8lhvj16wfro4c` (`board_id`),
   KEY `FK9jcjpid91kqcndm4o267k1too` (`user_id`),
-  CONSTRAINT `FK9jcjpid91kqcndm4o267k1too` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `FK9jcjpid91kqcndm4o267k1too` FOREIGN KEY (`user_id`) REFERENCES `member` (`id`),
   CONSTRAINT `FKpg6syulatj8o8lhvj16wfro4c` FOREIGN KEY (`board_id`) REFERENCES `board` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -417,13 +417,13 @@ INSERT INTO `request_board` VALUES (2,0,20,2),(3,1,30,3);
 UNLOCK TABLES;
 
 --
--- Table structure for table `user`
+-- Table structure for table `member`
 --
 
-DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `member`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user` (
+CREATE TABLE `member` (
   `id` varchar(255) NOT NULL,
   `is_removed` tinyint(1) NOT NULL DEFAULT '0',
   `nick_name` varchar(255) DEFAULT NULL,
@@ -435,13 +435,13 @@ CREATE TABLE `user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user`
+-- Dumping data for table `member`
 --
 
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('admin',0,NULL,NULL,'{bcrypt}$2a$10$sggNmufpEjubpmJoxq6ZWuC4Es4KifbRPL9q9gUw6GOgK/pwF/vtW','ADMIN'),('fhdufhdu',0,'nick',NULL,'{bcrypt}$2a$10$slVCDm5R7N0PqlphInYqb.gXdFJ9FhuLvEGkpPlpAuxk2su24ZkbO','USER');
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+LOCK TABLES `member` WRITE;
+/*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES ('admin',0,NULL,NULL,'{bcrypt}$2a$10$sggNmufpEjubpmJoxq6ZWuC4Es4KifbRPL9q9gUw6GOgK/pwF/vtW','ADMIN'),('fhdufhdu',0,'nick',NULL,'{bcrypt}$2a$10$slVCDm5R7N0PqlphInYqb.gXdFJ9FhuLvEGkpPlpAuxk2su24ZkbO','USER');
+/*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

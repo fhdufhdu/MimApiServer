@@ -72,20 +72,23 @@ spring:
 ---
 
 spring:
+  config:
+    activate:
+      on-profile: test
   sql:
     init:
       schema-locations: classpath:Dump20220524.sql
-      mode: always
+      mode: never
   jpa:
     #spring.sql.init을 작동시키기 위한 옵션
-    defer-datasource-initialization: true
+    defer-datasource-initialization: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
     #ddl-auto를 사용하기 위한 옵션, true일때 ddl-auto가 작동함
-    generate-ddl: false
+    generate-ddl: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     database: h2
     database-platform: org.hibernate.dialect.H2Dialect
   h2:
@@ -94,7 +97,7 @@ spring:
       path: /h2-console
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/test
+    url: jdbc:h2:mem:test
     username: sa
     password:
 

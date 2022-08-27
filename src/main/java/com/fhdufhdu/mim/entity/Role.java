@@ -1,5 +1,5 @@
 package com.fhdufhdu.mim.entity;
 
 public enum Role {
-    ADMIN, USER, BANNED_USER
+    ADMIN, MEMBER, BANNED_MEMBER
 }

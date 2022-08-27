@@ -1,7 +1,10 @@
 package com.fhdufhdu.mim;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import com.fhdufhdu.mim.entity.Role;
+import com.fhdufhdu.mim.security.CustomAccessDeniedHandler;
+import com.fhdufhdu.mim.security.CustomAuthenticationEntryPoint;
+import com.fhdufhdu.mim.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,22 +14,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.fhdufhdu.mim.entity.Role;
-import com.fhdufhdu.mim.security.CustomAccessDeniedHandler;
-import com.fhdufhdu.mim.security.CustomAuthenticationEntryPoint;
-import com.fhdufhdu.mim.security.JwtAuthenticationFilter;
-
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @ComponentScan
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    public final JwtAuthenticationFilter jwtAuthenticationFilter;
-
     private static final String ADMIN = Role.ADMIN.name();
-    private static final String USER = Role.USER.name();
+    private static final String USER = Role.MEMBER.name();
+    public final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

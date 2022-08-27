@@ -12,15 +12,15 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SearchHistory{
+public class SearchHistory {
     @Id
     @GeneratedValue
     private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @NotNull
     private String search_text;
@@ -28,12 +28,4 @@ public class SearchHistory{
     @NotNull
     private Timestamp timestamp;
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @Builder
-    public static class ListElem{
-        private String search_text;
-        private Timestamp timestamp;
-    }
 }

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Report{
+public class Report {
     @Id
     @GeneratedValue
     private Long id;
@@ -19,46 +19,22 @@ public class Report{
     // 신고자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "complainant_id")
-    private User complainant;
+    private Member complainant;
 
     // 피 신고자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "suspect_id")
-    private User suspect;
+    private Member suspect;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private ReportType reportType;
 
     @NotNull
-    private String report_content;
+    private String reportContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @Builder
-    public static class Info {
-        private Long id;
-        private String complainant;
-        private String suspect;
-        private String reportType;
-        private String report_content;
-        private Long postId;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @Builder
-    public static class Form {
-        private String complainant;
-        private String suspect;
-        private String reportType;
-        private String report_content;
-        private Long postId;
-    }
 }

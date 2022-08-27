@@ -1,7 +1,7 @@
 package com.fhdufhdu.mim.controller;
 
 import com.fhdufhdu.mim.security.JwtTokenProvider;
-import com.fhdufhdu.mim.service.UserService;
+import com.fhdufhdu.mim.service.MemberService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Api(tags = { "로그인", "회원가입", "유저관리" })
+@Api(tags = {"로그인", "회원가입", "유저관리"})
 @Slf4j
 public class UserController {
-    private final UserService userService;
+    private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UtilForController util;
 
