@@ -1,5 +1,19 @@
 package com.fhdufhdu.mim.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import com.fhdufhdu.mim.dto.comment.CommentChange;
 import com.fhdufhdu.mim.dto.comment.CommentInfo;
 import com.fhdufhdu.mim.dto.comment.CommentWriting;
@@ -12,20 +26,8 @@ import com.fhdufhdu.mim.exception.NotFoundPostException;
 import com.fhdufhdu.mim.repository.CommentRepository;
 import com.fhdufhdu.mim.repository.MemberRepository;
 import com.fhdufhdu.mim.repository.PostRepository;
+
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j

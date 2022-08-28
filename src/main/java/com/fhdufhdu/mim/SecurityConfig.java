@@ -1,10 +1,5 @@
 package com.fhdufhdu.mim;
 
-import com.fhdufhdu.mim.entity.Role;
-import com.fhdufhdu.mim.security.CustomAccessDeniedHandler;
-import com.fhdufhdu.mim.security.CustomAuthenticationEntryPoint;
-import com.fhdufhdu.mim.security.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +8,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.fhdufhdu.mim.entity.Role;
+import com.fhdufhdu.mim.security.CustomAccessDeniedHandler;
+import com.fhdufhdu.mim.security.CustomAuthenticationEntryPoint;
+import com.fhdufhdu.mim.security.JwtAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @ComponentScan

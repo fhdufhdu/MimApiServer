@@ -1,9 +1,13 @@
 package com.fhdufhdu.mim.dto.movie;
 
-import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
-
 import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -28,7 +32,7 @@ public class MovieInfoWithLine {
     private String actors;
     private String genres;
     private String features;
-    private List lines;
+    private List<String> lines;
     @ApiModelProperty(example = "영화 이미지 저장된 폴더")
     private String dirName;
 }

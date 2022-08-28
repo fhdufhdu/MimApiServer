@@ -1,5 +1,15 @@
 package com.fhdufhdu.mim.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import com.fhdufhdu.mim.dto.PageParam;
 import com.fhdufhdu.mim.dto.comment.CommentChange;
 import com.fhdufhdu.mim.dto.comment.CommentInfo;
@@ -14,16 +24,9 @@ import com.fhdufhdu.mim.repository.CommentRepository;
 import com.fhdufhdu.mim.repository.MemberRepository;
 import com.fhdufhdu.mim.repository.PostRepository;
 import com.fhdufhdu.mim.service.util.ServiceUtil;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @Service
 @Transactional
@@ -36,31 +39,38 @@ public class CommentService {
 
     /**
      * GET /comments/post/{postId}?page={page}&size={size}
+     * <p>
      * [repository 테스트 항목]
-     * 1. 정렬이 잘 되는가?
+     * <ol>
+     * <li>정렬이 잘 되는가?
+     * </ol>
      */
     public Page<CommentInfo> getCommentsByPostId(Long postId, PageParam pageParam) {
         Sort sort = Sort.by("commentGroup", "depth", "time");
-        Page<CommentInfo> commentInfoList = commentRepository.findByPostId(postId, pageParam.toPageRequest(sort));
-        return commentInfoList;
+        return commentRepository.findByPostId(postId, pageParam.toPageRequest(sort));
     }
 
     /**
      * GET /posts/user/{userId}?page={page}&size={size}
+     * <p>
      * [repository 테스트 항목]
-     * 1. 정렬이 잘 되는가?
+     * <ol>
+     * <li>정렬이 잘 되는가?
+     * </ol>
      */
-    public Page<CommentInfo> getCommentsByUserId(String userId, PageParam pageParam) {
+    public Page<CommentInfo> getCommentsByMemberId(String memberId, PageParam pageParam) {
         Sort sort = Sort.by("commentGroup", "depth", "time");
-        Page<CommentInfo> commentInfoList = commentRepository.findByUserId(userId, pageParam.toPageRequest(sort));
-        return commentInfoList;
+        return commentRepository.findByMemberId(memberId, pageParam.toPageRequest(sort));
     }
 
     /**
      * PUT /comments/{commentId}
+     * <p>
      * [service 테스트 항목]
-     * 1. 댓글을 못 찾았을 때 예외가 발생하는가?
-     * 2. 데이터가 잘 바뀌는가?
+     * <ol>
+     * <li>댓글을 못 찾았을 때 예외가 발생하는가?
+     * <li>데이터가 잘 바뀌는가?
+     * </ol>
      */
     public CommentInfo changeComment(Long commentId, CommentChange comment) {
         Comment oldComment = commentRepository.findById(commentId).orElseThrow(NotFoundCommentException::new);
@@ -71,10 +81,13 @@ public class CommentService {
 
     /**
      * DELETE /comments/{commentId}
+     * <p>
      * [service 테스트 항목]
-     * 1. 댓글 삭제 중 예외가 발생했을때 false를 반환하는가?
-     * 2. 댓글을 못찾으면 예외가 발생하는가?
-     * 3. 게시글의 댓글 수는 줄어드는가?
+     * <ol>
+     * <li>댓글 삭제 중 예외가 발생했을때 false를 반환하는가?
+     * <li>댓글을 못찾으면 예외가 발생하는가?
+     * <li>게시글의 댓글 수는 줄어드는가?
+     * </ol>
      */
     public boolean removeComment(Long commentId) {
         try {
@@ -95,12 +108,15 @@ public class CommentService {
 
     /**
      * POST /comments
+     * <p>
      * [service 테스트 항목]
-     * 1. 게시글을 못 찾았을 때 예외가 발생하는가?
-     * 2. 사용자를 못 찾았을 때 예외가 발생하는가?
-     * 3. 새로운 댓글 입력시 CommentGroup에 자신의 id가 들어가는가?
-     * 4. 새로운 대댓글 입력시 CommentGroup이 그대로 유지되는가?
-     * 5. 새로운 댓글 입력시 게시글의 댓글 수가 늘어나는가?
+     * <ol>
+     * <li>게시글을 못 찾았을 때 예외가 발생하는가?
+     * <li>사용자를 못 찾았을 때 예외가 발생하는가?
+     * <li>새로운 댓글 입력시 CommentGroup에 자신의 id가 들어가는가?
+     * <li>새로운 대댓글 입력시 CommentGroup이 그대로 유지되는가?
+     * <li>새로운 댓글 입력시 게시글의 댓글 수가 늘어나는가?
+     * </ol>
      */
     public CommentInfo writeComment(CommentWriting comment) {
         Post post = postRepository.findById(comment.getPostId()).orElseThrow(NotFoundPostException::new);
@@ -116,7 +132,7 @@ public class CommentService {
         newComment = commentRepository.save(newComment);
         if (newComment.getCommentGroup() == null)
             newComment.setCommentGroup(newComment.getId());
-        //게시글의 댓글 수 늘림
+        // 게시글의 댓글 수 늘림
         post.setCommentCnt(post.getCommentCnt() + 1);
         postRepository.save(post);
         return ServiceUtil.convertToDest(commentRepository.save(newComment), CommentInfo.class);

@@ -6,9 +6,9 @@ spring:
     #쿼리 발생 시 sql을 보기위한 옵션
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
-        use_sql_comments: false
+        '[show_sql]': true
+        '[format_sql]': true
+        '[use_sql_comments]': true
     hibernate:
       use-new-id-generator-mappings: true
     #service계층을 넘어선 controller 계층에서 영속성을 유지할 것인지 설정하는 것. true일때 controller에서도 영속성을 유지한다.
@@ -20,6 +20,8 @@ spring:
 #JWT 토큰 시크릿 키
 seckret_key: d4f'23p}793_+bg43'79'pd<./sabrg
 
+dlserver:
+  address: http://localhost:8000
 ---
 spring:
   config:

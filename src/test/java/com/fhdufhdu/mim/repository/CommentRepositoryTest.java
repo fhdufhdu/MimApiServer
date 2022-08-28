@@ -1,10 +1,10 @@
 package com.fhdufhdu.mim.repository;
 
-import com.fhdufhdu.mim.dto.comment.CommentInfo;
-import com.fhdufhdu.mim.entity.Comment;
-import com.fhdufhdu.mim.entity.Member;
-import com.fhdufhdu.mim.entity.Post;
-import com.fhdufhdu.mim.entity.Role;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,11 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import com.fhdufhdu.mim.dto.comment.CommentInfo;
+import com.fhdufhdu.mim.entity.Comment;
+import com.fhdufhdu.mim.entity.Member;
+import com.fhdufhdu.mim.entity.Post;
+import com.fhdufhdu.mim.entity.Role;
 
 @DataJpaTest
 @ActiveProfiles("test")

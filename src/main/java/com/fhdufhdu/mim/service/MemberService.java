@@ -1,5 +1,14 @@
 package com.fhdufhdu.mim.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import javax.transaction.Transactional;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.fhdufhdu.mim.dto.DateParam;
 import com.fhdufhdu.mim.dto.member.Login;
 import com.fhdufhdu.mim.dto.member.MemberInfo;
@@ -9,15 +18,9 @@ import com.fhdufhdu.mim.exception.MismatchPasswdException;
 import com.fhdufhdu.mim.exception.NotFoundMemberException;
 import com.fhdufhdu.mim.repository.MemberRepository;
 import com.fhdufhdu.mim.service.util.ServiceUtil;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @Service
 @Transactional
@@ -29,11 +32,14 @@ public class MemberService {
 
     /**
      * POST /users/login
+     * <p>
      * [service 테스트 항목]
-     * 1. 멤버를 못찾을때 예외가 발생하는지
-     * 2. 비밀번호가 맞지 않을때 예외가 발생하는지
+     * <ol>
+     * <li>멤버를 못찾을때 예외가 발생하는지
+     * <li>비밀번호가 맞지 않을때 예외가 발생하는지
+     * </ol>
      */
-    MemberInfo login(Login login) {
+    public MemberInfo login(Login login) {
         Member member = memberRepository.findById(login.getId()).orElseThrow(NotFoundMemberException::new);
         if (!passwordEncoder.matches(login.getPw(), member.getPw())) {
             throw new MismatchPasswdException();
@@ -44,7 +50,7 @@ public class MemberService {
     /**
      * POST /users/sign-up
      */
-    MemberInfo signUp(SignUp singUp) {
+    public MemberInfo signUp(SignUp singUp) {
         Member member = Member.builder()
                 .pw(passwordEncoder.encode(singUp.getPw()))
                 .id(singUp.getId())
@@ -56,28 +62,29 @@ public class MemberService {
     /**
      * GET /users/id/{id}
      */
-    boolean existId(String id) {
+    public boolean existId(String id) {
         return !memberRepository.findById(id).isEmpty();
     }
 
     /**
      * GET /users/nick-name/{nickName}
      */
-    boolean existNickName(String nickName) {
+    public boolean existNickName(String nickName) {
         return !memberRepository.findByNickname(nickName).isEmpty();
     }
 
     /**
      * GET /users/{id}
      */
-    MemberInfo getUserInfo(String id) {
-        return ServiceUtil.convertToDest(memberRepository.findById(id).orElseThrow(NotFoundMemberException::new), MemberInfo.class);
+    public MemberInfo getUserInfo(String id) {
+        return ServiceUtil.convertToDest(memberRepository.findById(id).orElseThrow(NotFoundMemberException::new),
+                MemberInfo.class);
     }
 
     /**
      * PUT /users/{id}/nickname
      */
-    MemberInfo changeNickname(String id, String nickName) {
+    public MemberInfo changeNickname(String id, String nickName) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
         member.setNickname(nickName);
         return ServiceUtil.convertToDest(memberRepository.save(member), MemberInfo.class);
@@ -86,29 +93,39 @@ public class MemberService {
     /**
      * PUT /users/{id}/password
      */
-    MemberInfo changePassword(String id, String oldPw, String newPw) {
+    public MemberInfo changePassword(String id, String oldPw, String newPw) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
-        if (!passwordEncoder.matches(oldPw, member.getPw())) throw new MismatchPasswdException();
+        if (!passwordEncoder.matches(oldPw, member.getPw()))
+            throw new MismatchPasswdException();
         member.setPw(passwordEncoder.encode(newPw));
         return ServiceUtil.convertToDest(memberRepository.save(member), MemberInfo.class);
     }
 
     /**
      * PUT /users/{id}/ban
+     * <p>
      * [service 테스트 항목]
-     * 1. 사용자 재제 일자가 잘 적용되는지
+     * <ol>
+     * <li>사용자 재제 일자가 잘 적용되는지
+     * <li>날짜 범위 밖일때 예외 처리
+     * </ol>
      */
-    MemberInfo banUser(String id, DateParam dateParam) {
+    public MemberInfo banUser(String id, DateParam dateParam) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
-        member.setBanEndDate(Timestamp.valueOf(LocalDateTime.of(dateParam.getYear(), dateParam.getMonth(), dateParam.getDay(), dateParam.getHours(), 0)));
+        member.setBanEndDate(Timestamp.valueOf(LocalDateTime.of(dateParam.getYear(), dateParam.getMonth(),
+                dateParam.getDay(), dateParam.getHours(), 0)));
         return ServiceUtil.convertToDest(memberRepository.save(member), MemberInfo.class);
     }
 
     /**
      * DELETE /users/{id}
-     * 1. 사용자 제거 중 예외 발생 시 처리가 잘 되는지
+     * <p>
+     * [service 테스트 항목]
+     * <ol>
+     * <li>사용자 제거 중 예외 발생 시 처리가 잘 되는지
+     * </ol>
      */
-    boolean withdrawal(String id) {
+    public boolean withdrawal(String id) {
         try {
             memberRepository.deleteById(id);
         } catch (Exception e) {

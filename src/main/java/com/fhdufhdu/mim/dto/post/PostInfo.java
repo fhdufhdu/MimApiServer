@@ -1,9 +1,13 @@
 package com.fhdufhdu.mim.dto.post;
 
-import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import java.sql.Timestamp;
 
-import java.util.Date;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -20,6 +24,6 @@ public class PostInfo {
     @ApiModelProperty(example = "게시글 내용")
     private String content;
     @ApiModelProperty(example = "게시글 작성 및 수정 시간")
-    private Date time;
+    private Timestamp time;
     private Integer commentCnt;
 }

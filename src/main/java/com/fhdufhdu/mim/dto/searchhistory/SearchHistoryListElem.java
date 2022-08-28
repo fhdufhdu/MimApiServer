@@ -1,8 +1,12 @@
 package com.fhdufhdu.mim.dto.searchhistory;
 
-import lombok.*;
+import java.sql.Timestamp;
 
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -10,6 +14,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class SearchHistoryListElem {
-    private String search_text;
-    private Date Date;
+    private String searchText;
+    private Timestamp searchTime;
 }
