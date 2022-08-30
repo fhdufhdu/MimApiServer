@@ -17,11 +17,11 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
 
-#JWT 토큰 시크릿 키
-seckret_key: d4f'23p}793_+bg43'79'pd<./sabrg
-
 dlserver:
   address: http://localhost:8000
+
+movie:
+  image: /home/fhdufhdu/code/movie-image/movie_image
 ---
 spring:
   config:

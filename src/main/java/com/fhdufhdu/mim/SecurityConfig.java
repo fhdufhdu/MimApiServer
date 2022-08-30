@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.security.CustomAccessDeniedHandler;
 import com.fhdufhdu.mim.security.CustomAuthenticationEntryPoint;
-import com.fhdufhdu.mim.security.JwtAuthenticationFilter;
+import com.fhdufhdu.mim.security.JwtFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String ADMIN = Role.ADMIN.name();
     private static final String USER = Role.MEMBER.name();
-    public final JwtAuthenticationFilter jwtAuthenticationFilter;
+    public final JwtFilter jwtAuthenticationFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,8 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors().and()
                 .formLogin().disable()// 1 - formLogin 인증방법 비활성화
-                .httpBasic().disable()// 2 - httpBasic 인증방법 비활성화(특정 리소스에 접근할 때 username과 password 물어봄)
-                .csrf().disable()
+                .httpBasic().disable()// 2 - httpBasic 인증방법 비활성화(특정 리소스에 접근할 때 username과password 물어봄)
+                .csrf().and()
 
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -47,7 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**",
                         "/swagger-resources/**", "/v2/**")
                 .permitAll()
-                .antMatchers("/login", "/sign-up", "/users/id/{id}", "/users/nick-name/{nickName}").permitAll()
+                .antMatchers("/login", "/sign-up", "/users/id/{id}",
+                        "/users/nick-name/{nickName}")
+                .permitAll()
                 .antMatchers(HttpMethod.GET, "/users/{id}/profile").permitAll()
                 .antMatchers("/users/{id}", "/users/{id}/profile").hasAnyRole(USER, ADMIN)
                 .antMatchers("/users").hasAnyRole(ADMIN)
@@ -65,7 +67,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/postings/**", "/comments/**").permitAll()
                 .antMatchers("/postings/**", "/comments/**").hasAnyRole(ADMIN, USER)
 
-                .antMatchers(HttpMethod.POST, "/report-postings/**", "/report-comments/**").hasAnyRole(ADMIN, USER)
+                .antMatchers(HttpMethod.POST, "/report-postings/**",
+                        "/report-comments/**")
+                .hasAnyRole(ADMIN, USER)
                 .antMatchers("/report-postings/**", "/report-comments/**").hasRole(ADMIN)
                 .anyRequest().authenticated()
                 .and()
@@ -74,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class);
 
-        // http.addFilterBefore(jsonUsernamePasswordLoginFilter(), LogoutFilter.class);
+        // http.addFilterBefore(jsonUsernamePasswordLoginFilter(),LogoutFilter.class);
 
     }
 }

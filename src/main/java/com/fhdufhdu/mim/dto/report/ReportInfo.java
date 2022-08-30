@@ -1,6 +1,12 @@
 package com.fhdufhdu.mim.dto.report;
 
-import lombok.*;
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -14,4 +20,5 @@ public class ReportInfo {
     private String reportType;
     private String reportContent;
     private Long postId;
+    private Date reportTime;
 }

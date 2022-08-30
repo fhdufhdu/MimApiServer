@@ -1,6 +1,6 @@
 package com.fhdufhdu.mim.dto.comment;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -28,5 +28,5 @@ public class CommentInfo {
     @ApiModelProperty(example = "댓글 내용")
     private String content;
     @ApiModelProperty(example = "작성 시간")
-    private Timestamp time;
+    private Date time;
 }

@@ -1,5 +1,8 @@
 package com.fhdufhdu.mim.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -52,6 +55,7 @@ public class ReportService {
                 .reportContent(report.getReportContent())
                 .complainant(complainant)
                 .suspect(suspect)
+                .reportTime(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         return ServiceUtil.convertToDest(reportRepository.save(newReport), ReportInfo.class);
     }

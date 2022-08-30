@@ -1,5 +1,6 @@
 package com.fhdufhdu.mim.service;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,12 +12,10 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fhdufhdu.mim.dto.PageParam;
 import com.fhdufhdu.mim.dto.movie.MovieInfo;
 import com.fhdufhdu.mim.dto.movie.MovieInfoWithLine;
@@ -39,13 +38,13 @@ public class SearchService {
     private final MovieRepository movieRepository;
     private final SearchHistoryRepository searchHistoryRepository;
     private final RestTemplate restTemplate;
-    private final Environment environment;
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Value("{dlserver.address}")
     private static String dlAddress;
     private static final String DL_SEARCH = "/search";
+
+    @Value("{movie.image}")
+    private static String dirPath;
 
     public static void setDlAddress(String address) {
         dlAddress = address;
@@ -69,14 +68,16 @@ public class SearchService {
      * 
      */
     public InputStream getMovieBackground(Long movieId) throws FileNotFoundException {
-        return null;
+        Movie movie = movieRepository.findById(movieId).orElseThrow(NotFoundMovieException::new);
+        return new FileInputStream(dirPath + movie.getDirName() + "/image.png");
     }
 
     /**
      * GET /movies/{movieId}/posting
      */
     public InputStream getMoviePoster(Long movieId) throws FileNotFoundException {
-        return null;
+        Movie movie = movieRepository.findById(movieId).orElseThrow(NotFoundMovieException::new);
+        return new FileInputStream(dirPath + movie.getDirName() + "/poster.png");
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.fhdufhdu.mim.dto.member;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +17,5 @@ public class MemberInfo {
     private String id;
     private String nickname;
     private String role;
-    private Timestamp banEndDate;
+    private Date banEndDate;
 }

@@ -1,6 +1,6 @@
 package com.fhdufhdu.mim.dto.post;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ public class PostListElem {
     @ApiModelProperty(example = "게시글 제목")
     private String title;
     @ApiModelProperty(example = "게시글 작성 및 수정 시간")
-    private Timestamp time;
+    private Date time;
     @ApiModelProperty(example = "게시글에 달린 댓글 갯수")
     private Integer commentCnt;
 }
