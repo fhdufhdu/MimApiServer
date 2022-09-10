@@ -62,6 +62,6 @@ public class SearchController {
     @GetMapping("/search/history/members/{memberId}")
     public Page<SearchHistoryListElem> getSearchHistroyOfUser(@PathVariable("memberId") String memberId,
             @ModelAttribute PageParam pageParam) {
-        return searchService.getSearchHistoryOfUser(memberId, pageParam)
+        return searchService.getSearchHistoryOfUser(memberId, pageParam);
     }
 }
