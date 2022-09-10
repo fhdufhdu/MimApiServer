@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort;
 import com.fhdufhdu.mim.dto.PostSearchType;
 import com.fhdufhdu.mim.dto.post.PostListElem;
 import com.fhdufhdu.mim.entity.Post;
-import com.fhdufhdu.mim.service.util.ServiceUtil;
+import com.fhdufhdu.mim.utils.ServiceUtil;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -30,19 +30,21 @@ public class PostQueryDslRepositoryImpl implements PostQueryDslRepository {
     public Page<PostListElem> findByQuery(String query, PostSearchType type, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
 
-        switch (type) {
-            case TITLE:
-                builder.and(post.title.contains(query));
-                break;
-            case CONTENT:
-                builder.and(post.content.contains(query));
-                break;
-            case TITLE_CONTENT:
-                builder.and(post.title.contains(query)).or(post.content.contains(query));
-                break;
-            case MEMBER:
-                builder.and(post.member.id.contains(query));
-                break;
+        if (type != null) {
+            switch (type) {
+                case TITLE:
+                    builder.and(post.title.contains(query));
+                    break;
+                case CONTENT:
+                    builder.and(post.content.contains(query));
+                    break;
+                case TITLE_CONTENT:
+                    builder.and(post.title.contains(query)).or(post.content.contains(query));
+                    break;
+                case MEMBER:
+                    builder.and(post.member.id.contains(query));
+                    break;
+            }
         }
 
         List<Post> posts = queryFactory.select(post)

@@ -21,7 +21,7 @@ import com.fhdufhdu.mim.entity.Post;
 import com.fhdufhdu.mim.exception.NotFoundPostException;
 import com.fhdufhdu.mim.repository.MemberRepository;
 import com.fhdufhdu.mim.repository.PostRepository;
-import com.fhdufhdu.mim.service.util.ServiceUtil;
+import com.fhdufhdu.mim.utils.ServiceUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +43,11 @@ public class PostService {
      * <li>정렬이 잘되는지</li>
      * </ol>
      */
-    public Page<PostListElem> getAllPosts(PageParam pageParam) {
-        Sort sort = Sort.by("id").descending();
-        return postRepository.findAllAtListElem(pageParam.toPageRequest(sort));
-    }
+    // 아래 함수와 중복되는 로직임
+    // public Page<PostListElem> getAllPosts(PageParam pageParam) {
+    // Sort sort = Sort.by("id").descending();
+    // return postRepository.findAllAtListElem(pageParam.toPageRequest(sort));
+    // }
 
     /**
      * GET

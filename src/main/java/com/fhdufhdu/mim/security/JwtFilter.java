@@ -29,12 +29,13 @@ public class JwtFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        // getCookies()가 null을 반환한다면 로그인하지 않은 것, 바로 다음 필터 체인으로 넘어가면 됨
+        // getCookies()가 null을 반환한다면 로그인하지 않은 것, 또한, 리프레시 토큰으로 엑세스 토큰인척 한다면 바로 다음 필터
+        // 체인으로 넘어가면 됨
         Optional<Cookie[]> cookies = Optional.ofNullable(httpRequest.getCookies());
-        String token = cookies.map(c -> JwtManager.getTokenInCookies(c, JwtManager.ACCESS_KEY)).orElse(null);
+        String token = cookies.map(c -> JwtManager.getTokenInCookies(c, JwtType.ACCESS)).orElse(null);
 
         if (token != null) {
-            if (JwtManager.isExpired(token))
+            if (JwtManager.getType(token).equals(JwtType.REFRESH) || JwtManager.isExpired(token))
                 throw new ExpiredTokenException();
             saveAuthentication(token);
         }
@@ -42,6 +43,7 @@ public class JwtFilter implements Filter {
         filterChain.doFilter(request, response);
     }
 
+    // 엑세스 토큰 검증은 DB 접근 필요없기 때문에 커스텀해서 사용중
     public void saveAuthentication(String token) {
         Authentication auth = JwtManager.createAuth(token);
         SecurityContextHolder.getContext().setAuthentication(auth);

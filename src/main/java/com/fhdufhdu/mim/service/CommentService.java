@@ -23,7 +23,7 @@ import com.fhdufhdu.mim.exception.NotFoundPostException;
 import com.fhdufhdu.mim.repository.CommentRepository;
 import com.fhdufhdu.mim.repository.MemberRepository;
 import com.fhdufhdu.mim.repository.PostRepository;
-import com.fhdufhdu.mim.service.util.ServiceUtil;
+import com.fhdufhdu.mim.utils.ServiceUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +72,7 @@ public class CommentService {
      * <li>데이터가 잘 바뀌는가?
      * </ol>
      */
+    // TODO: 8/31/22 제재중인 유저일 경우 예외 발생 필요함
     public CommentInfo changeComment(Long commentId, CommentChange comment) {
         Comment oldComment = commentRepository.findById(commentId).orElseThrow(NotFoundCommentException::new);
         oldComment.setContent(comment.getContent());

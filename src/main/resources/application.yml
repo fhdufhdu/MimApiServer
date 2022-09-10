@@ -1,7 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile: default
   jpa:
     #쿼리 발생 시 sql을 보기위한 옵션
     properties:
@@ -30,7 +27,7 @@ spring:
   sql:
     init:
       schema-locations: classpath:Dump20220524.sql
-      mode: always
+      mode: never
   jpa:
     #spring.sql.init을 작동시키기 위한 옵션
     defer-datasource-initialization: false

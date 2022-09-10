@@ -10,14 +10,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fhdufhdu.mim.dto.DateParam;
+import com.fhdufhdu.mim.dto.member.ChangeMemberInfo;
+import com.fhdufhdu.mim.dto.member.ChangePassword;
 import com.fhdufhdu.mim.dto.member.Login;
 import com.fhdufhdu.mim.dto.member.MemberInfo;
 import com.fhdufhdu.mim.dto.member.SignUp;
 import com.fhdufhdu.mim.entity.Member;
+import com.fhdufhdu.mim.entity.Role;
 import com.fhdufhdu.mim.exception.MismatchPasswdException;
 import com.fhdufhdu.mim.exception.NotFoundMemberException;
 import com.fhdufhdu.mim.repository.MemberRepository;
-import com.fhdufhdu.mim.service.util.ServiceUtil;
+import com.fhdufhdu.mim.utils.ServiceUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +34,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * POST /users/login
+     * GET /login?id={id}&pw={pw}
      * <p>
      * [service 테스트 항목]
      * <ol>
@@ -50,11 +53,12 @@ public class MemberService {
     /**
      * POST /users/sign-up
      */
-    public MemberInfo signUp(SignUp singUp) {
+    public MemberInfo signUp(SignUp signUp) {
         Member member = Member.builder()
-                .pw(passwordEncoder.encode(singUp.getPw()))
-                .id(singUp.getId())
-                .nickname(singUp.getNickname())
+                .pw(passwordEncoder.encode(signUp.getPw()))
+                .id(signUp.getId())
+                .nickname(signUp.getNickname())
+                .role(Role.MEMBER)
                 .build();
         return ServiceUtil.convertToDest(memberRepository.save(member), MemberInfo.class);
     }
@@ -69,8 +73,8 @@ public class MemberService {
     /**
      * GET /users/nick-name/{nickName}
      */
-    public boolean existNickName(String nickName) {
-        return !memberRepository.findByNickname(nickName).isEmpty();
+    public boolean existNickname(String nickname) {
+        return !memberRepository.findByNickname(nickname).isEmpty();
     }
 
     /**
@@ -84,20 +88,21 @@ public class MemberService {
     /**
      * PUT /users/{id}/nickname
      */
-    public MemberInfo changeNickname(String id, String nickName) {
+    public MemberInfo changeMemberInfo(String id, ChangeMemberInfo info, String auth) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
-        member.setNickname(nickName);
+
+        member.setNickname(info.getNickname());
         return ServiceUtil.convertToDest(memberRepository.save(member), MemberInfo.class);
     }
 
     /**
      * PUT /users/{id}/password
      */
-    public MemberInfo changePassword(String id, String oldPw, String newPw) {
+    public MemberInfo changePassword(String id, ChangePassword cp, String auth) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
-        if (!passwordEncoder.matches(oldPw, member.getPw()))
+        if (!passwordEncoder.matches(cp.getOldPw(), member.getPw()))
             throw new MismatchPasswdException();
-        member.setPw(passwordEncoder.encode(newPw));
+        member.setPw(passwordEncoder.encode(cp.getNewPw()));
         return ServiceUtil.convertToDest(memberRepository.save(member), MemberInfo.class);
     }
 
@@ -125,7 +130,7 @@ public class MemberService {
      * <li>사용자 제거 중 예외 발생 시 처리가 잘 되는지
      * </ol>
      */
-    public boolean withdrawal(String id) {
+    public boolean withdrawal(String id, String auth) {
         try {
             memberRepository.deleteById(id);
         } catch (Exception e) {
@@ -134,4 +139,5 @@ public class MemberService {
         }
         return true;
     }
+
 }

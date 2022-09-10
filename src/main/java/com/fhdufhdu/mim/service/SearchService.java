@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,7 +26,9 @@ import com.fhdufhdu.mim.entity.Movie;
 import com.fhdufhdu.mim.exception.NotFoundMovieException;
 import com.fhdufhdu.mim.repository.MovieRepository;
 import com.fhdufhdu.mim.repository.SearchHistoryRepository;
-import com.fhdufhdu.mim.service.util.ServiceUtil;
+import com.fhdufhdu.mim.setting.DlServer;
+import com.fhdufhdu.mim.setting.MovieImage;
+import com.fhdufhdu.mim.utils.ServiceUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,17 +39,6 @@ public class SearchService {
     private final MovieRepository movieRepository;
     private final SearchHistoryRepository searchHistoryRepository;
     private final RestTemplate restTemplate;
-
-    @Value("{dlserver.address}")
-    private static String dlAddress;
-    private static final String DL_SEARCH = "/search";
-
-    @Value("{movie.image}")
-    private static String dirPath;
-
-    public static void setDlAddress(String address) {
-        dlAddress = address;
-    }
 
     /**
      * GET /movies/{movieId}
@@ -69,7 +59,7 @@ public class SearchService {
      */
     public InputStream getMovieBackground(Long movieId) throws FileNotFoundException {
         Movie movie = movieRepository.findById(movieId).orElseThrow(NotFoundMovieException::new);
-        return new FileInputStream(dirPath + movie.getDirName() + "/image.png");
+        return new FileInputStream(MovieImage.DIR_PATH + movie.getDirName() + "/image.png");
     }
 
     /**
@@ -77,7 +67,7 @@ public class SearchService {
      */
     public InputStream getMoviePoster(Long movieId) throws FileNotFoundException {
         Movie movie = movieRepository.findById(movieId).orElseThrow(NotFoundMovieException::new);
-        return new FileInputStream(dirPath + movie.getDirName() + "/poster.png");
+        return new FileInputStream(MovieImage.DIR_PATH + movie.getDirName() + "/poster.png");
     }
 
     /**
@@ -94,7 +84,8 @@ public class SearchService {
         Map<String, String> var = new HashMap<>();
         var.put("type", SearchType.SCENE.name());
         var.put("query", query);
-        SearchResult searchResult = restTemplate.getForObject(dlAddress + DL_SEARCH + "?type={type}&query={query}",
+        SearchResult searchResult = restTemplate.getForObject(
+                DlServer.ADDRESS + DlServer.SEARCH + "?type={type}&query={query}",
                 SearchResult.class, var);
         List<Long> idList = searchResult.getData().stream().map(SearchResultElem::getId).collect(Collectors.toList());
         return ServiceUtil.convertToDest(movieRepository.findByIdList(idList), MovieInfo.class);
@@ -115,7 +106,8 @@ public class SearchService {
         Map<String, String> var = new HashMap<>();
         var.put("type", SearchType.LINE.name());
         var.put("query", query);
-        SearchResult searchResult = restTemplate.getForObject(dlAddress + DL_SEARCH + "?type={type}&query={query}",
+        SearchResult searchResult = restTemplate.getForObject(
+                DlServer.ADDRESS + DlServer.SEARCH + "?type={type}&query={query}",
                 SearchResult.class, var);
         Map<Long, List<String>> subtitles = new HashMap<>();
         List<Long> idList = new ArrayList<>();

@@ -30,6 +30,7 @@ import com.fhdufhdu.mim.dto.search.SearchResultElem;
 import com.fhdufhdu.mim.entity.Movie;
 import com.fhdufhdu.mim.entity.SearchHistory;
 import com.fhdufhdu.mim.repository.MovieRepository;
+import com.fhdufhdu.mim.setting.DlServer;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.mockwebserver.MockResponse;
@@ -57,7 +58,7 @@ public class SearchServiceApiTest {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
         objectMapper = new ObjectMapper();
-        SearchService.setDlAddress(String.format("http://localhost:%d", mockWebServer.getPort()));
+        DlServer.ADDRESS = String.format("http://localhost:%d", mockWebServer.getPort());
     }
 
     @AfterAll

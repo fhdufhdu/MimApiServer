@@ -20,7 +20,7 @@ import com.fhdufhdu.mim.exception.NotFoundPostException;
 import com.fhdufhdu.mim.repository.MemberRepository;
 import com.fhdufhdu.mim.repository.PostRepository;
 import com.fhdufhdu.mim.repository.ReportRepository;
-import com.fhdufhdu.mim.service.util.ServiceUtil;
+import com.fhdufhdu.mim.utils.ServiceUtil;
 
 import lombok.RequiredArgsConstructor;
 

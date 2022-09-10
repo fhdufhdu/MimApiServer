@@ -1,25 +1,18 @@
 package com.fhdufhdu.mim.security;
 
-import java.io.IOException;
-import java.util.Date;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fhdufhdu.mim.exception.ExceptionResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fhdufhdu.mim.exception.ExceptionResponse;
-
-import io.jsonwebtoken.ExpiredJwtException;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
 
 @Component
-public class JwtExceptionHandler implements Filter {
+public class ExceptionHandler implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

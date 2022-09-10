@@ -14,8 +14,6 @@ import javax.servlet.http.Cookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
 
 import com.fhdufhdu.mim.entity.Role;
 
@@ -23,21 +21,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 
-@Component
-@RequiredArgsConstructor
 public class JwtManager {
+    private static final String TYPE = "TYPE";
+    private static final String ROLES = "ROLES";
     private static final long AT_VALID = 1000L * 60 * 30; // 30분
     private static final long RT_VALID = 1000L * 60 * 60 * 24; // 1일
-
     private static Key secretKey = null;
-    public static final String ACCESS_KEY = "JWT-ACCESS-TOKEN";
-    public static final String REFRESH_KEY = "JWT-REFRESH-TOKEN";
-    public static final String ROLES = "ROLES";
-    public static final String USER_AGENT = "USER-AGENT";
-
-    private final UserDetailsService userDetailsService;
 
     public static Key getSecretKey() {
         if (secretKey == null) {
@@ -57,14 +47,15 @@ public class JwtManager {
         return secretKey;
     }
 
-    public static String getTokenInCookies(Cookie[] cookies, String key) {
-        Optional<Cookie> cookie = Arrays.stream(cookies).filter(c -> key.equals(c.getName())).findFirst();
+    public static String getTokenInCookies(Cookie[] cookies, JwtType key) {
+        Optional<Cookie> cookie = Arrays.stream(cookies).filter(c -> key.getType().equals(c.getName())).findFirst();
         return cookie.map(Cookie::getValue).orElse(null);
     }
 
     public static String issueAccessToken(String memberId, Role role) {
         Claims claims = Jwts.claims().setSubject(memberId);
         claims.put(ROLES, role);
+        claims.put(TYPE, JwtType.ACCESS.getType());
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
@@ -74,14 +65,14 @@ public class JwtManager {
                 .compact();
     }
 
-    public static String issueRefreshToken(String memberId, String userAgent) {
+    public static String issueRefreshToken(String memberId) {
         Claims claims = Jwts.claims().setSubject(memberId);
-        claims.put(USER_AGENT, userAgent);
+        claims.put(TYPE, JwtType.REFRESH);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + AT_VALID))
+                .setExpiration(new Date(now.getTime() + RT_VALID))
                 .signWith(getSecretKey())
                 .compact();
     }
@@ -94,13 +85,23 @@ public class JwtManager {
 
     public static boolean isExpired(String token) {
         Claims claims = getClaim(token);
-        return claims.getExpiration().after(new Date());
+        return claims.getExpiration().before(new Date());
+    }
+
+    public static String getMemberId(String token) {
+        Claims claims = getClaim(token);
+        return claims.getSubject();
+    }
+
+    public static JwtType getType(String token) {
+        Claims claims = getClaim(token);
+        return JwtType.getEnum((String) claims.get(TYPE));
     }
 
     public static Authentication createAuth(String token) {
         Claims claims = getClaim(token);
-        UserDetails userDetails = new User(claims.getSubject(), (Role) claims.get(JwtManager.ROLES));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        UserDetails userDetails = new User(claims.getSubject(), Role.valueOf((String) claims.get(JwtManager.ROLES)));
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), "", userDetails.getAuthorities());
     }
 
 }

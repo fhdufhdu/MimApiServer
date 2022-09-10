@@ -1,14 +1,11 @@
-package com.fhdufhdu.mim.service.util;
+package com.fhdufhdu.mim.utils;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fhdufhdu.mim.dto.PageParam;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import lombok.Getter;
 import lombok.Setter;
