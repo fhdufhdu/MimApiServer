@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.fhdufhdu.mim.entity.Role;
+import com.fhdufhdu.mim.exception.WrongPermissionException;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,4 +39,16 @@ public class ServiceUtil {
         return new Timestamp(System.currentTimeMillis());
     }
 
+    public static void checkAdminMember(String memberId) {
+        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean isAdmin = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals(Role.ADMIN.name()));
+
+        if (!isAdmin && !principal.equals(memberId))
+            throw new WrongPermissionException();
+    }
 }

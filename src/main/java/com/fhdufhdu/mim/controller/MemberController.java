@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fhdufhdu.mim.aop.Member;
+import com.fhdufhdu.mim.aop.MemberCheck;
 import com.fhdufhdu.mim.dto.DateParam;
 import com.fhdufhdu.mim.dto.member.ChangeMemberInfo;
 import com.fhdufhdu.mim.dto.member.ChangePassword;
@@ -87,10 +88,11 @@ public class MemberController {
         return memberService.existNickname(nickname);
     }
 
+    @Member
+    @MemberCheck
     @PutMapping("/members/{id}/password")
-    public void changePassword(@PathVariable("id") String id, @RequestBody ChangePassword cp,
-            @AuthenticationPrincipal String user) {
-        memberService.changePassword(id, cp, ControllerUtil.getAuthSubject());
+    public void changePassword(@PathVariable("id") String id, @RequestBody ChangePassword cp) {
+        memberService.changePassword(id, cp);
     }
 
     @PutMapping("/members/{id}/nickname")

@@ -87,9 +87,18 @@ public class MemberService {
 
     /**
      * PUT /users/{id}/nickname
+     * <p>
+     * [service 테스트 항목]
+     * </p>
+     * <ol>
+     * <li>사용자 재제 일자가 잘 적용되는지
+     * <li>날짜 범위 밖일때 예외 처리
+     * </ol>
      */
     public MemberInfo changeMemberInfo(String id, ChangeMemberInfo info, String auth) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
+
+        ServiceUtil.checkAdminMember(member.getId());
 
         member.setNickname(info.getNickname());
         return ServiceUtil.convertToDest(memberRepository.save(member), MemberInfo.class);
@@ -98,8 +107,11 @@ public class MemberService {
     /**
      * PUT /users/{id}/password
      */
-    public MemberInfo changePassword(String id, ChangePassword cp, String auth) {
+    public MemberInfo changePassword(String id, ChangePassword cp) {
         Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
+
+        ServiceUtil.checkAdminMember(member.getId());
+
         if (!passwordEncoder.matches(cp.getOldPw(), member.getPw()))
             throw new MismatchPasswdException();
         member.setPw(passwordEncoder.encode(cp.getNewPw()));
@@ -132,6 +144,7 @@ public class MemberService {
      */
     public boolean withdrawal(String id, String auth) {
         try {
+            ServiceUtil.checkAdminMember(id);
             memberRepository.deleteById(id);
         } catch (Exception e) {
             Arrays.stream(e.getStackTrace()).forEach(st -> log.error(st.toString()));
