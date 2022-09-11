@@ -144,8 +144,9 @@ public class MemberService {
      */
     public boolean withdrawal(String id, String auth) {
         try {
-            ServiceUtil.checkAdminMember(id);
-            memberRepository.deleteById(id);
+            Member member = memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
+            ServiceUtil.checkAdminMember(member.getId());
+            memberRepository.delete(member);
         } catch (Exception e) {
             Arrays.stream(e.getStackTrace()).forEach(st -> log.error(st.toString()));
             return false;

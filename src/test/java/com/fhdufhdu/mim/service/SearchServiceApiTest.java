@@ -92,7 +92,7 @@ public class SearchServiceApiTest {
             return movieList;
         });
 
-        List<MovieInfo> result = searchService.searchByScene("test");
+        List<MovieInfo> result = searchService.searchByScene("test", null);
         assertThat(result.stream().map(MovieInfo::getId))
                 .containsAll(LongStream.range(0, 10).boxed().collect(Collectors.toList()));
 
@@ -111,7 +111,7 @@ public class SearchServiceApiTest {
             return movieList;
         });
 
-        List<MovieInfoWithLine> result = searchService.searchByLine("test");
+        List<MovieInfoWithLine> result = searchService.searchByLine("test", null);
         MovieInfoWithLine result2 = result.get(0);
         assertThat(result.stream().map(MovieInfoWithLine::getId))
                 .containsAll(LongStream.range(0, 10).boxed().collect(Collectors.toList()));

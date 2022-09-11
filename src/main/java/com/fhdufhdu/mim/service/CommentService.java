@@ -70,11 +70,14 @@ public class CommentService {
      * <ol>
      * <li>댓글을 못 찾았을 때 예외가 발생하는가?
      * <li>데이터가 잘 바뀌는가?
+     * <li>권한관련 예외가 잘 발생하는가?
      * </ol>
      */
-    // TODO: 8/31/22 제재중인 유저일 경우 예외 발생 필요함
     public CommentInfo changeComment(Long commentId, CommentChange comment) {
         Comment oldComment = commentRepository.findById(commentId).orElseThrow(NotFoundCommentException::new);
+
+        ServiceUtil.checkAdminMember(oldComment.getMember().getId());
+
         oldComment.setContent(comment.getContent());
         Comment newComment = commentRepository.save(oldComment);
         return ServiceUtil.convertToDest(newComment, CommentInfo.class);
@@ -93,6 +96,7 @@ public class CommentService {
     public boolean removeComment(Long commentId) {
         try {
             Comment comment = commentRepository.findById(commentId).orElseThrow(NotFoundCommentException::new);
+            ServiceUtil.checkAdminMember(comment.getMember().getId());
             Post post = comment.getPost();
             post.setCommentCnt(post.getCommentCnt() - 1);
             postRepository.save(post);

@@ -88,6 +88,7 @@ public class PostService {
      */
     public PostInfo modifyPost(Long id, PostChange post) {
         Post oldPost = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
+        ServiceUtil.checkAdminMember(oldPost.getMember().getId());
         oldPost.setContent(post.getContent());
         oldPost.setTitle(post.getTitle());
         Post newPost = postRepository.save(oldPost);
@@ -104,7 +105,9 @@ public class PostService {
      */
     public boolean removePost(Long id) {
         try {
-            postRepository.deleteById(id);
+            Post post = postRepository.findById(id).orElseThrow(NotFoundPostException::new);
+            ServiceUtil.checkAdminMember(post.getMember().getId());
+            postRepository.delete(post);
         } catch (Exception e) {
             Arrays.stream(e.getStackTrace()).forEach(st -> log.error(st.toString()));
             return false;

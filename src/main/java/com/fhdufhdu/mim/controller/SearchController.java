@@ -50,13 +50,14 @@ public class SearchController {
     }
 
     @GetMapping("/search/scene")
-    public List<MovieInfo> searchByScene(@RequestParam("query") String query) {
-        return searchService.searchByScene(query);
+    public List<MovieInfo> searchByScene(@RequestParam("query") String query, @RequestParam("member") String memberId) {
+        return searchService.searchByScene(query, memberId);
     }
 
     @GetMapping("/search/line")
-    public List<MovieInfoWithLine> searchByLine(@RequestParam("query") String query) {
-        return searchService.searchByLine(query);
+    public List<MovieInfoWithLine> searchByLine(@RequestParam("query") String query,
+            @RequestParam("member") String memberId) {
+        return searchService.searchByLine(query, memberId);
     }
 
     @GetMapping("/search/history/members/{memberId}")

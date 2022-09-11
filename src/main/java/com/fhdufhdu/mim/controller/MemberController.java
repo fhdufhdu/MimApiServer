@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fhdufhdu.mim.aop.Member;
-import com.fhdufhdu.mim.aop.MemberCheck;
 import com.fhdufhdu.mim.dto.DateParam;
 import com.fhdufhdu.mim.dto.member.ChangeMemberInfo;
 import com.fhdufhdu.mim.dto.member.ChangePassword;
@@ -88,8 +86,6 @@ public class MemberController {
         return memberService.existNickname(nickname);
     }
 
-    @Member
-    @MemberCheck
     @PutMapping("/members/{id}/password")
     public void changePassword(@PathVariable("id") String id, @RequestBody ChangePassword cp) {
         memberService.changePassword(id, cp);

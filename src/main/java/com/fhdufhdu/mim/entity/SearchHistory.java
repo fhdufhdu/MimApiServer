@@ -3,6 +3,8 @@ package com.fhdufhdu.mim.entity;
 import java.sql.Timestamp;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -37,5 +39,9 @@ public class SearchHistory {
 
     @NotNull
     private Timestamp searchTime;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private SearchType type;
 
 }

@@ -22,10 +22,14 @@ import com.fhdufhdu.mim.dto.movie.MovieInfo;
 import com.fhdufhdu.mim.dto.movie.MovieInfoWithLine;
 import com.fhdufhdu.mim.dto.search.SearchResult;
 import com.fhdufhdu.mim.dto.search.SearchResultElem;
-import com.fhdufhdu.mim.dto.search.SearchType;
 import com.fhdufhdu.mim.dto.searchhistory.SearchHistoryListElem;
+import com.fhdufhdu.mim.entity.Member;
 import com.fhdufhdu.mim.entity.Movie;
+import com.fhdufhdu.mim.entity.SearchHistory;
+import com.fhdufhdu.mim.entity.SearchType;
+import com.fhdufhdu.mim.exception.NotFoundMemberException;
 import com.fhdufhdu.mim.exception.NotFoundMovieException;
+import com.fhdufhdu.mim.repository.MemberRepository;
 import com.fhdufhdu.mim.repository.MovieRepository;
 import com.fhdufhdu.mim.repository.SearchHistoryRepository;
 import com.fhdufhdu.mim.utils.ServiceUtil;
@@ -38,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 public class SearchService {
     private final MovieRepository movieRepository;
     private final SearchHistoryRepository searchHistoryRepository;
+    private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
 
     /**
@@ -80,7 +85,17 @@ public class SearchService {
      * <li>api 결과와 함수결과가 동일한지
      * </ol>
      */
-    public List<MovieInfo> searchByScene(String query) {
+    public List<MovieInfo> searchByScene(String query, String memberId) {
+        if (memberId != null) {
+            Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+            SearchHistory history = SearchHistory.builder()
+                    .member(member)
+                    .searchText(query)
+                    .searchTime(ServiceUtil.getNowTimestamp())
+                    .type(SearchType.SCENE)
+                    .build();
+            searchHistoryRepository.save(history);
+        }
         Map<String, String> var = new HashMap<>();
         var.put("type", SearchType.SCENE.name());
         var.put("query", query);
@@ -102,7 +117,18 @@ public class SearchService {
      * <li>api결과와 함수결과가 일치하는지
      * </ol>
      */
-    public List<MovieInfoWithLine> searchByLine(String query) {
+    public List<MovieInfoWithLine> searchByLine(String query, String memberId) {
+        if (memberId != null) {
+            Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+            SearchHistory history = SearchHistory.builder()
+                    .member(member)
+                    .searchText(query)
+                    .searchTime(ServiceUtil.getNowTimestamp())
+                    .type(SearchType.LINE)
+                    .build();
+            searchHistoryRepository.save(history);
+        }
+
         Map<String, String> var = new HashMap<>();
         var.put("type", SearchType.LINE.name());
         var.put("query", query);
