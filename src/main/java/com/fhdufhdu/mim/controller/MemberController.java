@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -77,33 +77,33 @@ public class MemberController {
         return memberService.signUp(signUp);
     }
 
-    @GetMapping("/users/id/{id}")
+    @GetMapping("/members/id/{id}")
     public boolean existId(@PathVariable("id") String id) {
         return memberService.existId(id);
     }
 
-    @GetMapping("/users/nickname/{nickname}")
+    @GetMapping("/members/nickname/{nickname}")
     public boolean existNickname(@PathVariable("id") String nickname) {
         return memberService.existNickname(nickname);
     }
 
-    @PutMapping("/users/{id}/password")
-    public void changePassword(@PathVariable("id") String id, @RequestBody ChangePassword cp) {
-        SecurityContextHolder.getContext().getAuthentication();
+    @PutMapping("/members/{id}/password")
+    public void changePassword(@PathVariable("id") String id, @RequestBody ChangePassword cp,
+            @AuthenticationPrincipal String user) {
         memberService.changePassword(id, cp, ControllerUtil.getAuthSubject());
     }
 
-    @PutMapping("/users/{id}/nickname")
+    @PutMapping("/members/{id}/nickname")
     public MemberInfo changeNickname(@PathVariable("id") String id, @RequestBody ChangeMemberInfo info) {
         return memberService.changeMemberInfo(id, info, ControllerUtil.getAuthSubject());
     }
 
-    @PutMapping("/users/{id}/ban")
+    @PutMapping("/members/{id}/ban")
     public MemberInfo banUser(@PathVariable("id") String id, @RequestBody DateParam dateParam) {
         return memberService.banUser(id, dateParam);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/members/{id}")
     public boolean withdrawal(@PathVariable("id") String id) {
         return memberService.withdrawal(id, ControllerUtil.getAuthSubject());
     }
