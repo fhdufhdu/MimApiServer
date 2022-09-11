@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import com.fhdufhdu.mim.entity.Auth;
 import com.fhdufhdu.mim.entity.Member;
 import com.fhdufhdu.mim.exception.RefreshTokenValidException;
+import com.fhdufhdu.mim.jwt.JwtManager;
+import com.fhdufhdu.mim.jwt.JwtType;
 import com.fhdufhdu.mim.repository.AuthRepository;
 import com.fhdufhdu.mim.repository.MemberRepository;
-import com.fhdufhdu.mim.security.JwtManager;
-import com.fhdufhdu.mim.security.JwtType;
 
 import lombok.RequiredArgsConstructor;
 

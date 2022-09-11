@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim.security;
+package com.fhdufhdu.mim.filter;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.fhdufhdu.mim.exception.ExpiredTokenException;
+import com.fhdufhdu.mim.jwt.JwtManager;
+import com.fhdufhdu.mim.jwt.JwtType;
 
 import lombok.extern.slf4j.Slf4j;
 

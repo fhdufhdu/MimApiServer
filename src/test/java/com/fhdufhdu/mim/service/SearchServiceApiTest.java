@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fhdufhdu.mim.config.DlServer;
 import com.fhdufhdu.mim.dto.movie.MovieInfo;
 import com.fhdufhdu.mim.dto.movie.MovieInfoWithLine;
 import com.fhdufhdu.mim.dto.search.SearchResult;
@@ -30,7 +31,6 @@ import com.fhdufhdu.mim.dto.search.SearchResultElem;
 import com.fhdufhdu.mim.entity.Movie;
 import com.fhdufhdu.mim.entity.SearchHistory;
 import com.fhdufhdu.mim.repository.MovieRepository;
-import com.fhdufhdu.mim.setting.DlServer;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.mockwebserver.MockResponse;

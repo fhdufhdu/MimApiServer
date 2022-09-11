@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fhdufhdu.mim.config.DlServer;
+import com.fhdufhdu.mim.config.MovieImage;
 import com.fhdufhdu.mim.dto.PageParam;
 import com.fhdufhdu.mim.dto.movie.MovieInfo;
 import com.fhdufhdu.mim.dto.movie.MovieInfoWithLine;
@@ -26,8 +28,6 @@ import com.fhdufhdu.mim.entity.Movie;
 import com.fhdufhdu.mim.exception.NotFoundMovieException;
 import com.fhdufhdu.mim.repository.MovieRepository;
 import com.fhdufhdu.mim.repository.SearchHistoryRepository;
-import com.fhdufhdu.mim.setting.DlServer;
-import com.fhdufhdu.mim.setting.MovieImage;
 import com.fhdufhdu.mim.utils.ServiceUtil;
 
 import lombok.RequiredArgsConstructor;

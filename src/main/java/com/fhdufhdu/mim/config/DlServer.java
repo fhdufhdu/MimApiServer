@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim.setting;
+package com.fhdufhdu.mim.config;
 
 public class DlServer {
     public static String ADDRESS = "http://localhost:8000";

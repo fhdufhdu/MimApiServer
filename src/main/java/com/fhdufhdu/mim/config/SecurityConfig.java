@@ -13,14 +13,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.fhdufhdu.mim.security.CustomAccessDeniedHandler;
-import com.fhdufhdu.mim.security.CustomAuthenticationEntryPoint;
-import com.fhdufhdu.mim.security.JwtFilter;
+import com.fhdufhdu.mim.filter.CustomAccessDeniedHandler;
+import com.fhdufhdu.mim.filter.CustomAuthenticationEntryPoint;
+import com.fhdufhdu.mim.filter.JwtFilter;
 
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@ComponentScan
+@ComponentScan(basePackages = "com.fhdufhdu.mim")
 @EnableAspectJAutoProxy
 @EnableWebSecurity
 @RequiredArgsConstructor

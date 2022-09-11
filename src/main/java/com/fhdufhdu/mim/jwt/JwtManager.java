@@ -1,19 +1,21 @@
-package com.fhdufhdu.mim.security;
+package com.fhdufhdu.mim.jwt;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.fhdufhdu.mim.entity.Role;
 
@@ -100,8 +102,10 @@ public class JwtManager {
 
     public static Authentication createAuth(String token) {
         Claims claims = getClaim(token);
-        UserDetails userDetails = new User(claims.getSubject(), Role.valueOf((String) claims.get(JwtManager.ROLES)));
-        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), "", userDetails.getAuthorities());
+        String subject = claims.getSubject();
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority((String) claims.get(JwtManager.ROLES)));
+        return new UsernamePasswordAuthenticationToken(subject, "", authorities);
     }
 
 }

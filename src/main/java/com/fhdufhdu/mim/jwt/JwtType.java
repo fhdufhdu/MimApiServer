@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim.security;
+package com.fhdufhdu.mim.jwt;
 
 public enum JwtType {
     ACCESS("JWT-ACCESS-TOKEN"), REFRESH("JWT-REFRESH-TOKEN");

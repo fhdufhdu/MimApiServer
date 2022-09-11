@@ -1,4 +1,4 @@
-package com.fhdufhdu.mim;
+package com.fhdufhdu.mim.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
