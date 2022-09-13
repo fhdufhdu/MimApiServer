@@ -93,6 +93,7 @@ public class MemberService {
      * <ol>
      * <li>사용자 재제 일자가 잘 적용되는지
      * <li>날짜 범위 밖일때 예외 처리
+     * <li>아이디 일치하지 않을때 예외발생하는지
      * </ol>
      */
     public MemberInfo changeMemberInfo(String id, ChangeMemberInfo info, String auth) {
