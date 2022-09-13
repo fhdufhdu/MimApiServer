@@ -26,6 +26,7 @@ import com.fhdufhdu.mim.exception.NotFoundPostException;
 import com.fhdufhdu.mim.repository.CommentRepository;
 import com.fhdufhdu.mim.repository.MemberRepository;
 import com.fhdufhdu.mim.repository.PostRepository;
+import com.fhdufhdu.mim.utils.TestUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,9 +64,35 @@ public class CommentServiceTest {
         Long id = 0l;
         String oldContent = "old content";
         String content = "change content";
+        String memberId = "user1";
+        TestUtil.getMemberAuth(memberId);
+        Member member = Member.builder().id(memberId).build();
         CommentChange comment = CommentChange.builder().content(content).build();
         when(commentRepository.findById(any(Long.class)))
-                .then(ivc -> Optional.ofNullable(Comment.builder().id(ivc.getArgument(0)).content(oldContent).build()));
+                .then(ivc -> Optional
+                        .ofNullable(
+                                Comment.builder().id(ivc.getArgument(0)).content(oldContent).member(member).build()));
+        when(commentRepository.save(any())).then(ivc -> ivc.getArgument(0));
+
+        CommentInfo result = commentService.changeComment(id, comment);
+
+        assertThat(result.getContent()).isEqualTo(content);
+    }
+
+    @Test
+    void 댓글변경_admin() {
+        Long id = 0l;
+        String oldContent = "old content";
+        String content = "change content";
+        String memberId = "user1";
+        String adminId = "admin";
+        TestUtil.getAdminAuth(adminId);
+        Member member = Member.builder().id(memberId).build();
+        CommentChange comment = CommentChange.builder().content(content).build();
+        when(commentRepository.findById(any(Long.class)))
+                .then(ivc -> Optional
+                        .ofNullable(
+                                Comment.builder().id(ivc.getArgument(0)).content(oldContent).member(member).build()));
         when(commentRepository.save(any())).then(ivc -> ivc.getArgument(0));
 
         CommentInfo result = commentService.changeComment(id, comment);
@@ -77,9 +104,13 @@ public class CommentServiceTest {
     void 댓글삭제_예외발생() {
         Long id = 0l;
         int commentCnt = 10;
+        String memberId = "user1";
         Post post = Post.builder().commentCnt(commentCnt).build();
+        TestUtil.getMemberAuth(memberId);
+        Member member = Member.builder().id(memberId).build();
         when(commentRepository.findById(id)).thenReturn(Optional.ofNullable(Comment.builder()
                 .post(post)
+                .member(member)
                 .build()));
         when(postRepository.save(any())).then(ivc -> ivc.getArgument(0));
         doThrow(new RuntimeException("테스트 예외 발생(삭제 이상)")).when(commentRepository).delete(any());
@@ -99,9 +130,13 @@ public class CommentServiceTest {
     void 댓글삭제_게시글댓글수감소() {
         Long id = 0l;
         int commentCnt = 10;
+        String memberId = "user1";
         Post post = Post.builder().commentCnt(commentCnt).build();
+        TestUtil.getMemberAuth(memberId);
+        Member member = Member.builder().id(memberId).build();
         when(commentRepository.findById(id)).thenReturn(Optional.ofNullable(Comment.builder()
                 .post(post)
+                .member(member)
                 .build()));
         when(postRepository.save(any())).then(ivc -> ivc.getArgument(0));
         boolean success = commentService.removeComment(id);
